@@ -1,0 +1,93 @@
+{
+  "common": {
+    "langLabel": "Interface language",
+    "themeToDark": "Switch to dark theme",
+    "themeToLight": "Switch to light theme",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "privacy": "Privacy policy",
+    "offer": "Terms",
+    "copyright": "© 2026 Apexmedia",
+    "tagline": "Your ad, right at the shelf with your product",
+    "taglineSub": "Cart screens play your video when a shopper reaches the right shelf.",
+    "back": "Back",
+    "backToLogin": "Back to sign in",
+    "email": "Email",
+    "emailPlaceholder": "name@company.kz",
+    "password": "Password",
+    "passwordHint": "At least 8 characters, letters and digits",
+    "codeLabel": "Code from the email",
+    "codeCell": "Digit",
+    "resendIn": "Resend the code in {time}",
+    "resend": "Resend the code",
+    "wrongEmail": "Wrong email?",
+    "change": "Change",
+    "step": "Step {n} of 3"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Manage your campaigns, balance and impression stats.",
+    "forgot": "Forgot password?",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account?",
+    "signup": "Sign up",
+    "errors": {
+      "invalidTitle": "Wrong email or password",
+      "invalidBody": "Check your keyboard layout and Caps Lock, or reset your password.",
+      "unconfirmedTitle": "Email not confirmed",
+      "unconfirmedBody": "We sent a new code to {email} — enter it to sign in.",
+      "rateLimitTitle": "Too many attempts",
+      "rateLimitBody": "Try again in 5 minutes or reset your password.",
+      "emailFormat": "Enter the full email, e.g. name@company.kz",
+      "required": "Fill in this field"
+    }
+  },
+  "signup": {
+    "title": "Create an account",
+    "subtitle": "Set up your account in a minute. Add company details after you sign in.",
+    "terms": "I accept the <offer>terms of service</offer> and the <privacy>privacy policy</privacy>",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
+    "login": "Sign in",
+    "errors": {
+      "emailTaken": "This email is already registered — sign in or reset your password",
+      "passwordShort": "Password is too short — use at least 8 characters",
+      "passwordWeak": "Use both letters and digits in the password",
+      "terms": "Please accept the terms to continue"
+    }
+  },
+  "verify": {
+    "title": "Confirm your email",
+    "subtitle": "We sent a 6-digit code to {email}. Enter it to open your account.",
+    "submit": "Confirm",
+    "errors": {
+      "invalid": "This code doesn't match. Check the email or request a new one",
+      "expired": "The code has expired — we sent a new one"
+    }
+  },
+  "reset": {
+    "email": {
+      "title": "Reset password",
+      "subtitle": "Enter the email your account is registered to — we'll send you a reset code.",
+      "submit": "Send code",
+      "remembered": "Remembered your password?",
+      "login": "Sign in"
+    },
+    "code": {
+      "title": "Enter the code",
+      "subtitle": "If an account with {email} exists, we sent a 6-digit code to it.",
+      "submit": "Continue"
+    },
+    "newPassword": {
+      "title": "New password",
+      "subtitle": "Choose a password you don't use on other sites.",
+      "label": "New password",
+      "submit": "Save password"
+    },
+    "done": {
+      "title": "Password changed",
+      "subtitle": "Now sign in with your new password.",
+      "submit": "Sign in"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "label": "Main navigation",
+    "home": "Apexmedia — home",
+    "how": "How it works",
+    "stores": "Stores",
+    "pricing": "Pricing",
+    "contacts": "Contacts",
+    "login": "Sign in",
+    "start": "Get started"
+  },
+  "hero": {
+    "eyebrow": "Advertising in supermarkets",
+    "titleBefore": "Your video plays ",
+    "titleAccent": "right at the shelf",
+    "titleAfter": " with your product",
+    "text": "Screens on shopping carts start your ad when a shopper reaches the right shelf. Pick stores on the map and zones — drinks, snacks, household goods — and pay per impression.",
+    "ctaPrimary": "Launch a campaign",
+    "ctaSecondary": "How it works"
+  },
+  "stats": {
+    "s1Value": "200+",
+    "s1Label": "screens already in stores",
+    "s2Value": "7 sec",
+    "s2Label": "per video",
+    "s3Value": "By shelf",
+    "s3Label": "choose zones inside the store"
+  },
+  "figure": {
+    "alt": "A tablet on a cart handle plays a video when the shopper reaches the shelf",
+    "adBadge": "Ad · 7 sec",
+    "adTitle": "[Your video]",
+    "chip1Title": "Shopper at the shelf",
+    "chip1Text": "Drinks zone",
+    "chip2Title": "Impression counted",
+    "chip2Text": "Instantly in your stats"
+  }
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apex — токены и компоненты (эталон)</title>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="../react/src/design-system/tokens.css">
+<link rel="stylesheet" href="../react/src/design-system/components.css">
+<style>
+  body { margin: 0; background: var(--bg); }
+  .gallery { display: flex; flex-wrap: wrap; }
+  .theme-col { flex: 1 1 640px; min-width: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); padding: 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px; }
+  .theme-col h1 { margin: 0; font-family: var(--font-display); font-size: 38px; font-weight: 600; letter-spacing: -0.025em; }
+  .theme-col h2 { margin: 0 0 16px; font-family: var(--font-display); font-size: 20px; font-weight: 600; }
+  .theme-col .lead { margin: 6px 0 0; color: var(--text-muted); font-size: 15px; }
+  .row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+  .stack { display: flex; flex-direction: column; gap: 20px; max-width: 420px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .swatch { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); }
+  .swatch__chip { height: 44px; border-bottom: 1px solid var(--border); }
+  .swatch__meta { padding: 8px 10px; font-size: 12px; line-height: 1.35; }
+  .swatch__name { font-weight: 600; color: var(--text); }
+  .swatch__hex { color: var(--text-subtle); font-family: ui-monospace, Menlo, monospace; }
+  .type-row { display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid var(--border); padding: 10px 0; }
+  .type-row__meta { width: 150px; flex: none; font-size: 12px; color: var(--text-subtle); font-family: ui-monospace, Menlo, monospace; }
+  .panel { background: var(--brand-panel); border-radius: var(--radius-xl); padding: 20px 24px; display: inline-flex; }
+  .icon-tile { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); }
+  .caption { font-size: 12px; color: var(--text-subtle); margin-top: 6px; }
+</style>
+</head>
+<body data-page="components">
+<div class="gallery">
+  <section class="theme-col" data-theme="light" id="light"></section>
+  <section class="theme-col" data-theme="dark" id="dark"></section>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

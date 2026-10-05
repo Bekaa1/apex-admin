@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apex — дизайн-кит</title>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="../react/src/design-system/tokens.css">
+<style>
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 32px 80px; }
+  h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 44px; letter-spacing: -0.03em; }
+  h2 { margin: 48px 0 16px; font-family: var(--font-display); font-weight: 600; font-size: 24px; }
+  p.lead { margin: 10px 0 0; max-width: 46em; color: var(--text-muted); font-size: 17px; line-height: 1.55; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .grid--mobile { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  a.card { display: block; text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; }
+  a.card:hover { border-color: var(--border-strong); }
+  a.card img { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--border); background: var(--surface-muted); }
+  .card__body { padding: 12px 14px; }
+  .card__title { font-weight: 600; font-size: 15px; }
+  .card__meta { margin-top: 2px; font-size: 13px; color: var(--text-subtle); }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  .links a { display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: var(--radius-md); background: var(--primary); color: var(--on-primary); text-decoration: none; font-weight: 600; }
+  .links a.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Apex — дизайн-кит</h1>
+  <p class="lead">Живой эталон кабинета рекламодателя, собранный из React-кода в папке react/: токены, компоненты, лендинг и экраны авторизации в светлой и тёмной теме, на казахском, русском и английском. Всё работает офлайн. Кликните карточку&nbsp;— откроется живая страница: на ней работают переключатели языка и темы, ссылки и поля. Чтобы увидеть телефонную версию, сузьте окно.</p>
+  <div class="links">
+    <a href="components.html">Токены и компоненты</a>
+    <a class="secondary" href="landing.html?theme=light&amp;lang=ru">Открыть лендинг</a>
+    <a class="secondary" href="screens.html?screen=login&amp;theme=light&amp;lang=ru">Открыть флоу авторизации</a>
+  </div>
+
+  <h2>Лендинг · направление A</h2>
+  <div class="grid">
+    <a class="card" href="landing.html?theme=light"><img src="../screenshots/landing/desktop-light.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Лендинг · светлая</div><div class="card__meta">landing.html?theme=light</div></div></a>
+    <a class="card" href="landing.html?theme=dark"><img src="../screenshots/landing/desktop-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Лендинг · тёмная</div><div class="card__meta">landing.html?theme=dark</div></div></a>
+    <a class="card" href="landing.html?theme=light&amp;lang=kk"><img src="../screenshots/landing/desktop-kk.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Лендинг · казахский</div><div class="card__meta">lang=kk</div></div></a>
+    <a class="card" href="landing.html?theme=light&amp;lang=en"><img src="../screenshots/landing/desktop-en.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Лендинг · английский</div><div class="card__meta">lang=en</div></div></a>
+  </div>
+  <div class="grid grid--mobile" style="margin-top: 20px">
+    <a class="card" href="landing.html?theme=light"><img src="../screenshots/landing/mobile-light.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Телефон · светлая</div></div></a>
+    <a class="card" href="landing.html?theme=dark"><img src="../screenshots/landing/mobile-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Телефон · тёмная</div></div></a>
+  </div>
+
+  <h2>Авторизация · светлая тема · desktop</h2>
+  <div class="grid">
+    <a class="card" href="screens.html?screen=login&amp;theme=light"><img src="../screenshots/auth/desktop-light/01-login.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">1 · Вход</div><div class="card__meta">screen=login</div></div></a>
+    <a class="card" href="screens.html?screen=signup&amp;theme=light"><img src="../screenshots/auth/desktop-light/02-signup.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">2 · Регистрация</div><div class="card__meta">screen=signup</div></div></a>
+    <a class="card" href="screens.html?screen=verify&amp;theme=light"><img src="../screenshots/auth/desktop-light/03-verify.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">3 · Подтверждение почты</div><div class="card__meta">screen=verify</div></div></a>
+    <a class="card" href="screens.html?screen=reset-email&amp;theme=light"><img src="../screenshots/auth/desktop-light/04-reset-email.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">4 · Сброс: почта</div><div class="card__meta">screen=reset-email</div></div></a>
+    <a class="card" href="screens.html?screen=reset-code&amp;theme=light"><img src="../screenshots/auth/desktop-light/05-reset-code.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">5 · Сброс: код</div><div class="card__meta">screen=reset-code</div></div></a>
+    <a class="card" href="screens.html?screen=reset-new&amp;theme=light"><img src="../screenshots/auth/desktop-light/06-reset-new.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">6 · Новый пароль</div><div class="card__meta">screen=reset-new</div></div></a>
+    <a class="card" href="screens.html?screen=reset-done&amp;theme=light"><img src="../screenshots/auth/desktop-light/07-reset-done.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">7 · Пароль изменён</div><div class="card__meta">screen=reset-done</div></div></a>
+  </div>
+
+  <h2>Авторизация · тёмная тема «Графит» · desktop</h2>
+  <div class="grid">
+    <a class="card" href="screens.html?screen=login&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/01-login.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">1 · Вход</div></div></a>
+    <a class="card" href="screens.html?screen=signup&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/02-signup.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">2 · Регистрация</div></div></a>
+    <a class="card" href="screens.html?screen=verify&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/03-verify.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">3 · Подтверждение почты</div></div></a>
+    <a class="card" href="screens.html?screen=reset-email&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/04-reset-email.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">4 · Сброс: почта</div></div></a>
+    <a class="card" href="screens.html?screen=reset-code&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/05-reset-code.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">5 · Сброс: код</div></div></a>
+    <a class="card" href="screens.html?screen=reset-new&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/06-reset-new.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">6 · Новый пароль</div></div></a>
+    <a class="card" href="screens.html?screen=reset-done&amp;theme=dark"><img src="../screenshots/auth/desktop-dark/07-reset-done.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">7 · Пароль изменён</div></div></a>
+  </div>
+
+  <h2>Авторизация · состояния</h2>
+  <div class="grid">
+    <a class="card" href="screens.html?screen=login&amp;variant=error"><img src="../screenshots/auth/states/login-error.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход · неверная почта или пароль</div><div class="card__meta">variant=error</div></div></a>
+    <a class="card" href="screens.html?screen=login&amp;variant=unconfirmed"><img src="../screenshots/auth/states/login-unconfirmed.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход · почта не подтверждена</div><div class="card__meta">variant=unconfirmed</div></div></a>
+    <a class="card" href="screens.html?screen=login&amp;variant=ratelimit&amp;theme=dark"><img src="../screenshots/auth/states/login-ratelimit-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход · слишком много попыток</div><div class="card__meta">variant=ratelimit · тёмная</div></div></a>
+    <a class="card" href="screens.html?screen=login&amp;variant=loading"><img src="../screenshots/auth/states/login-loading.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход · загрузка</div><div class="card__meta">variant=loading</div></div></a>
+    <a class="card" href="screens.html?screen=signup&amp;variant=errors"><img src="../screenshots/auth/states/signup-errors.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Регистрация · ошибки полей</div><div class="card__meta">variant=errors</div></div></a>
+    <a class="card" href="screens.html?screen=verify&amp;variant=error&amp;theme=dark"><img src="../screenshots/auth/states/verify-error-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Подтверждение · неверный код</div><div class="card__meta">variant=error · тёмная</div></div></a>
+    <a class="card" href="screens.html?screen=login&amp;variant=error&amp;lang=kk"><img src="../screenshots/auth/states/login-error-kk.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход · казахский</div><div class="card__meta">lang=kk</div></div></a>
+    <a class="card" href="screens.html?screen=signup&amp;lang=en"><img src="../screenshots/auth/states/signup-en.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Регистрация · английский</div><div class="card__meta">lang=en</div></div></a>
+  </div>
+
+  <h2>Авторизация · телефон 390</h2>
+  <div class="grid grid--mobile">
+    <a class="card" href="screens.html?screen=login"><img src="../screenshots/auth/mobile/01-login-light.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход</div></div></a>
+    <a class="card" href="screens.html?screen=login&amp;theme=dark"><img src="../screenshots/auth/mobile/01-login-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Вход · тёмная</div></div></a>
+    <a class="card" href="screens.html?screen=signup"><img src="../screenshots/auth/mobile/02-signup-light.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Регистрация</div></div></a>
+    <a class="card" href="screens.html?screen=verify&amp;theme=dark"><img src="../screenshots/auth/mobile/03-verify-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Код · тёмная</div></div></a>
+    <a class="card" href="screens.html?screen=reset-new"><img src="../screenshots/auth/mobile/06-reset-new-light.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Новый пароль</div></div></a>
+    <a class="card" href="screens.html?screen=reset-done&amp;theme=dark"><img src="../screenshots/auth/mobile/07-reset-done-dark.png" alt="" loading="lazy"><div class="card__body"><div class="card__title">Готово · тёмная</div></div></a>
+  </div>
+</div>
+</body>
+</html>

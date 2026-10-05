@@ -1,0 +1,13 @@
+/*
+ * Fonts. Recommended: self-host via Fontsource (includes Kazakh Cyrillic glyphs):
+ *   npm i @fontsource/geologica @fontsource/onest
+ * and keep the imports below (Vite / Next / CRA resolve package CSS imports).
+ * Alternative: copy ../../../assets/fonts/*.ttf into public/ and use @font-face (see reference/css/fonts.css).
+ */
+@import '@fontsource/geologica/500.css';
+@import '@fontsource/geologica/600.css';
+@import '@fontsource/geologica/700.css';
+@import '@fontsource/onest/400.css';
+@import '@fontsource/onest/500.css';
+@import '@fontsource/onest/600.css';
+@import '@fontsource/onest/700.css';

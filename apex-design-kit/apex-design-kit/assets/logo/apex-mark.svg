@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 134 1200 932" role="img" aria-label="Apex">
+  <defs>
+    <linearGradient id="ax-a" gradientUnits="userSpaceOnUse" x1="630" y1="144" x2="113" y2="935">
+      <stop offset="0" stop-color="#01d8fc"/><stop offset=".35" stop-color="#03aefc"/><stop offset=".8" stop-color="#0468fc"/><stop offset="1" stop-color="#055bfb"/>
+    </linearGradient>
+    <linearGradient id="ax-b" gradientUnits="userSpaceOnUse" x1="680" y1="420" x2="1180" y2="1055">
+      <stop offset="0" stop-color="#0530f8"/><stop offset=".45" stop-color="#3d2cfd"/><stop offset=".85" stop-color="#b01efd"/><stop offset="1" stop-color="#df13fc"/>
+    </linearGradient>
+    <linearGradient id="ax-c" gradientUnits="userSpaceOnUse" x1="60" y1="1050" x2="698" y2="714">
+      <stop offset="0" stop-color="#0423e7"/><stop offset=".35" stop-color="#0233f2"/><stop offset="1" stop-color="#0a7cf9"/>
+    </linearGradient>
+    <linearGradient id="ax-d" gradientUnits="userSpaceOnUse" x1="663" y1="847" x2="930" y2="1055">
+      <stop offset="0" stop-color="#0343fc"/><stop offset="1" stop-color="#7a1cfb"/>
+    </linearGradient>
+  </defs>
+  <polygon fill="url(#ax-b)" points="743,328 1208,1055 962,1055 829,847 621,508"/>
+  <polygon fill="url(#ax-d)" points="663,847 829,847 962,1055 904,1055"/>
+  <polygon fill="url(#ax-a)" points="630,144 743,328 621,508 416,820 113,935"/>
+  <polygon fill="url(#ax-c)" points="113,935 698,714 243,1055 31,1055"/>
+</svg>

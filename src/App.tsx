@@ -1,10 +1,16 @@
-import './App.css'
+import './design-system/styles.css'
+import './auth/auth.css'
+import { ThemeProvider } from './design-system'
+import { SignupScreen } from './auth/SignupScreen'
+import { I18nProvider } from './i18n/i18n'
 
 function App() {
   return (
-    <main className="app">
-      <h1>Apex Admin</h1>
-    </main>
+    <ThemeProvider>
+      <I18nProvider>
+        <SignupScreen />
+      </I18nProvider>
+    </ThemeProvider>
   )
 }
 

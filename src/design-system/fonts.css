@@ -1,0 +1,8 @@
+/* Local kit fonts keep the registration screen self-contained and work offline. */
+@font-face { font-family: "Geologica"; src: url("../assets/fonts/Geologica-500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Geologica"; src: url("../assets/fonts/Geologica-600SemiBold.ttf") format("truetype"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Geologica"; src: url("../assets/fonts/Geologica-700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Onest"; src: url("../assets/fonts/Onest-400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Onest"; src: url("../assets/fonts/Onest-500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Onest"; src: url("../assets/fonts/Onest-600SemiBold.ttf") format("truetype"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Onest"; src: url("../assets/fonts/Onest-700Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }

@@ -1,0 +1,57 @@
+/* Auth screens layout: brand panel on the left, form on the right; on phones the panel shrinks to a header. */
+.auth { min-height: 100vh; display: flex; flex-wrap: wrap; background: var(--bg); color: var(--text); font-family: var(--font-sans); box-sizing: border-box; }
+
+.auth__panel { flex: 1 1 520px; min-width: 0; margin: 16px; position: relative; overflow: hidden; box-sizing: border-box;
+  border-radius: var(--radius-2xl); background: var(--brand-panel); color: var(--on-brand-panel);
+  display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); padding: var(--space-9); }
+[data-theme="dark"] .auth__panel { border: 1px solid var(--border); }
+
+.auth__mark { position: absolute; right: -12%; top: -6%; width: 66%; height: auto; pointer-events: none; }
+.auth__mark svg { display: block; width: 100%; height: auto; }
+.auth__mark--white { opacity: .16; }
+.auth__mark--color { display: none; }
+[data-theme="dark"] .auth__mark--white { display: none; }
+[data-theme="dark"] .auth__mark--color { display: block; }
+
+.auth__logo { position: relative; align-self: flex-start; }
+.auth__pitch { position: relative; display: flex; flex-direction: column; gap: var(--space-3); max-width: 520px; }
+.auth__tagline { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 44px; line-height: 1.12; letter-spacing: -0.02em; color: var(--on-brand-panel); }
+.auth__tagline-sub { margin: 0; font-size: 17px; line-height: 1.55; color: var(--on-brand-panel-muted); }
+.auth__copy { position: relative; margin: 0; font-size: 13px; color: var(--on-brand-panel-muted); }
+
+.auth__main { flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; padding: var(--space-6) 72px; box-sizing: border-box; }
+.auth__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-3); }
+.auth__top--with-back { justify-content: space-between; }
+.auth__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.auth__body { flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-9) 0; }
+.auth__form { width: 100%; max-width: var(--form-max); display: flex; flex-direction: column; gap: var(--space-6); }
+.auth__head { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+.auth__title { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 38px; line-height: 1.1; letter-spacing: -0.025em; color: var(--text); }
+.auth__subtitle { margin: 0; font-size: 16px; line-height: 1.5; color: var(--text-muted); }
+.auth__subtitle strong { color: var(--text); font-weight: 600; }
+.auth__icon { width: 56px; height: 56px; border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; background: var(--primary-soft); color: var(--link); }
+.auth__icon--success { background: var(--success-soft); color: var(--success); }
+.auth__note { margin: 0; text-align: center; font-size: 15px; color: var(--text-muted); }
+.auth__links { display: flex; flex-direction: column; gap: var(--space-2); font-size: 15px; color: var(--text-muted); }
+.auth__links p { margin: 0; }
+.auth__timer { color: var(--text-subtle); }
+.auth a.auth__link { font-weight: 600; color: var(--link); text-decoration: none; }
+.auth a.auth__link:hover { text-decoration: underline; }
+.auth__footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2) var(--space-5); font-size: 13px; }
+.auth__footer a { color: var(--text-subtle); }
+
+@media (max-width: 1100px) {
+  .auth__main { padding: var(--space-6) var(--space-8); }
+  .auth__tagline { font-size: 34px; }
+}
+@media (max-width: 760px) {
+  .auth { align-content: flex-start; }
+  .auth__panel { margin: 12px 12px 0; padding: var(--space-5); gap: var(--space-4); border-radius: var(--radius-xl); }
+  .auth__mark { display: none !important; }
+  .auth__tagline { font-size: 22px; }
+  .auth__tagline-sub, .auth__copy { display: none; }
+  .auth__main { padding: var(--space-4) var(--space-5) var(--space-6); }
+  .auth__body { padding: var(--space-7) 0; align-items: flex-start; }
+  .auth__title { font-size: 30px; }
+  .auth__footer { justify-content: flex-start; }
+}

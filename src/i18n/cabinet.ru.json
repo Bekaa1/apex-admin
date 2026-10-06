@@ -11,6 +11,10 @@
     "logout": "Выйти"
   },
   "createCampaign": "Создать кампанию",
+  "sessionLoading": "Проверяем вход…",
+  "sessionErrorTitle": "Не удалось проверить вход",
+  "logoutError": "Не удалось выйти. Попробуйте ещё раз.",
+  "accountError": "Не удалось загрузить компанию",
   "noCompany": "Компания не указана",
   "status": {
     "active": "Активна",

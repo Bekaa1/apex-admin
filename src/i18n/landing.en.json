@@ -7,7 +7,8 @@
     "pricing": "Pricing",
     "contacts": "Contacts",
     "login": "Sign in",
-    "start": "Get started"
+    "start": "Get started",
+    "menu": "Language and theme"
   },
   "hero": {
     "eyebrow": "Advertising in supermarkets",
@@ -38,6 +39,13 @@
   "legal": {
     "label": "Legal documents",
     "privacy": "Privacy policy",
-    "offer": "Public offer"
+    "offer": "Public offer",
+    "back": "Back to home",
+    "backToSignup": "Back to sign up",
+    "originalLanguage": "The original document is provided in Russian.",
+    "downloadOriginal": "Download original DOCX",
+    "loading": "Opening document…",
+    "loadError": "Could not open the document.",
+    "retry": "Try again"
   }
 }

@@ -1,5 +1,5 @@
-import { Link, NavLink, useNavigate } from 'react-router';
-import { DEFAULT_AUTH_LINKS } from '../auth/links';
+import { Link, NavLink } from 'react-router';
+import { useSignOut } from '../auth/useSignOut';
 import { Icon, LogoMark } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 import { SUPPORT_WHATSAPP_URL } from '../lib/contacts';
@@ -8,7 +8,7 @@ import { CABINET_ROOT, CABINET_SECTIONS, cabinetUrl } from './sections';
 
 export function SideNav() {
   const { t } = useI18n();
-  const navigate = useNavigate();
+  const { signOut, pending, failed } = useSignOut();
   return (
     <aside className="cab__side">
       <div className="cab__side-inner">
@@ -36,11 +36,11 @@ export function SideNav() {
             <span className="cab-nav__label">{t('cabinet.nav.help')}</span>
           </a>
           <AccountBlock />
-          {/* Sign-out belongs to the auth flow; until it lands, leaving the cabinet just opens the login screen. */}
-          <button type="button" className="cab-nav__item cab-nav__item--button" onClick={() => navigate(DEFAULT_AUTH_LINKS.login)}>
+          <button type="button" className="cab-nav__item cab-nav__item--button" onClick={() => void signOut()} disabled={pending} aria-busy={pending}>
             <Icon name="log-out" />
             <span className="cab-nav__label">{t('cabinet.nav.logout')}</span>
           </button>
+          {failed ? <p role="alert" className="cab-account__email">{t('cabinet.logoutError')}</p> : null}
         </div>
       </div>
     </aside>

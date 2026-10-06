@@ -10,8 +10,8 @@ const NO_DATA: HomeState = {
 };
 
 /**
- * Data for Home. The Supabase client and session come with the auth flow; until they land,
- * Home has no data source and shows the new-user guide (dev builds can preview every state with ?demo=).
+ * Home statistics still need an API. Until it is connected, show the new-user guide;
+ * authenticated dev builds can preview every state with ?demo=.
  */
 export function useHomeState(): HomeState {
   const [params] = useSearchParams();

@@ -1,4 +1,4 @@
-// Shapes of the Supabase advertiser views used on Home. Replace with database.types.ts once the auth flow adds it.
+// Shapes of the Supabase advertiser views used on Home. Replace with database.types.ts once it is generated.
 import type { CampaignStatus, VisibleStatus } from '../campaignStatus';
 
 /** `my_campaigns_stats` (filtered by auth.uid() in the view). */

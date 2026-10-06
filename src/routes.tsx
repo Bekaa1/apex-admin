@@ -1,12 +1,12 @@
 import type { ComponentType } from 'react';
-import { Navigate, createBrowserRouter, type RouteObject } from 'react-router';
-import { ResetPasswordCodeRoute, VerifyEmailRoute } from './AuthPreviewRoutes';
-import { LoginScreen } from './auth/LoginScreen';
+import { Navigate, type RouteObject } from 'react-router';
+import { ResetPasswordRoute, VerificationRoute } from './auth/AuthRoutes';
+import { LoginFlow, SignupFlow, SignupProfileFlow } from './auth/AuthFlows';
+import { RequireSession, SessionLoading } from './auth/RequireSession';
 import { DEFAULT_AUTH_LINKS } from './auth/links';
-import { ResetPasswordDoneScreen, ResetPasswordEmailScreen, ResetPasswordNewScreen } from './auth/ResetScreens';
-import { SignupScreen } from './auth/SignupScreen';
 import { CABINET_ROOT, CABINET_SECTIONS, type CabinetRouteHandle } from './cabinet/sections';
 import { Landing } from './landing/Landing';
+import { LegalDocumentPage } from './legal/LegalDocumentPage';
 
 const landing = <Landing loginHref={DEFAULT_AUTH_LINKS.login} startHref={DEFAULT_AUTH_LINKS.signup} />;
 
@@ -26,19 +26,26 @@ const cabinetRoutes: RouteObject[] = [
   { path: '*', element: <Navigate to={CABINET_ROOT} replace /> },
 ];
 
-export const router = createBrowserRouter([
+export const routes: RouteObject[] = [
   { path: '/', element: landing },
-  { path: DEFAULT_AUTH_LINKS.login, element: <LoginScreen /> },
-  { path: DEFAULT_AUTH_LINKS.signup, element: <SignupScreen /> },
-  { path: DEFAULT_AUTH_LINKS.verify, element: <VerifyEmailRoute /> },
-  { path: DEFAULT_AUTH_LINKS.resetEmail, element: <ResetPasswordEmailScreen /> },
-  { path: DEFAULT_AUTH_LINKS.resetCode, element: <ResetPasswordCodeRoute /> },
-  { path: DEFAULT_AUTH_LINKS.resetNew, element: <ResetPasswordNewScreen /> },
-  { path: DEFAULT_AUTH_LINKS.resetDone, element: <ResetPasswordDoneScreen /> },
+  { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow /> },
+  { path: DEFAULT_AUTH_LINKS.signup, element: <SignupFlow /> },
+  { path: DEFAULT_AUTH_LINKS.verify, element: <VerificationRoute /> },
+  { path: DEFAULT_AUTH_LINKS.profile, element: <SignupProfileFlow /> },
+  { path: DEFAULT_AUTH_LINKS.resetEmail, element: <ResetPasswordRoute step="email" /> },
+  { path: DEFAULT_AUTH_LINKS.resetCode, element: <ResetPasswordRoute step="code" /> },
+  { path: DEFAULT_AUTH_LINKS.resetNew, element: <ResetPasswordRoute step="new" /> },
+  { path: DEFAULT_AUTH_LINKS.resetDone, element: <ResetPasswordRoute step="done" /> },
+  { path: DEFAULT_AUTH_LINKS.privacy, element: <LegalDocumentPage key="privacy" kind="privacy" /> },
+  { path: DEFAULT_AUTH_LINKS.offer, element: <LegalDocumentPage key="offer" kind="offer" /> },
   {
-    path: CABINET_ROOT,
-    lazy: async () => ({ Component: (await import('./cabinet/CabinetLayout')).CabinetLayout }),
-    children: cabinetRoutes,
+    element: <RequireSession />,
+    hydrateFallbackElement: <SessionLoading />,
+    children: [{
+      path: CABINET_ROOT,
+      lazy: async () => ({ Component: (await import('./cabinet/CabinetLayout')).CabinetLayout }),
+      children: cabinetRoutes,
+    }],
   },
   { path: '*', element: landing },
-]);
+];

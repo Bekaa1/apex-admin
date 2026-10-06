@@ -1,4 +1,8 @@
 {
+  "sessionLoading": "Checking your session…",
+  "sessionErrorTitle": "Couldn't verify your session",
+  "logoutError": "Couldn't sign out. Please try again.",
+  "accountError": "Couldn't load company details",
   "nav": {
     "label": "Account sections",
     "home": "Home",

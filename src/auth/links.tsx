@@ -6,6 +6,7 @@ export interface AuthLinks {
   login: string;
   signup: string;
   verify: string;
+  profile: string;
   resetEmail: string;
   resetCode: string;
   resetNew: string;
@@ -19,6 +20,7 @@ export const DEFAULT_AUTH_LINKS: AuthLinks = {
   login: '/login',
   signup: '/signup',
   verify: '/signup/verify',
+  profile: '/signup/profile',
   resetEmail: '/reset-password',
   resetCode: '/reset-password/code',
   resetNew: '/reset-password/new',

@@ -37,12 +37,12 @@
 
 ```
 src/
-  main.tsx              провайдеры (react-query, тема, язык), глобальные стили
+  main.tsx              провайдеры (react-query, тема, язык, сессия), глобальные стили
   App.tsx, routes.tsx   RouterProvider; все маршруты, кабинетные строятся из cabinet/sections.ts
-  AuthPreviewRoutes.tsx экраны с кодом берут почту из адреса, пока флоу авторизации её не передаёт
+  auth/AuthRoutes.tsx   реальные OTP/сброс пароля; contact/channel/purpose передаются через состояние react-router
   design-system/        компоненты и токены кита; правим только вместе с китом
   i18n/                 I18nProvider и словари <раздел>.{ru,kk,en}.json с одинаковыми ключами; новый файл подхватывается сам
-  auth/                 экраны авторизации; вход по почте или казахстанскому номеру
+  auth/                 авторизация, AuthSessionProvider, RequireSession, вход по почте или казахстанскому номеру
   landing/              лендинг
   cabinet/              кабинет рекламодателя
     CabinetLayout.tsx     каркас: SideNav (меню → рейка ≤1100px), TopBar, TabBar (телефон ≤760px)
@@ -59,7 +59,7 @@ src/
       api.ts                запросы раздела к Supabase
       useXxx.ts             хуки (react-query)
   lib/                  format.ts (деньги, числа, %, списки, plural), contacts.ts, queryClient.ts;
-                        supabase.ts, database.types.ts и сессия появятся с авторизацией Беки
+                        supabase.ts — общий клиент; database.types.ts ещё предстоит сгенерировать
   assets/               шрифты и картинки
 ```
 
@@ -111,17 +111,17 @@ src/
   - Данные кабинета берём только из `my_*` вью: `my_ad_stats_summary`, `my_campaigns_stats`, `my_daily_plays*`, `my_campaign_store_shares`, `my_campaign_zone_shares`. Они фильтруют по `auth.uid()`.
   - Вью `advertiser_*`, `ad_campaign_stats`, `user_ad_stats`, `all_*`, `partner_*` и похожие не используем: они отдают данные всех пользователей.
   - По RLS сейчас видны все строки `ads`, поэтому запросы к `ads` всегда фильтруем по `user_id` текущего пользователя.
-  - Профиль — `public.users` (1:1 к `auth.users`). Онбординг — RPC `complete_contact_registration(p_full_name, p_bin?, p_company_name?)`.
+  - Профиль — `public.users` (1:1 к `auth.users`). Текущая регистрация сохраняет его через RPC `complete_signup_profile(p_full_name, p_bin, p_company_name)`.
   - Статистика приходит из «Cart» раз в час, поэтому возможна задержка до часа.
 - Если фронту нужна правка бэкенда, пишу запрос для бэкенд-разработчика: что нужно, для какого экрана, предлагаемый SQL/RLS, насколько срочно.
   - Пользователь пересылает запрос, копия идёт в session-log в запись фичи.
   - Пока правку не сделали, работаем на том, что есть, или на моках и пишем об этом в PR.
-- Клиент один: `src/lib/supabase.ts`. Он типизирован `Database` из `src/lib/database.types.ts`.
+- Клиент один: `src/lib/supabase.ts`. Следующий шаг — сгенерировать `Database` в `src/lib/database.types.ts` и типизировать клиент.
   - Этот файл генерируется через MCP `generate_typescript_types`. Руками его не правим.
   - После изменений бэкенда генерируем заново.
-- Ключи храним только в `.env.local` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`). В git лежит `.env.example` с пустыми значениями. Во фронте используем только anon (publishable) ключ; service_role и secret сюда не попадают никогда.
+- Ключи храним только в `.env.local` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`). В git лежит `.env.example` с шаблонными значениями. Во фронте используем только anon (publishable) ключ; service_role и secret сюда не попадают никогда.
 - Данные защищает RLS, а не фронт. Фильтр по `user_id` на клиенте нужен только для отображения, безопасности он не даёт. Компоненты не обращаются к Supabase напрямую, только через `api.ts`.
-- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. Пока `/cabinet` не защищён, каркас показывается пустым.
+- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свой `public.users.company_name` через `cabinet/api.ts`. Данные главной пока не подключены: она показывает гид, а `?demo=` доступен только в dev после входа.
 
 ## Процесс (git)
 - Одна фича — одна ветка от свежего `main`: `feature/<коротко>`, для исправлений `fix/…`, для служебных задач `chore/…`. Отдельной ветки «claude» нет. В `main` напрямую не коммитим. Ветки `agent/*` и worktree второго разработчика не трогаем.

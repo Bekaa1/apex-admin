@@ -68,22 +68,12 @@ export function Landing({ loginHref, startHref }: LandingProps) {
       </main>
 
       <footer className="land__footer" aria-label={t('landing.legal.label')}>
-        <Button
-          variant="secondary"
-          size="md"
-          href="/legal/privacy-policy.docx"
-          download="Политика конфиденциальности №1.docx"
-        >
+        <a className="land__legal-link" href="/legal/privacy-policy.docx" target="_blank" rel="noopener noreferrer">
           {t('landing.legal.privacy')}
-        </Button>
-        <Button
-          variant="secondary"
-          size="md"
-          href="/legal/public-offer.docx"
-          download="Публичная оферта №1.docx"
-        >
+        </a>
+        <a className="land__legal-link" href="/legal/public-offer.docx" target="_blank" rel="noopener noreferrer">
           {t('landing.legal.offer')}
-        </Button>
+        </a>
       </footer>
     </div>
   );

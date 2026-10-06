@@ -35,9 +35,10 @@ export const CABINET_SECTIONS: CabinetSection[] = [
     icon: 'megaphone',
     page: () => import('./campaigns/CampaignsPage').then((m) => m.CampaignsPage),
     subpages: [
-      { path: 'campaigns/new', titleKey: 'campaigns.titles.new', hideCreate: true },
-      { path: 'campaigns/corporate', titleKey: 'campaigns.titles.corporate' },
-      { path: 'campaigns/:campaignId/fix', titleKey: 'campaigns.titles.fix', hideCreate: true },
+      { path: 'campaigns/new', titleKey: 'campaigns.titles.new', hideCreate: true, page: () => import('./campaigns/wizard/NewCampaignPage').then((m) => m.NewCampaignPage) },
+      { path: 'campaigns/corporate', titleKey: 'campaigns.titles.corporate', page: () => import('./campaigns/corporate/CorporatePage').then((m) => m.CorporatePage) },
+      { path: 'campaigns/:campaignId/fix', titleKey: 'campaigns.titles.fix', hideCreate: true, page: () => import('./campaigns/wizard/FixCampaignPage').then((m) => m.FixCampaignPage) },
+      { path: 'campaigns/:campaignId/sent', titleKey: 'campaigns.titles.new', hideCreate: true, page: () => import('./campaigns/wizard/CampaignSentPage').then((m) => m.CampaignSentPage) },
       { path: 'campaigns/:campaignId', titleKey: 'cabinet.nav.campaigns' },
     ],
   },
@@ -81,6 +82,8 @@ export const CABINET_LINKS = {
   analytics: cabinetUrl('analytics'),
   profile: cabinetUrl('profile'),
   corporate: cabinetUrl('campaigns/corporate'),
+  corporateFromWizard: `${cabinetUrl('campaigns/corporate')}?from=wizard`,
+  campaignSent: (id: string) => cabinetUrl(`campaigns/${id}/sent`),
   campaignFix: (id: string) => cabinetUrl(`campaigns/${id}/fix`),
   campaignCopy: (id: string) => `${cabinetUrl('campaigns/new')}?copy=${encodeURIComponent(id)}`,
 };

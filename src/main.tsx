@@ -5,7 +5,7 @@ import './design-system/styles.css'
 import './landing/landing.css'
 import './auth/auth.css'
 import App from './App.tsx'
-import { ThemeProvider } from './design-system'
+import { ThemeProvider } from './design-system/theme'
 import { I18nProvider } from './i18n/i18n'
 
 createRoot(document.getElementById('root')!).render(

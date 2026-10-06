@@ -3,7 +3,7 @@ import { VerifyEmailScreen } from './CodeScreens'
 import type { CodeError } from './CodeScreens'
 import { LoginScreen } from './LoginScreen'
 import type { LoginError } from './LoginScreen'
-import { navigateAuth } from './navigation'
+import { useAuthNavigate } from './navigation'
 import type { VerificationChannel, VerificationState } from './navigation'
 import { SignupScreen } from './SignupScreen'
 import { SignupProfileScreen } from './SignupProfileScreen'
@@ -70,6 +70,7 @@ function verificationError(error: unknown): CodeError {
 }
 
 export function SignupFlow() {
+  const navigateAuth = useAuthNavigate()
   const [loading, setLoading] = useState(false)
   const [contactTaken, setContactTaken] = useState(false)
   const [recoveryTarget, setRecoveryTarget] = useState<{ contact: string; channel: VerificationChannel } | null>(null)
@@ -158,6 +159,7 @@ export function ResetPasswordFlow({
   contact?: string
   channel?: VerificationChannel
 }) {
+  const navigateAuth = useAuthNavigate()
   const links = useAuthLinks()
   const [loading, setLoading] = useState(false)
   const [startError, setStartError] = useState<ResetPasswordStartError | null>(null)
@@ -291,6 +293,7 @@ export function ResetPasswordFlow({
 }
 
 export function LoginFlow() {
+  const navigateAuth = useAuthNavigate()
   const [loading, setLoading] = useState(false)
   const [emailCodeLoading, setEmailCodeLoading] = useState(false)
   const [error, setError] = useState<LoginError | null>(null)
@@ -383,6 +386,7 @@ export function LoginFlow() {
 }
 
 export function VerificationFlow({ verification }: { verification: VerificationState }) {
+  const navigateAuth = useAuthNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<CodeError | null>(null)
   const submissionInProgress = useRef(false)
@@ -446,6 +450,7 @@ export function VerificationFlow({ verification }: { verification: VerificationS
 }
 
 export function SignupProfileFlow() {
+  const navigateAuth = useAuthNavigate()
   const [checkingSession, setCheckingSession] = useState(true)
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -477,7 +482,7 @@ export function SignupProfileFlow() {
     return () => {
       active = false
     }
-  }, [])
+  }, [navigateAuth])
 
   const submit = async (values: { fullName: string; bin: string; companyName: string }) => {
     if (!authenticated) return

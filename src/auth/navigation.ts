@@ -1,3 +1,6 @@
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router'
+
 export type VerificationChannel = 'email' | 'sms'
 export type VerificationPurpose = 'signup' | 'signin'
 
@@ -12,7 +15,9 @@ export interface ResetPasswordState {
   channel: VerificationChannel
 }
 
-export function navigateAuth(path: string, state: VerificationState | ResetPasswordState | null = null) {
-  window.history.pushState(state, '', path)
-  window.dispatchEvent(new PopStateEvent('popstate'))
+export function useAuthNavigate() {
+  const navigate = useNavigate()
+  return useCallback((path: string, state: VerificationState | ResetPasswordState | null = null) => {
+    void navigate(path, { state })
+  }, [navigate])
 }

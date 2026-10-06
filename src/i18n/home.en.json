@@ -1,0 +1,198 @@
+{
+  "guide": {
+    "badge": "First launch",
+    "title": "Launch your first ad in 5 steps",
+    "text": "Upload a 7-second video, choose a plan, stores and shelf zones, set a budget — and shoppers will see your ad on cart screens.",
+    "how": "How it works",
+    "facts": {
+      "payment": "Pay by card, Kaspi QR or invoice",
+      "review": "We review the video before launch",
+      "stats": "Statistics by store and zone"
+    },
+    "example": {
+      "caption": "Campaign example",
+      "adBadge": "Ad · 7 sec",
+      "adTitle": "[Your video]",
+      "tariff": "Plan",
+      "stores": "Stores",
+      "storesValue": "12 in Almaty",
+      "zones": "Zones",
+      "zonesValue": "Drinks, Snacks",
+      "budget": "Budget"
+    }
+  },
+  "steps": {
+    "title": "How to create a campaign",
+    "lead": "The wizard guides you step by step. Here is what you need at each step.",
+    "video": {
+      "title": "Video and details",
+      "text": "Name, description, a 7-second video and a cover. Without a cover we use the first frame of the video.",
+      "cover": "Cover",
+      "details": "Name and description"
+    },
+    "tariff": {
+      "title": "Plan",
+      "text": "The plan decides where the video plays and the campaign's minimum budget."
+    },
+    "stores": {
+      "title": "Stores",
+      "text": "Mark supermarkets on the map or in the list — by city and chain.",
+      "selected": "Selected: {count}"
+    },
+    "zones": {
+      "title": "Shelf zones",
+      "text": "The video starts when a shopper approaches the selected shelf.",
+      "badge": "In plans with zones",
+      "drinks": "Drinks",
+      "snacks": "Snacks",
+      "household": "Household goods"
+    },
+    "budget": {
+      "title": "Budget and payment",
+      "text": "The budget must be at least the plan minimum. Pay by card, Kaspi QR or invoice.",
+      "minimum": "Plan minimum",
+      "yours": "Your budget"
+    },
+    "after": {
+      "title": "After payment",
+      "review": "We review the video",
+      "reviewText": "The result comes by email",
+      "start": "Impressions start",
+      "startText": "On carts in the selected stores",
+      "results": "See the results",
+      "resultsText": "Impressions and spend — in Statistics"
+    }
+  },
+  "tariffs": {
+    "title": "Plans",
+    "lead": "The plan defines where the video is shown and the minimum campaign budget. The higher the plan, the more options and the higher the minimum.",
+    "standard": {
+      "name": "Standard",
+      "text": "The video plays in the general rotation on all carts of the selected stores."
+    },
+    "zones": {
+      "name": "Standard + Zones",
+      "text": "Plus priority at the selected shelves: only zone-plan videos play in the zone."
+    },
+    "premium": {
+      "name": "Premium",
+      "text": "Zones and more impressions: the video plays more often both in rotation and at the shelves."
+    },
+    "exclusive": {
+      "name": "Exclusive",
+      "text": "Only your brand in the selected zones — no other advertisers."
+    },
+    "feature": {
+      "allCarts": "All carts of the selected stores",
+      "zonePriority": "Priority in shelf zones",
+      "moreShows": "More impressions in rotation",
+      "brandOnly": "Only your brand in the zone"
+    },
+    "has": "Included:",
+    "hasNot": "Not included:",
+    "minimum": "Minimum budget",
+    "from": "from {amount}",
+    "note": "The minimum budget is the amount a campaign can start with. You can top up the budget at any time."
+  },
+  "budget": {
+    "title": "How the budget works",
+    "own": {
+      "title": "Each campaign has its own budget",
+      "text": "Money of one campaign is not spent on another. A new campaign needs a new budget."
+    },
+    "minimum": {
+      "title": "The minimum depends on the plan",
+      "text": "A campaign starts when its budget is at least the plan minimum."
+    },
+    "spending": {
+      "title": "Impressions are charged to the budget",
+      "text": "When the budget runs out, impressions stop. Top it up in the campaign card and they continue."
+    },
+    "example": "Example",
+    "exampleCampaign": "Summer lemonade",
+    "total": "Budget",
+    "spent": "Spent",
+    "left": "Left",
+    "hint": "{pct}% left — top up so impressions don't stop",
+    "topUp": "Top up budget"
+  },
+  "sections": {
+    "title": "Account sections",
+    "open": "Open",
+    "campaigns": "All campaigns with their statuses and budgets. Create campaigns and top up budgets here.",
+    "stats": "Impressions and spend by day, store and zone. Export the report to Excel.",
+    "analytics": "Compare campaigns, stores and zones: see what works better.",
+    "profile": "Company details, billing details and contacts."
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "format": {
+      "q": "What should the ad be like?",
+      "a": "The video is 7 seconds long. We show the file format and size requirements on upload and review the video before launch."
+    },
+    "start": {
+      "q": "When do impressions start?",
+      "a": "After payment and the video review — from the start date you choose. The review result comes by email."
+    },
+    "impression": {
+      "q": "What counts as an impression?",
+      "a": "A video that played to the end on a cart screen. Statistics count only full impressions."
+    },
+    "budgetEnd": {
+      "q": "What happens when the budget runs out?",
+      "a": "Impressions stop, and the campaign is kept. Top up the budget and impressions continue."
+    },
+    "payment": {
+      "q": "How do I pay?",
+      "a": "By card, Kaspi QR or invoice for companies. With an invoice, the campaign starts once the payment arrives."
+    }
+  },
+  "support": {
+    "titleFirst": "We'll help with your first launch",
+    "title": "Need help with a campaign?",
+    "text": "A manager will answer questions about plans, stores and payment.",
+    "whatsapp": "Message on WhatsApp",
+    "email": "or email {email}"
+  },
+  "summary": {
+    "label": "Last 7 days",
+    "loading": "Loading the summary",
+    "errorTitle": "Couldn't load the summary",
+    "errorText": "Check your connection and try again.",
+    "retry": "Try again",
+    "active": "Active campaigns",
+    "activeOf": {
+      "one": "of {count} campaign",
+      "few": "of {count} campaigns",
+      "many": "of {count} campaigns",
+      "other": "of {count} campaigns"
+    },
+    "plays": "Impressions, 7 days",
+    "playsDelta": "vs previous week",
+    "budgetLeft": "Budget left",
+    "budgetLeftMeta": "across all campaigns",
+    "stores": "Stores"
+  },
+  "lowBudget": {
+    "title": "The budget of «{name}» is almost spent",
+    "text": "{amount} left. Top up so impressions don't stop.",
+    "topUp": "Top up"
+  },
+  "campaigns": {
+    "title": "My campaigns",
+    "all": "All campaigns",
+    "name": "Campaign",
+    "status": "Status",
+    "budget": "Budget",
+    "plays": "Impressions, 7 days",
+    "spent": "{pct}% of the budget spent",
+    "left": "{left} left of {total}",
+    "notStarted": "Impressions not started yet",
+    "topUp": "Top up",
+    "stats": "Statistics",
+    "open": "Open"
+  },
+  "next": {
+    "title": "A new campaign in 5 steps"
+  }
+}

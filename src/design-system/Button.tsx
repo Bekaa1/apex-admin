@@ -1,9 +1,8 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
-import { cx } from './cx';
+import { buttonClassName, type ButtonSize, type ButtonVariant } from './buttonClassName';
 import { Icon, type IconName } from './Icon';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'inverse' | 'danger';
-export type ButtonSize = 'md' | 'lg' | 'xl';
+export type { ButtonSize, ButtonVariant };
 
 interface ButtonOwnProps {
   /** primary — the one main action of the screen; secondary — next to it; ghost — tertiary; inverse — «Начать» in the landing header; danger — irreversible. */
@@ -27,7 +26,7 @@ export type ButtonProps = NativeButton | LinkButton;
 
 export function Button(props: ButtonProps) {
   const { variant = 'primary', size = 'lg', loading, iconLeft, iconRight, fullWidth, disabled, className, children, ...rest } = props;
-  const cls = cx('ax-btn', `ax-btn--${variant}`, `ax-btn--${size}`, fullWidth && 'ax-btn--full', loading && 'ax-btn--loading', className);
+  const cls = buttonClassName({ variant, size, fullWidth, loading, className });
   const inactive = Boolean(disabled || loading);
   const inner = (
     <>

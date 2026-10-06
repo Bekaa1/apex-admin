@@ -105,7 +105,8 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       const payload = toSubmission(form, catalog);
       if (invalid || !payload) {
         dispatch({ type: 'attempt', steps: [invalid ?? step] });
-        if (invalid) goTo(invalid);
+        // Navigating to the same step would let the router restore the old scroll over the focused error summary.
+        if (invalid && invalid !== step) goTo(invalid);
         return;
       }
       submission.mutate(payload);

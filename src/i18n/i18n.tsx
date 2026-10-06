@@ -6,17 +6,26 @@ import { Fragment, createContext, useCallback, useContext, useEffect, useMemo, u
 import authRu from './auth.ru.json';
 import authKk from './auth.kk.json';
 import authEn from './auth.en.json';
-import landingRu from './landing.ru.json';
-import landingKk from './landing.kk.json';
-import landingEn from './landing.en.json';
 import type { Lang } from '../design-system/SegmentedControl';
 
 export type { Lang };
 
+// Every other <namespace>.<lang>.json is registered automatically; its keys live under «<namespace>.».
+const NAMESPACED = import.meta.glob<Record<string, unknown>>(['./*.json', '!./auth.*.json'], { eager: true, import: 'default' });
+
+function buildDictionary(lang: Lang, root: Record<string, unknown>): Record<string, unknown> {
+  const dict: Record<string, unknown> = { ...root };
+  for (const [path, messages] of Object.entries(NAMESPACED)) {
+    const match = /^\.\/([\w-]+)\.(kk|ru|en)\.json$/.exec(path);
+    if (match && match[2] === lang) dict[match[1]] = messages;
+  }
+  return dict;
+}
+
 const DICTIONARIES: Record<Lang, Record<string, unknown>> = {
-  ru: { ...authRu, landing: landingRu },
-  kk: { ...authKk, landing: landingKk },
-  en: { ...authEn, landing: landingEn },
+  ru: buildDictionary('ru', authRu),
+  kk: buildDictionary('kk', authKk),
+  en: buildDictionary('en', authEn),
 };
 
 const STORAGE_KEY = 'apex-lang';

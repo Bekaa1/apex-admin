@@ -45,12 +45,15 @@
   "signup": {
     "title": "Create an account",
     "subtitle": "Set up your account in a minute. Add company details after you sign in.",
+    "contactLabel": "Email and phone number",
+    "contactPlaceholder": "name@company.kz / +7 701 123 45 67",
     "terms": "I accept the <offer>terms of service</offer> and the <privacy>privacy policy</privacy>",
     "submit": "Create account",
     "haveAccount": "Already have an account?",
     "login": "Sign in",
     "errors": {
-      "emailTaken": "This email is already registered — sign in or reset your password",
+      "contactTaken": "This email or phone number is already registered — sign in or recover access",
+      "contactFormat": "Enter an email or Kazakhstan phone number, e.g. name@company.kz or +7 701 123 45 67",
       "passwordShort": "Password is too short — use at least 8 characters",
       "passwordWeak": "Use both letters and digits in the password",
       "terms": "Please accept the terms to continue"

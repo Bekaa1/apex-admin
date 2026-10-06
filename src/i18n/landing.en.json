@@ -34,5 +34,10 @@
     "chip1Text": "Drinks zone",
     "chip2Title": "Impression counted",
     "chip2Text": "Instantly in your stats"
+  },
+  "legal": {
+    "label": "Legal documents",
+    "privacy": "Privacy policy",
+    "offer": "Public offer"
   }
 }

@@ -1,4 +1,4 @@
-import { Button, Icon, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system';
+import { Button, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 
 export interface LandingProps {
@@ -65,58 +65,26 @@ export function Landing({ loginHref, startHref }: LandingProps) {
             ))}
           </div>
         </section>
-        <HeroFigure />
       </main>
-    </div>
-  );
-}
 
-/** Illustration: a tablet on a cart handle playing the ad, with two floating status chips. */
-function HeroFigure() {
-  const { t } = useI18n();
-  return (
-    <figure className="land__figure" aria-label={t('landing.figure.alt')}>
-      <svg className="land__facets" viewBox="0 0 600 552" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M300 36 L572 520 M300 36 L28 520 M110 430 L478 300" />
-      </svg>
-      <div className="land__device" aria-hidden="true">
-        <div className="land__tablet">
-          <div className="land__screen">
-            <span className="land__ad-badge">{t('landing.figure.adBadge')}</span>
-            <span className="land__play">
-              <Icon name="play" size={22} />
-            </span>
-            <div className="land__ad-bottom">
-              <span className="land__ad-title">{t('landing.figure.adTitle')}</span>
-              <span className="land__progress">
-                <span />
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="land__mount" />
-        <div className="land__handle">
-          <span />
-        </div>
-      </div>
-      <div className="land__chip land__chip--top">
-        <span className="land__chip-icon">
-          <Icon name="shelf" size={22} />
-        </span>
-        <span>
-          <span className="land__chip-title">{t('landing.figure.chip1Title')}</span>
-          <span className="land__chip-text">{t('landing.figure.chip1Text')}</span>
-        </span>
-      </div>
-      <div className="land__chip land__chip--bottom">
-        <span className="land__chip-icon">
-          <Icon name="check-circle" size={22} />
-        </span>
-        <span>
-          <span className="land__chip-title">{t('landing.figure.chip2Title')}</span>
-          <span className="land__chip-text">{t('landing.figure.chip2Text')}</span>
-        </span>
-      </div>
-    </figure>
+      <footer className="land__footer" aria-label={t('landing.legal.label')}>
+        <Button
+          variant="secondary"
+          size="md"
+          href="/legal/privacy-policy.docx"
+          download="Политика конфиденциальности №1.docx"
+        >
+          {t('landing.legal.privacy')}
+        </Button>
+        <Button
+          variant="secondary"
+          size="md"
+          href="/legal/public-offer.docx"
+          download="Публичная оферта №1.docx"
+        >
+          {t('landing.legal.offer')}
+        </Button>
+      </footer>
+    </div>
   );
 }

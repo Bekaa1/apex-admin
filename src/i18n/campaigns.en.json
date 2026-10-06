@@ -463,10 +463,6 @@
       "soon": {
         "title": "Online requests are coming soon",
         "text": "For now call or message a manager — we’ll answer within a working day."
-      },
-      "sent": {
-        "title": "Request sent",
-        "text": "A manager will call back within a working day. We sent a copy of the request to {email}."
       }
     }
   }

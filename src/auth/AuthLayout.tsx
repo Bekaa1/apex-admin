@@ -4,10 +4,19 @@ import { useI18n } from '../i18n/i18n';
 import { useAuthLinks } from './links';
 
 /** Two columns on desktop: brand panel left, form right. On phones (≤760px) the panel shrinks to a header. See auth.css. */
-export function AuthLayout({ back, children }: { back?: { href: string; label: string }; children: ReactNode }) {
+export function AuthLayout({
+  back,
+  showLegalLinks = true,
+  children,
+}: {
+  back?: { href: string; label: string };
+  showLegalLinks?: boolean;
+  children: ReactNode;
+}) {
   const { t, lang, setLang } = useI18n();
   const { theme } = useTheme();
   const links = useAuthLinks();
+  const homeLabel = t('landing.nav.home');
   return (
     <div className="auth">
       <aside className="auth__panel">
@@ -17,7 +26,8 @@ export function AuthLayout({ back, children }: { back?: { href: string; label: s
         <div className="auth__mark auth__mark--color" aria-hidden="true">
           <LogoMark />
         </div>
-        <Logo className="auth__logo" variant={theme === 'dark' ? 'color' : 'white'} size={28} href={links.home} label={t('landing.nav.home')} />
+        <Logo className="auth__logo auth__logo--desktop" variant={theme === 'dark' ? 'color' : 'white'} size={28} href={links.home} label={homeLabel} />
+        <Logo className="auth__logo auth__logo--mobile" size={30} href={links.home} label={homeLabel} />
         <div className="auth__pitch">
           <p className="auth__tagline">{t('common.tagline')}</p>
           <p className="auth__tagline-sub">{t('common.taglineSub')}</p>
@@ -37,10 +47,12 @@ export function AuthLayout({ back, children }: { back?: { href: string; label: s
           </div>
         </div>
         <main className="auth__body">{children}</main>
-        <footer className="auth__footer">
-          <a href={links.privacy}>{t('common.privacy')}</a>
-          <a href={links.offer}>{t('common.offer')}</a>
-        </footer>
+        {showLegalLinks ? (
+          <footer className="auth__footer">
+            <a href={links.privacy}>{t('common.privacy')}</a>
+            <a href={links.offer}>{t('common.offer')}</a>
+          </footer>
+        ) : null}
       </div>
     </div>
   );
@@ -73,7 +85,7 @@ export function AuthNote({ text, link, href }: { text: string; link: string; hre
 }
 
 /** «Отправить код ещё раз через 0:59» → after the countdown a resend link; plus «Не та почта? Изменить». */
-export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref }: { seconds?: number; forceAvailable?: boolean; onResend?: () => void; changeHref: string }) {
+export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref, wrongContactLabel }: { seconds?: number; forceAvailable?: boolean; onResend?: () => void | Promise<void>; changeHref: string; wrongContactLabel?: string }) {
   const { t } = useI18n();
   const [left, setLeft] = useState(forceAvailable ? 0 : seconds);
   useEffect(() => {
@@ -93,7 +105,7 @@ export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref
             href="#resend"
             onClick={(e) => {
               e.preventDefault();
-              onResend?.();
+              void onResend?.();
               setLeft(seconds);
             }}
           >
@@ -102,7 +114,7 @@ export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref
         </p>
       )}
       <p>
-        {t('common.wrongEmail')}{' '}
+        {wrongContactLabel ?? t('common.wrongEmail')}{' '}
         <a className="auth__link" href={changeHref}>
           {t('common.change')}
         </a>

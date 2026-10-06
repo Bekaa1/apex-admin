@@ -1,4 +1,5 @@
-import { Button, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system';
+import { useEffect, useRef, useState } from 'react';
+import { Button, IconButton, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 
 export interface LandingProps {
@@ -14,6 +15,32 @@ export interface LandingProps {
  */
 export function Landing({ loginHref, startHref }: LandingProps) {
   const { t, lang, setLang } = useI18n();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (event.target instanceof Node && !mobileMenuRef.current?.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+        mobileMenuRef.current?.querySelector('button')?.focus();
+      }
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <div className="land" id="top">
       <header className="land__header">
@@ -25,14 +52,41 @@ export function Landing({ loginHref, startHref }: LandingProps) {
           <a href="#contacts">{t('landing.nav.contacts')}</a>
         </nav>
         <div className="land__actions">
-          <SegmentedControl className="land__lang" label={t('common.langLabel')} options={LANG_OPTIONS} value={lang} onChange={setLang} />
-          <ThemeToggle className="land__theme" labels={{ toDark: t('common.themeToDark'), toLight: t('common.themeToLight') }} />
+          <div className="land__preferences">
+            <SegmentedControl className="land__lang" label={t('common.langLabel')} options={LANG_OPTIONS} value={lang} onChange={setLang} />
+            <ThemeToggle className="land__theme" labels={{ toDark: t('common.themeToDark'), toLight: t('common.themeToLight') }} />
+          </div>
           <Button className="land__login" variant="ghost" size="md" href={loginHref}>
             {t('landing.nav.login')}
           </Button>
           <Button className="land__start" variant="inverse" size="md" href={startHref}>
             {t('landing.nav.start')}
           </Button>
+          <div className="land__mobile-menu" ref={mobileMenuRef}>
+            <IconButton
+              className="land__mobile-menu-toggle"
+              icon={mobileMenuOpen ? 'x' : 'menu'}
+              label={t('landing.nav.menu')}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="landing-mobile-preferences"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            />
+            <div
+              className="land__mobile-menu-panel"
+              id="landing-mobile-preferences"
+              role="group"
+              aria-label={t('landing.nav.menu')}
+              hidden={!mobileMenuOpen}
+            >
+              <SegmentedControl
+                label={t('common.langLabel')}
+                options={LANG_OPTIONS}
+                value={lang}
+                onChange={setLang}
+              />
+              <ThemeToggle labels={{ toDark: t('common.themeToDark'), toLight: t('common.themeToLight') }} />
+            </div>
+          </div>
         </div>
       </header>
 
@@ -68,10 +122,10 @@ export function Landing({ loginHref, startHref }: LandingProps) {
       </main>
 
       <footer className="land__footer" aria-label={t('landing.legal.label')}>
-        <a className="land__legal-link" href="/legal/privacy-policy.docx" target="_blank" rel="noopener noreferrer">
+        <a className="land__legal-link" href="/privacy">
           {t('landing.legal.privacy')}
         </a>
-        <a className="land__legal-link" href="/legal/public-offer.docx" target="_blank" rel="noopener noreferrer">
+        <a className="land__legal-link" href="/offer">
           {t('landing.legal.offer')}
         </a>
       </footer>

@@ -78,6 +78,7 @@ const ICONS = {
   chart: <path d="M5 20V11M12 20V5M19 20v-7" />,
   play: <path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none" />,
   'chevron-down': <path d="m6 9 6 6 6-6" />,
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   globe: (
     <>
       <circle cx={12} cy={12} r={9} />

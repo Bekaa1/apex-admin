@@ -9,6 +9,8 @@
 .land__nav a:hover { color: var(--link); }
 .land__nav a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
 .land__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.land__preferences { display: flex; align-items: center; gap: var(--space-3); }
+.land__mobile-menu, .land__mobile-menu-toggle, .land__mobile-menu-panel { display: none; }
 
 .land__hero { width: 100%; margin: 0; padding: var(--space-11) var(--space-9); box-sizing: border-box;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center; }
@@ -40,16 +42,20 @@
   .land__header, .land__hero, .land__footer { padding-left: var(--space-7); padding-right: var(--space-7); }
 }
 @media (max-width: 760px) {
-  /* phone header, always two rows in every language: logo + «Начать» / language, theme, «Войти» */
-  .land__header { padding: var(--space-4) var(--space-5); gap: 0 var(--space-3); }
-  .land__header::after { content: ''; order: 2; flex-basis: 100%; height: 0; } /* row break */
-  .land__nav { display: none; } /* design gap: a mobile menu is not designed yet */
-  .land__actions { display: contents; }
+  .land__header { padding: var(--space-3) var(--space-5); gap: var(--space-3); flex-wrap: nowrap; }
+  .land__nav { display: none; }
+  .land__actions { display: flex; flex-wrap: nowrap; align-items: center; gap: var(--space-2); }
   .land__logo { order: 0; margin-right: auto; }
-  .land__start { order: 1; }
-  .land__lang { order: 3; margin-top: var(--space-3); }
-  .land__theme { order: 4; margin-top: var(--space-3); }
-  .land__login { order: 5; margin-top: var(--space-3); margin-left: auto; padding: 0 var(--space-3); }
+  .land__preferences, .land__start { display: none; }
+  .land__login { margin: 0; padding: 0 var(--space-2); }
+  .land__mobile-menu { position: relative; display: block; }
+  .land__mobile-menu-toggle { display: inline-flex; }
+  .land__mobile-menu-panel { position: absolute; z-index: 20; top: calc(100% + var(--space-2)); right: 0;
+    align-items: center; justify-content: space-between; gap: var(--space-3); width: max-content; max-width: calc(100vw - 40px);
+    padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);
+    box-shadow: var(--shadow-md); }
+  .land__mobile-menu-panel:not([hidden]) { display: flex; }
+  .land__mobile-menu-panel[hidden] { display: none; }
   .land__hero { padding: var(--space-5) var(--space-5) var(--space-9); gap: var(--space-8); }
   .land__footer { margin-top: var(--space-5); padding: var(--space-4) var(--space-5) var(--space-5); gap: var(--space-3) var(--space-5); }
   .land__copy { gap: var(--space-6); }

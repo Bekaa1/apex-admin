@@ -5,11 +5,11 @@ import { AuthHead, AuthLayout, ResendBlock } from './AuthLayout';
 import { useAuthLinks } from './links';
 
 /** invalid — wrong or expired code (Supabase reports both as otp_expired); expired — client knows the code timed out and a new one was sent. */
-export type CodeError = 'invalid' | 'expired';
+export type CodeError = 'invalid' | 'expired' | 'unavailable';
 
 export interface CodeScreenProps {
   /** Where the code was sent. */
-  email: string;
+  contact: string;
   loading?: boolean;
   error?: CodeError | null;
   defaultCode?: string;
@@ -17,59 +17,89 @@ export interface CodeScreenProps {
   resendSeconds?: number;
   /** Show the resend link right away (e.g. after an error). */
   resendAvailable?: boolean;
-  onSubmit?: (code: string) => void;
-  onResend?: () => void;
+  onSubmit?: (code: string) => void | Promise<void>;
+  onResend?: () => void | Promise<void>;
 }
 
-function useCodeForm(onSubmit?: (code: string) => void) {
+function useCodeForm(onSubmit?: (code: string) => void | Promise<void>) {
   const [code, setCode] = useState('');
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    if (code.replace(/\s/g, '').length === 6) onSubmit?.(code);
+    if (code.replace(/\s/g, '').length === 6) void onSubmit?.(code);
   };
   return { code, setCode, submit };
 }
 
-/** Step 3 of sign-up: confirm the email with the 6-digit code (verifyOtp type 'email'). */
-export function VerifyEmailScreen({ email, loading, error, defaultCode, resendSeconds, resendAvailable, onSubmit, onResend }: CodeScreenProps) {
+/** Step 3 of sign-up: confirm the email or phone with the 6-digit code. */
+export function VerifyEmailScreen({
+  contact,
+  loading,
+  error,
+  defaultCode,
+  resendSeconds,
+  resendAvailable,
+  onSubmit,
+  onResend,
+  channel = 'email',
+  purpose = 'signup',
+  backHref,
+}: CodeScreenProps & { channel?: 'email' | 'sms'; purpose?: 'signup' | 'signin'; backHref?: string }) {
   const { t, tRich } = useI18n();
   const links = useAuthLinks();
   const { setCode, submit } = useCodeForm(onSubmit);
   return (
-    <AuthLayout back={{ href: links.signup, label: t('common.back') }}>
+    <AuthLayout back={{ href: backHref ?? links.signup, label: t('common.back') }}>
       <form className="auth__form" noValidate onSubmit={submit}>
-        <AuthHead icon="mail" title={t('verify.title')} subtitle={tRich('verify.subtitle', {}, { email: <strong>{email}</strong> })} />
+        <AuthHead
+          badge={purpose === 'signup' ? t('signup.step1') : undefined}
+          icon="mail"
+          title={t(channel === 'sms' ? 'verify.phoneTitle' : purpose === 'signin' ? 'verify.signinTitle' : 'verify.title')}
+          subtitle={tRich(channel === 'sms' ? 'verify.phoneSubtitle' : purpose === 'signin' ? 'verify.signinSubtitle' : 'verify.subtitle', {}, { email: <strong>{contact}</strong> })}
+        />
         <OtpInput
-          label={t('common.codeLabel')}
+          label={t(channel === 'sms' ? 'common.codeFromSms' : 'common.codeLabel')}
           cellLabel={t('common.codeCell')}
           defaultValue={defaultCode}
-          error={error ? t(error === 'expired' ? 'verify.errors.expired' : 'verify.errors.invalid') : undefined}
+          error={error ? t(error === 'expired' ? 'verify.errors.expired' : error === 'unavailable' ? 'verify.errors.unavailable' : 'verify.errors.invalid') : undefined}
+          disabled={loading}
           onChange={setCode}
           onComplete={(c) => onSubmit?.(c)}
         />
         <Button type="submit" fullWidth loading={loading}>
           {t('verify.submit')}
         </Button>
-        <ResendBlock seconds={resendSeconds} forceAvailable={resendAvailable || Boolean(error)} onResend={onResend} changeHref={links.signup} />
+        <ResendBlock
+          seconds={resendSeconds}
+          forceAvailable={resendAvailable}
+          onResend={onResend}
+          changeHref={backHref ?? links.signup}
+          wrongContactLabel={t(channel === 'sms' ? 'common.wrongPhone' : 'common.wrongEmail')}
+        />
       </form>
     </AuthLayout>
   );
 }
 
 /** Reset step 2: the code from the reset email (verifyOtp type 'recovery'). */
-export function ResetPasswordCodeScreen({ email, loading, error, defaultCode, resendSeconds, resendAvailable, onSubmit, onResend }: CodeScreenProps) {
+export function ResetPasswordCodeScreen({ contact, channel = 'email', loading, error, defaultCode, resendSeconds, resendAvailable, onSubmit, onResend }: Omit<CodeScreenProps, 'contact'> & { contact: string; channel?: 'email' | 'sms' }) {
   const { t, tRich } = useI18n();
   const links = useAuthLinks();
   const { setCode, submit } = useCodeForm(onSubmit);
   return (
     <AuthLayout back={{ href: links.resetEmail, label: t('common.back') }}>
       <form className="auth__form" noValidate onSubmit={submit}>
-        <AuthHead badge={t('common.step', { n: 2 })} title={t('reset.code.title')} subtitle={tRich('reset.code.subtitle', {}, { email: <strong>{email}</strong> })} />
+        <AuthHead
+          badge={t('common.step', { n: 2 })}
+          title={t('reset.code.title')}
+          subtitle={channel === 'sms'
+            ? tRich('reset.code.phoneSubtitle', {}, { phone: <strong>{contact}</strong> })
+            : tRich('reset.code.subtitle', {}, { email: <strong>{contact}</strong> })}
+        />
         <OtpInput
-          label={t('common.codeLabel')}
+          label={t(channel === 'sms' ? 'common.codeFromSms' : 'common.codeLabel')}
           cellLabel={t('common.codeCell')}
           defaultValue={defaultCode}
-          error={error ? t(error === 'expired' ? 'verify.errors.expired' : 'verify.errors.invalid') : undefined}
+          error={error ? t(error === 'expired' ? 'verify.errors.expired' : error === 'unavailable' ? 'verify.errors.unavailable' : 'verify.errors.invalid') : undefined}
           onChange={setCode}
           onComplete={(c) => onSubmit?.(c)}
         />

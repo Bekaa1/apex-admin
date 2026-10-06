@@ -3,40 +3,41 @@ import { Button, Checkbox, PasswordField, TextField } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 import { AuthHead, AuthLayout, AuthNote } from './AuthLayout';
 import { useAuthLinks } from './links';
-import { EMAIL_ERROR_KEY, PASSWORD_ERROR_KEY, validateEmail, validateNewPassword } from './validation';
+import { CONTACT_ERROR_KEY, PASSWORD_ERROR_KEY, validateNewPassword, validateSignupContact } from './validation';
 
 export interface SignupScreenProps {
   loading?: boolean;
-  /** Supabase reported the email as already registered (see supabaseAuth.signUp → alreadyRegistered). */
-  emailTaken?: boolean;
+  /** The email or phone number is already registered. */
+  contactTaken?: boolean;
   /** Server rejected the password (weak_password). */
   passwordRejected?: boolean;
-  defaultValues?: { email?: string; password?: string; terms?: boolean };
+  defaultValues?: { contact?: string; password?: string; terms?: boolean };
   /** Show validation errors immediately (used for previews of the error state). */
   showErrors?: boolean;
-  onSubmit?: (values: { email: string; password: string }) => void;
+  onSubmit?: (values: { contact: string; password: string }) => void;
 }
 
-/** Sign-up asks only for email, password and consent. Company name and БИН come later, in onboarding. */
-export function SignupScreen({ loading, emailTaken, passwordRejected, defaultValues, showErrors, onSubmit }: SignupScreenProps) {
+/** Sign-up asks only for a contact, password and consent. Company name and БИН come later, in onboarding. */
+export function SignupScreen({ loading, contactTaken, passwordRejected, defaultValues, showErrors, onSubmit }: SignupScreenProps) {
   const { t, tRich } = useI18n();
   const links = useAuthLinks();
-  const [email, setEmail] = useState(defaultValues?.email ?? '');
+  const [contact, setContact] = useState(defaultValues?.contact ?? '');
   const [password, setPassword] = useState(defaultValues?.password ?? '');
   const [terms, setTerms] = useState(defaultValues?.terms ?? false);
   const [submitted, setSubmitted] = useState(Boolean(showErrors));
 
-  const emailProblem = submitted ? validateEmail(email) : null;
+  const contactProblem = submitted ? validateSignupContact(contact) : null;
   const passwordProblem = submitted ? validateNewPassword(password) : null;
-  const emailError = emailProblem ? t(EMAIL_ERROR_KEY[emailProblem]) : emailTaken ? t('signup.errors.emailTaken') : undefined;
+  const contactError = contactProblem ? t(CONTACT_ERROR_KEY[contactProblem]) : contactTaken ? t('signup.errors.contactTaken') : undefined;
   const passwordError = passwordProblem ? t(PASSWORD_ERROR_KEY[passwordProblem]) : passwordRejected ? t('signup.errors.passwordWeak') : undefined;
   const termsError = submitted && !terms ? t('signup.errors.terms') : undefined;
+  const isPhoneInput = /^[+\d]/.test(contact.trim());
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    if (validateEmail(email) || validateNewPassword(password) || !terms) return;
-    onSubmit?.({ email: email.trim(), password });
+    if (validateSignupContact(contact) || validateNewPassword(password) || !terms) return;
+    onSubmit?.({ contact: contact.trim(), password });
   };
 
   return (
@@ -44,13 +45,14 @@ export function SignupScreen({ loading, emailTaken, passwordRejected, defaultVal
       <form className="auth__form" noValidate onSubmit={submit}>
         <AuthHead title={t('signup.title')} subtitle={t('signup.subtitle')} />
         <TextField
-          label={t('common.email')}
-          type="email"
-          autoComplete="email"
-          placeholder={t('common.emailPlaceholder')}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={emailError}
+          label={t('signup.contactLabel')}
+          type="text"
+          inputMode={isPhoneInput ? 'tel' : 'email'}
+          autoComplete="username"
+          placeholder={t('signup.contactPlaceholder')}
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          error={contactError}
         />
         <PasswordField
           label={t('common.password')}

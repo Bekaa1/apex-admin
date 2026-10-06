@@ -27,6 +27,7 @@
   "login": {
     "title": "Sign in",
     "subtitle": "Manage your campaigns, balance and impression stats.",
+    "emailLabel": "Email or phone number",
     "forgot": "Forgot password?",
     "submit": "Sign in",
     "noAccount": "Don't have an account?",

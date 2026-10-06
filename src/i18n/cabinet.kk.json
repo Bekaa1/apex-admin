@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "label": "Кабинет бөлімдері",
+    "home": "Басты бет",
+    "campaigns": "Менің науқандарым",
+    "campaignsShort": "Науқандар",
+    "stats": "Статистика",
+    "analytics": "Аналитика",
+    "profile": "Профиль",
+    "help": "Көмек",
+    "logout": "Шығу"
+  },
+  "createCampaign": "Науқан құру",
+  "noCompany": "Компания көрсетілмеген",
+  "status": {
+    "active": "Белсенді",
+    "pending": "Тексерілуде",
+    "draft": "Жоба",
+    "paused": "Кідіртілді",
+    "rejected": "Қабылданбады",
+    "budget_ended": "Бюджет таусылды",
+    "hours_ended": "Сағаттар таусылды",
+    "completed": "Аяқталды",
+    "archived": "Мұрағатта"
+  }
+}

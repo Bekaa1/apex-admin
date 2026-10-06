@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "label": "Account sections",
+    "home": "Home",
+    "campaigns": "My campaigns",
+    "campaignsShort": "Campaigns",
+    "stats": "Statistics",
+    "analytics": "Analytics",
+    "profile": "Profile",
+    "help": "Help",
+    "logout": "Log out"
+  },
+  "createCampaign": "Create campaign",
+  "noCompany": "Company not specified",
+  "status": {
+    "active": "Active",
+    "pending": "In review",
+    "draft": "Draft",
+    "paused": "Paused",
+    "rejected": "Rejected",
+    "budget_ended": "Budget spent",
+    "hours_ended": "Hours used up",
+    "completed": "Completed",
+    "archived": "Archived"
+  }
+}

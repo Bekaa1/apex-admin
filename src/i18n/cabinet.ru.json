@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "label": "Разделы кабинета",
+    "home": "Главная",
+    "campaigns": "Мои кампании",
+    "campaignsShort": "Кампании",
+    "stats": "Статистика",
+    "analytics": "Аналитика",
+    "profile": "Профиль",
+    "help": "Помощь",
+    "logout": "Выйти"
+  },
+  "createCampaign": "Создать кампанию",
+  "noCompany": "Компания не указана",
+  "status": {
+    "active": "Активна",
+    "pending": "На проверке",
+    "draft": "Черновик",
+    "paused": "На паузе",
+    "rejected": "Отклонена",
+    "budget_ended": "Бюджет закончился",
+    "hours_ended": "Часы закончились",
+    "completed": "Завершена",
+    "archived": "В архиве"
+  }
+}

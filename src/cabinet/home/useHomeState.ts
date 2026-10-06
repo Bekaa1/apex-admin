@@ -16,7 +16,7 @@ export function useHomeState(): HomeState {
 
   const query = useQuery({
     queryKey: ['home', userId],
-    queryFn: userId && !demo ? () => fetchHomeSource(userId) : skipToken,
+    queryFn: userId && !demo ? ({ signal }) => fetchHomeSource(userId, signal) : skipToken,
     select: buildHomeData,
   });
 

@@ -16,6 +16,46 @@
 
 ---
 
+## 2026-10-06 — Главная: подключение к Supabase
+Ветка: `feature/home-data` · PR: —
+- Что сделано:
+  - Сгенерированы типы базы `src/lib/database.types.ts` (MCP `generate_typescript_types`). Клиент `src/lib/supabase.ts` теперь типизирован `Database`.
+  - Типы строк главной (`home/types.ts`) и статусы кампаний (`campaignStatus.ts`) берутся из сгенерированных типов.
+  - `src/cabinet/home/api.ts` — `fetchHomeSource(userId)`, четыре запроса на чтение параллельно:
+    - `my_campaigns_stats`: ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, created_at;
+    - `my_daily_plays_by_campaign`: ad_id, play_date, plays с `play_date ≥ сегодня−13` (Алматы);
+    - `ads`: id, content_url, store_id с фильтром `user_id = текущий пользователь`;
+    - `stores`: id, name, city.
+  - `useHomeState` переведён на react-query:
+    - ключ `['home', userId]`; без сессии запрос не идёт (`skipToken`);
+    - `select: buildHomeData`;
+    - состояния loading → error с «Повторить» → ready; demo только в dev.
+  - Показы за 7 дней, дельта к прошлым 7 дням и показы в строках считаются из одной дневной статистики. Окна те же, что во вью `my_ad_stats_summary`.
+  - `src/lib/dates.ts`: `todayInAlmaty`, `shiftDate`.
+  - Локальный `.env.local` (в git не попадает): URL проекта и publishable-ключ.
+- Сверено с базой (только чтение):
+  - вью фильтруют по `auth.uid()`;
+  - окна показов: today−6…today и today−13…today−7;
+  - `title` и `name` у всех кампаний совпадают;
+  - `content_url` — готовая https-ссылка;
+  - «Все магазины» — отдельная запись `stores` без города;
+  - миграция Беки применена: `users` видны только свои, `complete_signup_profile` есть.
+  - Все 4 запроса проверены на REST с anon-ключом: 200, пустой ответ, как и должно быть без входа.
+- Проверки:
+  - `tsc` ✓, lint ✓ (8 старых предупреждений кита), build ✓, демо-фикстур в `dist` нет.
+  - Без сессии `/cabinet` ведёт на `/login`.
+  - Проверка с живым аккаунтом — после входа пользователя: войти за него нельзя, авторизация идёт через удалённый Supabase.
+- Запросы бэкенд-разработчику (переслать):
+  1. Безопасность: политика `authenticated_can_read_ads_for_playback` (USING true) на `ads` даёт любому вошедшему читать все кампании, их бюджеты и креативы. Ограничить: владелец, админ или роль `cart` — либо отдавать плееру данные через RPC.
+  2. Добавить во вью `my_campaigns_stats` поля `content_url` и `store_id` (а потом название тарифа). Тогда фронт не будет читать `ads` напрямую.
+  3. Тариф у кампании: `ads.tariff_id → tariffs` и название тарифа во вью.
+  4. Привести `tariffs` к дизайну (Стандарт от 500 000, Стандарт + Зоны от 1 000 000, Премиум от 2 000 000, Эксклюзив от 5 000 000 ₸) или подтвердить, что верна база.
+  5. Индексы:
+     - `ads(user_id)` — по нему фильтруются все `my_*` вью;
+     - `ad_view_history(ad_id, viewed_at)` — дневная статистика.
+     Сейчас у обеих таблиц есть только первичный ключ.
+  6. До сих пор без RLS: `zones`, `playback_logs`, `store_daily_stats`, `documents`, `auctions`, `auction_bids`, `filtr`. Это общий список безопасности.
+
 ## 2026-10-06 — Ревью и интеграция кабинета с текущим main
 Ветка проверки: `review/pr-1-cabinet` · PR: https://github.com/Bekaa1/apex-admin/pull/1
 - Исправлены конфликты зависимостей, lock-файла, App и main. Корневой index.html сохранён.

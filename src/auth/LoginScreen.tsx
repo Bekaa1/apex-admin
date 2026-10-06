@@ -57,7 +57,7 @@ export function LoginScreen({ loading, error, email: sentTo, defaultEmail = '', 
         ) : null}
 
         <TextField
-          label={t('common.email')}
+          label={t('login.emailLabel')}
           type="email"
           autoComplete="email"
           placeholder={t('common.emailPlaceholder')}

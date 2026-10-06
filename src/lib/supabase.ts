@@ -1,11 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from './database.types'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim()
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim()
 
-export const supabase: SupabaseClient | null =
+export const supabase: SupabaseClient<Database> | null =
   supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey, {
+    ? createClient<Database>(supabaseUrl, supabaseAnonKey, {
         auth: {
           autoRefreshToken: true,
           detectSessionInUrl: true,
@@ -14,7 +15,7 @@ export const supabase: SupabaseClient | null =
       })
     : null
 
-export function requireSupabase(): SupabaseClient {
+export function requireSupabase(): SupabaseClient<Database> {
   if (!supabase) {
     throw new Error('Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')
   }

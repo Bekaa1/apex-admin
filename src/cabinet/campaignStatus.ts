@@ -1,17 +1,8 @@
 import type { BadgeTone } from '../design-system';
+import type { Database } from '../lib/database.types';
 
 /** `ad_status` enum of the backend. */
-export type CampaignStatus =
-  | 'pending'
-  | 'active'
-  | 'rejected'
-  | 'draft'
-  | 'archived'
-  | 'deleted'
-  | 'paused'
-  | 'hours_ended'
-  | 'budget_ended'
-  | 'completed';
+export type CampaignStatus = Database['public']['Enums']['ad_status'];
 
 /** Statuses an advertiser can see; labels live in `cabinet.status.*`. */
 export type VisibleStatus = Exclude<CampaignStatus, 'deleted'>;

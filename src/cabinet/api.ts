@@ -7,5 +7,6 @@ export async function getAccountCompanyName(userId: string): Promise<string | nu
     .eq('id', userId)
     .maybeSingle();
   if (error) throw error;
-  return typeof data?.company_name === 'string' ? data.company_name : null;
+  // Profiles created before onboarding hold an empty string, which must read as «no company».
+  return data?.company_name?.trim() || null;
 }

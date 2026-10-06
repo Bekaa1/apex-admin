@@ -17,7 +17,7 @@
 ---
 
 ## 2026-10-06 — Каркас кабинета и Главная
-Ветка: `feature/cabinet-home` (от `chore/project-setup`) · PR: —
+Ветка: `feature/cabinet-home` (от `chore/project-setup`) · PR: https://github.com/Bekaa1/apex-admin/pull/1
 Дизайн: «Apex — Кабинет» https://claude.ai/artifact/FLx9ACU6eUDqtX6LZN52Cd
 - Что сделано:
   - Роутер `react-router` v7 и `@tanstack/react-query` v5.
@@ -85,7 +85,7 @@
   - встроенное превью приложения не запускало dev-сервер (статус «starting», процесса нет), поэтому сервер запускал вручную.
 
 ## 2026-10-06 — Изучение бэкенда Supabase (только чтение)
-Ветка: `chore/project-setup` · PR: —
+Ветка: `chore/project-setup` · PR: https://github.com/Bekaa1/apex-admin/pull/1 (вместе с главной)
 - Что сделано:
   - Агент разобрал проекты «Apex» и «Cart» в режиме только чтения: схема, вью, RPC, RLS, Auth, advisors. Ничего не изменено.
   - Сгенерированы типы БД (148 КБ, только схема `public`). Сейчас они во временной папке сессии; в фиче каркаса положим их в `src/lib/database.types.ts` или сгенерируем заново.
@@ -130,7 +130,7 @@
 - Предложенный SQL — только черновик для бэкенд-разработчика, мы ничего не выполняли.
 
 ## 2026-10-06 — Подготовка проекта: правила и документы
-Ветка: `chore/project-setup` · PR: пока не открываем (так попросил пользователь)
+Ветка: `chore/project-setup` · PR: https://github.com/Bekaa1/apex-admin/pull/1 (вместе с главной)
 - Что сделано:
   - Создан `CLAUDE.md`: стек, архитектура, паттерны React, правила дизайна и Supabase, git-процесс.
   - Создан этот `session-log.md`.

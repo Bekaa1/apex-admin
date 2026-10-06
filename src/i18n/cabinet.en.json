@@ -23,7 +23,7 @@
     "draft": "Draft",
     "paused": "Paused",
     "rejected": "Rejected",
-    "budget_ended": "Budget spent",
+    "budget_ended": "No budget",
     "hours_ended": "Hours used up",
     "completed": "Completed",
     "archived": "Archived"

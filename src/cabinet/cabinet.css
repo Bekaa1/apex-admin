@@ -93,6 +93,7 @@
 .cab-table__budget { width: 26%; min-width: 160px; }
 .cab-cell-budget { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text-muted); }
 .cab-cell-budget .is-warning { color: var(--warning); font-weight: 600; }
+.cab-cell-budget .is-danger { color: var(--danger); font-weight: 600; }
 .cab-table__action { width: 1%; white-space: nowrap; }
 /* Campaign cover placeholders — logo gradient (cover = an ad screen, illustration-only colours). Real covers replace them. */
 .cab-thumb { flex: none; width: 56px; height: 40px; border-radius: 8px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; }
@@ -103,6 +104,36 @@
 .cab-skel-row { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4) 0; border-top: 1px solid var(--border); }
 .cab-skel-row:first-of-type { margin-top: var(--space-2); }
 .cab-skel-row__text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Blocks shared by cabinet pages: hero copy, receipt, plan card, step chain, note ── */
+.cab-hero__title { margin: 0; max-width: 14em; font-family: var(--font-display); font-weight: 600; font-size: 40px; line-height: 1.08; letter-spacing: -0.025em; }
+.cab-hero__text { margin: 0; max-width: 34em; font-size: 18px; line-height: 1.55; color: var(--text-muted); }
+.cab-hero__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-1); }
+.cab-receipt { margin: 0; padding: var(--space-1) var(--space-4); background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+.cab-receipt > div { display: flex; justify-content: space-between; gap: var(--space-4); padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.4; }
+.cab-receipt > div:last-child { border-bottom: 0; }
+.cab-receipt dt { color: var(--text-muted); }
+.cab-receipt dd { margin: 0; font-weight: 600; text-align: right; }
+.cab-tariff { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
+.cab-tariff__level { display: flex; gap: 4px; }
+.cab-tariff__level span { width: 20px; height: 6px; border-radius: 3px; background: var(--primary-soft); }
+.cab-tariff__level span.is-on { background: var(--primary); }
+.cab-tariff__text { margin: 0; min-height: 4.5em; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+.cab-tariff__features { list-style: none; margin: 0; padding: var(--space-3) 0 0; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: var(--space-2);
+  font-size: 14px; line-height: 1.4; }
+.cab-tariff__features li { display: flex; align-items: flex-start; gap: var(--space-2); }
+.cab-tariff__features li.is-on .ax-icon { color: var(--success); }
+.cab-tariff__features li.is-off { color: var(--text-subtle); }
+.cab-tariff__min { margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+.cab-tariff__min span { font-size: 13px; color: var(--text-muted); }
+.cab-tariff__min strong { font-family: var(--font-display); font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+.cab-chain { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cab-chain li { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 14px 4px 6px; box-sizing: border-box; border-radius: var(--radius-full);
+  background: var(--bg); border: 1px solid var(--border); font-size: 14px; font-weight: 600; }
+.cab-chain li > span { flex: none; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-soft);
+  color: var(--link); font-size: 13px; }
+.cab-note { margin: 0; display: flex; align-items: flex-start; gap: var(--space-2); font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+.cab-note .ax-icon { margin-top: 1px; color: var(--link); }
 
 /* ── Content width breakpoints (container queries) ─────── */
 @container content (max-width: 899px) {
@@ -125,6 +156,10 @@
 }
 @container content (max-width: 639px) {
   .cab-stack { gap: var(--space-9); }
+  .cab-hero__title { font-size: 30px; }
+  .cab-hero__text { font-size: 16px; }
+  .cab-hero__ctas, .cab-hero__ctas .ax-btn { width: 100%; }
+  .cab-tariff { scroll-snap-align: start; padding: var(--space-5); }
   .cab-h2 { font-size: 24px; }
   .cab-campaigns { padding: var(--space-5) var(--space-5) var(--space-2); }
   .cab-kpis { gap: var(--space-3); }
@@ -151,7 +186,9 @@
   /* phone: bottom tab bar */
   .cab__side { display: none; }
   .cab__top { min-height: 64px; gap: var(--space-3); padding: var(--space-3) var(--space-4); }
-  .cab__title { font-size: 22px; }
+  /* Long titles (Kazakh) wrap to two lines instead of being cut. */
+  .cab__title { font-size: 20px; line-height: 1.2; white-space: normal; overflow-wrap: break-word; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .cab__lang .ax-seg__item { min-width: var(--control-md); padding: 0 8px; }
   .cab__create { display: none; }
   .cab__main { padding: var(--space-5) var(--space-4) calc(96px + env(safe-area-inset-bottom)); }
   .cab-tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; padding: 6px 4px calc(6px + env(safe-area-inset-bottom));

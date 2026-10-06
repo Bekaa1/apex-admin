@@ -13,7 +13,7 @@ export const STATUS_TONE: Record<VisibleStatus, BadgeTone> = {
   draft: 'neutral',
   paused: 'warning',
   rejected: 'danger',
-  budget_ended: 'warning',
+  budget_ended: 'danger',
   hours_ended: 'warning',
   completed: 'neutral',
   archived: 'neutral',

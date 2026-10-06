@@ -33,6 +33,7 @@ export const CABINET_SECTIONS: CabinetSection[] = [
     labelKey: 'cabinet.nav.campaigns',
     shortLabelKey: 'cabinet.nav.campaignsShort',
     icon: 'megaphone',
+    page: () => import('./campaigns/CampaignsPage').then((m) => m.CampaignsPage),
     subpages: [
       { path: 'campaigns/new', titleKey: 'campaigns.titles.new', hideCreate: true },
       { path: 'campaigns/corporate', titleKey: 'campaigns.titles.corporate' },

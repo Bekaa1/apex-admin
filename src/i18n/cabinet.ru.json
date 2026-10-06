@@ -26,7 +26,8 @@
     "budget_ended": "Нет бюджета",
     "hours_ended": "Часы закончились",
     "completed": "Завершена",
-    "archived": "В архиве"
+    "archived": "В архиве",
+    "awaiting_payment": "Ждёт оплаты"
   },
   "tariffs": {
     "standard": {

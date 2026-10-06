@@ -26,7 +26,8 @@
     "budget_ended": "No budget",
     "hours_ended": "Hours used up",
     "completed": "Completed",
-    "archived": "Archived"
+    "archived": "Archived",
+    "awaiting_payment": "Awaiting payment"
   },
   "tariffs": {
     "standard": {

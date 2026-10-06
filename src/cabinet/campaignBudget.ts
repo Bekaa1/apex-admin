@@ -17,7 +17,7 @@ export interface BudgetFigures {
   ended: boolean;
 }
 
-export function budgetFigures(row: Pick<StatsRow, 'status' | 'budget' | 'spent_budget' | 'remaining_budget'>): BudgetFigures {
+export function budgetFigures(row: Pick<StatsRow, 'budget' | 'spent_budget' | 'remaining_budget'> & { status: string | null }): BudgetFigures {
   const budget = row.budget ?? 0;
   const spent = row.spent_budget ?? 0;
   const left = Math.max(row.remaining_budget ?? budget - spent, 0);

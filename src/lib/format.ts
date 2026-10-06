@@ -36,3 +36,22 @@ export function formatList(items: string[], lang: Lang): string {
 export function pluralCategory(count: number, lang: Lang): Intl.LDMLPluralRule {
   return new Intl.PluralRules(PLURAL_LOCALE[lang]).select(count);
 }
+
+/** Message key for a count: `campaigns.list.count` and 3 → `campaigns.list.count.few` (ru). */
+export function pluralKey(key: string, count: number, lang: Lang): string {
+  return `${key}.${pluralCategory(count, lang)}`;
+}
+
+// Same reason as NUMBER_LOCALE: browsers often lack Kazakh month names.
+const KK_MONTHS = ['қаңтар', 'ақпан', 'наурыз', 'сәуір', 'мамыр', 'маусым', 'шілде', 'тамыз', 'қыркүйек', 'қазан', 'қараша', 'желтоқсан'];
+
+/** «12 сент.» / «12 қыркүйек» / «Sep 12»: the calendar day in Almaty, where campaign dates are counted. */
+export function formatDayMonth(value: string | Date, lang: Lang): string {
+  const date = typeof value === 'string' ? new Date(value) : value;
+  if (lang === 'kk') {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Almaty', day: 'numeric', month: 'numeric' }).formatToParts(date);
+    const part = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((p) => p.type === type)?.value);
+    return `${part('day')} ${KK_MONTHS[part('month') - 1]}`;
+  }
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', { timeZone: 'Asia/Almaty', day: 'numeric', month: 'short' }).format(date);
+}

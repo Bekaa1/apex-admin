@@ -26,7 +26,8 @@
     "budget_ended": "Бюджет жоқ",
     "hours_ended": "Сағаттар таусылды",
     "completed": "Аяқталды",
-    "archived": "Мұрағатта"
+    "archived": "Мұрағатта",
+    "awaiting_payment": "Төлем күтілуде"
   },
   "tariffs": {
     "standard": {

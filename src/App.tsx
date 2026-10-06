@@ -1,9 +1,14 @@
-import { Landing } from './landing'
+import { LoginScreen } from './auth/LoginScreen'
+import { Landing } from './landing/Landing'
 
 function App() {
-  return (
-    <Landing loginHref="/login" startHref="/signup" />
-  )
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+
+  if (pathname === '/login') {
+    return <LoginScreen />
+  }
+
+  return <Landing loginHref="/login" startHref="/signup" />
 }
 
 export default App

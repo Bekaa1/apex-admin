@@ -16,6 +16,7 @@
   },
   "createCampaign": "Create campaign",
   "noCompany": "Company not specified",
+  "retry": "Try again",
   "status": {
     "active": "Active",
     "pending": "In review",

@@ -22,3 +22,20 @@ export function requireSupabase(): SupabaseClient<Database> {
 
   return supabase
 }
+
+type Page<T> = { data: T[] | null; error: unknown; count: number | null }
+
+const PAGE_SIZE = 1000
+
+/** Reads a query page by page: a successful PostgREST response can still be capped by the project's max_rows. */
+export async function allRows<T>(fetchPage: (from: number, to: number) => PromiseLike<Page<T>>): Promise<T[]> {
+  const result: T[] = []
+  while (true) {
+    const { data, error, count } = await fetchPage(result.length, result.length + PAGE_SIZE - 1)
+    if (error) throw error
+    if (count === null) throw new Error('Query did not return a row count.')
+    result.push(...(data ?? []))
+    if (result.length >= count) return result
+    if (!data?.length) throw new Error('Query returned incomplete data.')
+  }
+}

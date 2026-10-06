@@ -8,9 +8,24 @@ import type { ContactChannel, Profile } from './api';
 import styles from './ProfilePage.module.css';
 
 type ContactFlow =
-  | { channel: ContactChannel; step: 'edit'; value: string }
-  | { channel: ContactChannel; step: 'verify'; value: string; token: string }
+  | { channel: 'email'; step: 'edit'; value: string; currentEmail: string | undefined }
+  | {
+      channel: 'email';
+      step: 'verify';
+      value: string;
+      currentEmail: string | undefined;
+      currentToken: string;
+      newToken: string;
+      currentConfirmed: boolean;
+    }
+  | { channel: 'phone'; step: 'edit'; value: string }
+  | { channel: 'phone'; step: 'verify'; value: string; token: string }
   | null;
+
+function authErrorCode(error: unknown): string | undefined {
+  if (!error || typeof error !== 'object' || !('code' in error)) return undefined;
+  return typeof error.code === 'string' ? error.code : undefined;
+}
 
 function ProfileLoading() {
   return (
@@ -64,7 +79,9 @@ function ProfileEditor({ profile, userId, email, phone }: {
     verifyChange.reset();
     setContactError(null);
     setContactSaved(false);
-    setFlow({ channel, step: 'edit', value: currentValue ?? '' });
+    setFlow(channel === 'email'
+      ? { channel, step: 'edit', value: currentValue ?? '', currentEmail: currentValue }
+      : { channel, step: 'edit', value: currentValue ?? '' });
   }
 
   async function sendCode(event: FormEvent<HTMLFormElement>) {
@@ -99,9 +116,22 @@ function ProfileEditor({ profile, userId, email, phone }: {
 
     try {
       await requestChange.mutateAsync({ channel: flow.channel, value });
-      setFlow({ channel: flow.channel, step: 'verify', value, token: '' });
-    } catch {
-      setContactError(t('profile.errors.sendCode'));
+      setFlow(flow.channel === 'email'
+        ? {
+            channel: 'email',
+            step: 'verify',
+            value,
+            currentEmail: flow.currentEmail,
+            currentToken: '',
+            newToken: '',
+            currentConfirmed: !flow.currentEmail,
+          }
+        : { channel: 'phone', step: 'verify', value, token: '' });
+    } catch (error) {
+      const code = authErrorCode(error);
+      setContactError(code === 'email_exists' || code === 'phone_exists'
+        ? t('profile.errors.contactInUse')
+        : t('profile.errors.sendCode'));
     }
   }
 
@@ -110,13 +140,24 @@ function ProfileEditor({ profile, userId, email, phone }: {
     if (!flow || flow.step !== 'verify') return;
     setContactError(null);
 
-    if (!/^\d{6}$/.test(flow.token)) {
-      setContactError(t('profile.errors.codeFormat'));
-      return;
-    }
-
     try {
-      await verifyChange.mutateAsync({ channel: flow.channel, value: flow.value, token: flow.token });
+      if (flow.channel === 'email' && flow.currentEmail && !flow.currentConfirmed) {
+        if (!/^\d{6}$/.test(flow.currentToken)) {
+          setContactError(t('profile.errors.codeFormat'));
+          return;
+        }
+        await verifyChange.mutateAsync({ channel: 'email', value: flow.currentEmail, token: flow.currentToken });
+        setFlow({ ...flow, currentToken: '', currentConfirmed: true });
+        return;
+      }
+
+      const token = flow.channel === 'email' ? flow.newToken : flow.token;
+      if (!/^\d{6}$/.test(token)) {
+        setContactError(t('profile.errors.codeFormat'));
+        return;
+      }
+
+      await verifyChange.mutateAsync({ channel: flow.channel, value: flow.value, token });
       setFlow(null);
       setContactSaved(true);
     } catch {
@@ -129,6 +170,9 @@ function ProfileEditor({ profile, userId, email, phone }: {
     setContactError(null);
     try {
       await resendCode.mutateAsync({ channel: flow.channel, value: flow.value });
+      setFlow(flow.channel === 'email'
+        ? { ...flow, currentToken: '', newToken: '', currentConfirmed: !flow.currentEmail }
+        : { ...flow, token: '' });
     } catch {
       setContactError(t('profile.errors.resendCode'));
     }
@@ -169,25 +213,52 @@ function ProfileEditor({ profile, userId, email, phone }: {
 
     return (
       <form className={styles.contactForm} onSubmit={verifyCode}>
-        <p className={styles.codeHint}>{t('profile.otpSent', { contact: flow.value })}</p>
-        <OtpInput
-          label={t('profile.fields.code')}
-          value={flow.token}
-          onChange={(token) => {
-            setContactError(null);
-            setFlow({ ...flow, token });
-          }}
-          autoFocus
-          disabled={verifyChange.isPending}
-        />
+        {flow.channel === 'email' && flow.currentEmail ? (
+          <p className={styles.codeHint}>{t('profile.otpSentBoth', { current: flow.currentEmail, next: flow.value })}</p>
+        ) : (
+          <p className={styles.codeHint}>{t('profile.otpSent', { contact: flow.value })}</p>
+        )}
+        {flow.channel === 'email' && flow.currentEmail && !flow.currentConfirmed ? (
+          <>
+            <OtpInput
+              label={t('profile.fields.currentEmailCode')}
+              value={flow.currentToken}
+              onChange={(currentToken) => {
+                setContactError(null);
+                setFlow({ ...flow, currentToken });
+              }}
+              autoFocus
+              disabled={verifyChange.isPending}
+            />
+            <Button type="submit" size="md" loading={verifyChange.isPending}>
+              {t('profile.actions.confirmCurrentEmail')}
+            </Button>
+          </>
+        ) : (
+          <>
+            {flow.channel === 'email' && flow.currentEmail ? (
+              <Alert tone="success">{t('profile.currentEmailConfirmed')}</Alert>
+            ) : null}
+            <OtpInput
+              label={t(flow.channel === 'email' ? 'profile.fields.newEmailCode' : 'profile.fields.code')}
+              value={flow.channel === 'email' ? flow.newToken : flow.token}
+              onChange={(token) => {
+                setContactError(null);
+                setFlow(flow.channel === 'email' ? { ...flow, newToken: token } : { ...flow, token });
+              }}
+              autoFocus
+              disabled={verifyChange.isPending}
+            />
+            <Button type="submit" size="md" loading={verifyChange.isPending}>
+              {t(flow.channel === 'email' ? 'profile.actions.confirmNewEmail' : 'profile.actions.confirm')}
+            </Button>
+          </>
+        )}
         {contactError ? <Alert tone="danger">{contactError}</Alert> : null}
         {resendCode.isSuccess ? <Alert tone="success">{t('profile.codeResent')}</Alert> : null}
         <div className={styles.actions}>
-          <Button type="submit" size="md" loading={verifyChange.isPending}>
-            {t('profile.actions.confirm')}
-          </Button>
           <Button type="button" variant="secondary" size="md" loading={resendCode.isPending} onClick={handleResend}>
-            {t('profile.actions.resendCode')}
+            {t(flow.channel === 'email' && flow.currentEmail ? 'profile.actions.resendBothCodes' : 'profile.actions.resendCode')}
           </Button>
           <Button type="button" variant="ghost" size="md" onClick={() => setFlow(null)}>
             {t('profile.actions.cancel')}

@@ -36,7 +36,7 @@ export function GuideBudget() {
           <Badge>{t('home.budget.example')}</Badge>
           <span className="cab-budget__campaign">
             <strong>{t('home.budget.exampleCampaign')}</strong>
-            <span>{t('home.tariffs.zones.name')}</span>
+            <span>{t('cabinet.tariffs.zones.name')}</span>
           </span>
         </figcaption>
         <div className="cab-budget__total">

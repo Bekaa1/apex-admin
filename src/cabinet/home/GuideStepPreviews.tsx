@@ -33,13 +33,13 @@ export function TariffPreview() {
   const { t } = useI18n();
   return (
     <ul className="cab-pv-pills">
-      <li>{t('home.tariffs.standard.name')}</li>
+      <li>{t('cabinet.tariffs.standard.name')}</li>
       <li className="is-on">
         <Icon name="check" size={14} />
-        {t('home.tariffs.zones.name')}
+        {t('cabinet.tariffs.zones.name')}
       </li>
-      <li>{t('home.tariffs.premium.name')}</li>
-      <li>{t('home.tariffs.exclusive.name')}</li>
+      <li>{t('cabinet.tariffs.premium.name')}</li>
+      <li>{t('cabinet.tariffs.corporate.name')}</li>
     </ul>
   );
 }

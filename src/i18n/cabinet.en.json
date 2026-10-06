@@ -27,5 +27,35 @@
     "hours_ended": "Hours used up",
     "completed": "Completed",
     "archived": "Archived"
+  },
+  "tariffs": {
+    "standard": {
+      "name": "Standard",
+      "text": "The video plays in the general rotation on all carts of the selected stores."
+    },
+    "zones": {
+      "name": "Standard + Zones",
+      "text": "Plus priority at the selected shelves: only zone-plan videos play in the zone."
+    },
+    "premium": {
+      "name": "Premium",
+      "text": "Zones and more impressions: the video plays more often both in rotation and at the shelves."
+    },
+    "corporate": {
+      "name": "Corporate",
+      "text": "An exclusive contract for your brand: reach, formats and budget are agreed individually."
+    },
+    "feature": {
+      "allCarts": "All carts of the selected stores",
+      "zonePriority": "Priority in shelf zones",
+      "moreShows": "More impressions in rotation",
+      "brandOnly": "Only your brand in the zone"
+    },
+    "has": "Included:",
+    "hasNot": "Not included:",
+    "minimum": "Minimum budget",
+    "from": "from {amount}",
+    "budget": "Budget",
+    "byAgreement": "By agreement"
   }
 }

@@ -1,10 +1,8 @@
-import './App.css'
+import { Landing } from './landing'
 
 function App() {
   return (
-    <main className="app">
-      <h1>Apex Admin</h1>
-    </main>
+    <Landing loginHref="/login" startHref="/signup" />
   )
 }
 

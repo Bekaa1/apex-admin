@@ -1,0 +1,41 @@
+{
+  "intro": "Manage your personal details and the contact methods you use to sign in.",
+    "personalTitle": "Personal details",
+    "personalDescription": "These details are used in your profile and company documents.",
+    "loginTitle": "Sign-in methods",
+    "loginDescription": "Add or change your email and phone number. New contact details must be verified with a code.",
+    "notSet": "Not provided",
+    "otpSent": "We sent a verification code to {contact}.",
+    "codeResent": "A new code has been sent.",
+    "profileSaved": "Personal details saved.",
+    "contactSaved": "Sign-in method verified and updated.",
+    "fields": {
+      "fullName": "Full name",
+      "companyName": "Company name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "code": "Verification code"
+    },
+    "actions": {
+      "save": "Save changes",
+      "add": "Add",
+      "change": "Change",
+      "sendCode": "Send code",
+      "confirm": "Verify",
+      "resendCode": "Resend code",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "loadTitle": "Could not load your profile",
+      "load": "Refresh the page and try again.",
+      "profileRequired": "Enter your full name and company name. A saved BIN is also required to update the profile.",
+      "save": "Could not save your changes. Please try again.",
+      "emailFormat": "Enter a valid email address.",
+      "phoneFormat": "Enter a Kazakhstan phone number in the format +7 777 000 00 00.",
+      "contactSame": "Enter a new contact method that differs from the current one.",
+      "sendCode": "Could not send the code. Check the contact and try again.",
+      "codeFormat": "Enter the six-digit code from the message.",
+      "verifyCode": "Could not verify the contact. Check the code and try again.",
+      "resendCode": "Could not resend the code. Please try again later."
+    }
+}

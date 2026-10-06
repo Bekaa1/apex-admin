@@ -252,7 +252,7 @@ body { margin: 0; font-family: var(--font-sans); background: var(--bg); color: v
 .ax-stepper__list { list-style: none; margin: 0; padding: 0; display: flex; align-items: flex-start; gap: var(--space-3); }
 .ax-stepper__item { flex: 1 1 auto; min-width: 0; display: flex; align-items: flex-start; gap: var(--space-3); }
 .ax-stepper__item:last-child { flex: 0 1 auto; }
-.ax-stepper__step { flex: 0 1 auto; display: flex; align-items: flex-start; gap: var(--space-3); min-width: 0; max-width: 15em; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; }
+.ax-stepper__step { flex: 0 1 auto; display: flex; align-items: flex-start; gap: var(--space-3); min-width: 0; min-height: var(--control-md); max-width: 15em; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; }
 .ax-stepper__step--link { cursor: pointer; border-radius: var(--radius-md); }
 .ax-stepper__step--link:hover .ax-stepper__label { color: var(--link); text-decoration: underline; }
 .ax-stepper__step--link:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }

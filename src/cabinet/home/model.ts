@@ -1,3 +1,4 @@
+import { shiftDate } from '../../lib/dates';
 import type { VisibleStatus } from '../campaignStatus';
 import type { CampaignAction, CampaignItem, CampaignStatsRow, HomeData, HomeSource, StoreRow } from './types';
 
@@ -61,10 +62,20 @@ function storesOf(active: CampaignItem[], source: HomeSource): StoreRow[] {
   return everywhere ? real : real.filter((s) => ids.has(s.id));
 }
 
+/** Earliest day of the two 7-day windows Home compares; the API asks for plays since this day. */
+export function playsSince(today: string): string {
+  return shiftDate(today, -13);
+}
+
 export function buildHomeData(source: HomeSource): HomeData {
+  const weekStart = shiftDate(source.today, -6);
+  const prevStart = playsSince(source.today);
   const plays = new Map<string, number>();
+  let prevWeek = 0;
   for (const row of source.dailyPlays) {
-    if (row.ad_id) plays.set(row.ad_id, (plays.get(row.ad_id) ?? 0) + (row.plays ?? 0));
+    if (!row.ad_id || !row.play_date || row.play_date > source.today) continue;
+    if (row.play_date >= weekStart) plays.set(row.ad_id, (plays.get(row.ad_id) ?? 0) + (row.plays ?? 0));
+    else if (row.play_date >= prevStart) prevWeek += row.plays ?? 0;
   }
 
   const items = source.campaigns
@@ -74,8 +85,7 @@ export function buildHomeData(source: HomeSource): HomeData {
 
   const active = items.filter((i) => i.status === 'active');
   const stores = storesOf(active, source);
-  const week = source.summary?.plays_week ?? [...plays.values()].reduce((sum, n) => sum + n, 0);
-  const prevWeek = source.summary?.plays_prev_week ?? 0;
+  const week = [...plays.values()].reduce((sum, n) => sum + n, 0);
   const lowBudget = active.filter((i) => i.lowBudget).sort((a, b) => a.left / a.budget - b.left / b.budget)[0] ?? null;
 
   return {

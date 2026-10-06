@@ -1,49 +1,28 @@
-// Shapes of the Supabase advertiser views used on Home. Replace with database.types.ts once it is generated.
-import type { CampaignStatus, VisibleStatus } from '../campaignStatus';
+// Rows Home reads from Supabase, picked from the generated database types.
+import type { Database, Tables } from '../../lib/database.types';
+import type { VisibleStatus } from '../campaignStatus';
+
+type Views = Database['public']['Views'];
 
 /** `my_campaigns_stats` (filtered by auth.uid() in the view). */
-export interface CampaignStatsRow {
-  ad_id: string | null;
-  title: string | null;
-  name: string | null;
-  status: CampaignStatus | null;
-  budget: number | null;
-  spent_budget: number | null;
-  remaining_budget: number | null;
-  total_plays: number | null;
-  created_at: string | null;
-}
+export type CampaignStatsRow = Pick<
+  Views['my_campaigns_stats']['Row'],
+  'ad_id' | 'title' | 'name' | 'status' | 'budget' | 'spent_budget' | 'remaining_budget' | 'total_plays' | 'created_at'
+>;
 
-/** `my_ad_stats_summary`. */
-export interface PlaysSummaryRow {
-  plays_week: number | null;
-  plays_prev_week: number | null;
-}
-
-/** `my_daily_plays_by_campaign`, already limited to the last 7 days. */
-export interface DailyPlaysRow {
-  ad_id: string | null;
-  plays: number | null;
-}
+/** `my_daily_plays_by_campaign` (Asia/Almaty days), last 14 days: this week and the one before. */
+export type DailyPlaysRow = Pick<Views['my_daily_plays_by_campaign']['Row'], 'ad_id' | 'play_date' | 'plays'>;
 
 /** `ads` columns the views lack; `tariff` arrives when the backend links campaigns to tariffs. */
-export interface CampaignExtraRow {
-  id: string;
-  content_url: string | null;
-  store_id: string | null;
-  tariff?: string | null;
-}
+export type CampaignExtraRow = Pick<Tables<'ads'>, 'id' | 'content_url' | 'store_id'> & { tariff?: string | null };
 
 /** `stores`. */
-export interface StoreRow {
-  id: string;
-  name: string;
-  city: string | null;
-}
+export type StoreRow = Pick<Tables<'stores'>, 'id' | 'name' | 'city'>;
 
 export interface HomeSource {
+  /** YYYY-MM-DD in Almaty; the 7-day windows end on this day. */
+  today: string;
   campaigns: CampaignStatsRow[];
-  summary: PlaysSummaryRow | null;
   dailyPlays: DailyPlaysRow[];
   extras: CampaignExtraRow[];
   stores: StoreRow[];
@@ -74,7 +53,7 @@ export interface HomeData {
   activeCount: number;
   totalCount: number;
   plays7d: number;
-  /** Change vs the previous 7 days as a fraction; null when there is nothing to compare with. */
+  /** Change vs the 7 days before as a fraction; null when there is nothing to compare with. */
   playsDelta: number | null;
   budgetLeft: number;
   storesCount: number;

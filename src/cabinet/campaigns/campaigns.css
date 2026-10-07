@@ -98,7 +98,7 @@
   .cmp-toolbar__period { flex: 1 1 0; min-width: 0; }
   .cmp-toolbar__label { display: none; }
   .cmp-toolbar__period .ax-seg { flex: 1 1 auto; min-width: 0; }
-  .cmp-toolbar__period .ax-seg__item { flex: 1 1 0; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; }
+  .cmp-toolbar__period .ax-seg__item { flex: 1 1 auto; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; }
   .cmp-toolbar__sort { flex: none; width: var(--control-md); min-width: 0; }
   .cmp-toolbar__sort .ax-select__input { height: var(--control-md); padding: 0; color: transparent; }
   .cmp-toolbar__sort .ax-select__input option { color: var(--text); }
@@ -200,7 +200,7 @@
 /* Step 3 — stores */
 .cmp-filters { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .cmp-filters__search { flex: 1 1 240px; }
-.cmp-filters > .ax-field { flex: 0 1 180px; min-width: 150px; }
+.cmp-filters > .ax-field { flex: 0 1 200px; min-width: 150px; }
 .cmp-selbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); margin-top: calc(-1 * var(--space-2)); }
 .cmp-selbar__text { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 15px; color: var(--text-muted); }
 .cmp-selbar__text strong { color: var(--text); }

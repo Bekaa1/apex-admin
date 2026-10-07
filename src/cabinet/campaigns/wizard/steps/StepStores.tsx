@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Icon, SearchField, Select } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatNumber, pluralKey } from '../../../../lib/format';
-import { summarize } from '../summary';
+import { knowsCarts, knowsStoreLoad, summarize } from '../summary';
 import type { WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 import { StoreRow } from './StoreRow';
@@ -31,6 +31,8 @@ export function StepStores({ wizard, catalog }: { wizard: CampaignWizardState; c
   const allVisibleChosen = visible.length > 0 && visible.every((store) => form.storeIds.includes(store.id));
   const visibleIds = new Set(visible.map((store) => store.id));
   const summary = summarize(form, catalog);
+  const showCarts = knowsCarts(catalog);
+  const tableClass = ['cmp-stores', showCarts ? '' : 'cmp-stores--no-carts', errors.stores ? 'is-invalid' : ''].filter(Boolean).join(' ');
 
   const toggleVisible = () =>
     dispatch({
@@ -72,13 +74,13 @@ export function StepStores({ wizard, catalog }: { wizard: CampaignWizardState; c
           </Button>
         ) : null}
       </div>
-      <div className={errors.stores ? 'cmp-stores is-invalid' : 'cmp-stores'}>
+      <div className={tableClass}>
         <div className="cmp-stores__head" aria-hidden="true">
           <span />
           <span>{t('campaigns.wizard.stores.head.store')}</span>
           <span>{t('campaigns.wizard.stores.head.city')}</span>
-          <span className="cmp-num">{t('campaigns.wizard.stores.head.carts')}</span>
-          <span>{t('campaigns.wizard.stores.head.load')}</span>
+          {showCarts ? <span className="cmp-num">{t('campaigns.wizard.stores.head.carts')}</span> : null}
+          <span>{t(knowsStoreLoad(catalog) ? 'campaigns.wizard.stores.head.load' : 'campaigns.wizard.stores.head.zones')}</span>
         </div>
         {visible.length ? (
           <ul className="cmp-stores__list" aria-label={t('campaigns.wizard.stores.listLabel')}>
@@ -87,6 +89,7 @@ export function StepStores({ wizard, catalog }: { wizard: CampaignWizardState; c
                 <StoreRow
                   store={store}
                   zones={catalog.zones.filter((zone) => zone.storeId === store.id).length}
+                  showCarts={showCarts}
                   checked={form.storeIds.includes(store.id)}
                   onToggle={() => dispatch({ type: 'toggleStore', storeId: store.id })}
                 />

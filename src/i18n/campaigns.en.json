@@ -181,8 +181,8 @@
       "title": "Campaign not found",
       "text": "It may have been fixed or deleted already. Go back to the campaign list."
     },
-    "seconds": "{n} sec",
-    "megabytes": "{n} MB",
+    "seconds": "{n} sec",
+    "megabytes": "{n} MB",
     "summary": {
       "title": "Your campaign",
       "name": "Name",
@@ -241,7 +241,7 @@
       "descriptionHint": "Helps the moderator check the video faster.",
       "video": "Video",
       "videoDrop": "Drag the video here or choose a file",
-      "videoRules": "MP4 or MOV · exactly 7 seconds · horizontal 16:9, from 1280×720 · up to 50 MB",
+      "videoRules": "MP4 or MOV · exactly 7 seconds · horizontal 16:9, from 1280×720 · up to 50 MB",
       "cover": "Cover",
       "coverDrop": "Drag an image or choose a file",
       "coverHint": "JPG or PNG, 16:9. Shown in the campaign list and reports. Without a cover we show the first frame of the video.",
@@ -308,7 +308,8 @@
         "store": "Store",
         "city": "City",
         "carts": "Carts",
-        "load": "Campaigns now"
+        "load": "Campaigns now",
+        "zones": "Shelf zones"
       },
       "campaignsNow": {
         "one": "{count} campaign now",

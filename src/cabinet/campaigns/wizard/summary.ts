@@ -28,12 +28,16 @@ export interface WizardSummary {
   minimum: number | null;
 }
 
+/** Cart counts and campaigns per store come with the backend's store catalog; until then these columns stay hidden. */
+export const knowsCarts = (catalog: WizardCatalog): boolean => catalog.stores.every((store) => store.carts !== null);
+export const knowsStoreLoad = (catalog: WizardCatalog): boolean => catalog.stores.every((store) => store.activeCampaigns !== null);
+
 export function summarize(form: CampaignForm, catalog: WizardCatalog): WizardSummary {
   const stores = selectedStores(form, catalog);
   const zones = selectedZones(form, catalog);
   return {
     stores: stores.length,
-    carts: stores.every((store) => store.carts !== null) ? stores.reduce((sum, store) => sum + (store.carts ?? 0), 0) : null,
+    carts: knowsCarts(catalog) ? stores.reduce((sum, store) => sum + (store.carts ?? 0), 0) : null,
     zones: skipsZones(form.tariff) ? null : { count: zones.length, storesWithZones: new Set(zones.map((zone) => zone.storeId)).size },
     minimum: minimumBudget(form),
   };

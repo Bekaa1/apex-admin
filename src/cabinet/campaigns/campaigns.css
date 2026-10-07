@@ -207,6 +207,7 @@
 .cmp-stores { border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; }
 .cmp-stores.is-invalid { border-color: var(--danger); }
 .cmp-stores__head, .cmp-store { display: grid; grid-template-columns: 20px minmax(0, 2fr) minmax(72px, 0.8fr) 92px minmax(150px, 1.4fr); align-items: center; gap: var(--space-4); }
+.cmp-stores--no-carts .cmp-stores__head, .cmp-stores--no-carts .cmp-store { grid-template-columns: 20px minmax(0, 2fr) minmax(72px, 0.8fr) minmax(150px, 1.4fr); }
 .cmp-stores__head { padding: 10px var(--space-4); background: var(--bg); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text-muted); }
 .cmp-stores__list { list-style: none; margin: 0; padding: 0; }
 .cmp-stores__list li + li { border-top: 1px solid var(--border); }

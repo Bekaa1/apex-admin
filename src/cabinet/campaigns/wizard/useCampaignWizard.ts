@@ -3,6 +3,7 @@ import { useEffect, useReducer } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { queryKeys } from '../../queryKeys';
 import { CABINET_LINKS } from '../../sections';
+import { CampaignRpcError } from '../api';
 import { clearForm, saveForm } from './formStorage';
 import { wizardReducer } from './reducer';
 import { nextStep, prevStep, skipsZones, stepFromParam, stepParam } from './steps';
@@ -20,19 +21,22 @@ export interface WizardOptions {
   api: WizardApi;
 }
 
-/** Payload for `submit_campaign`; null while something required is missing. */
+/** What the wizard sends; null while something required is missing. The server needs the video's length and size too. */
 export function toSubmission(form: CampaignForm, catalog: WizardCatalog): CampaignSubmission | null {
   const { video, cover, tariff, budget } = form;
-  if (video.status !== 'ready' || !tariff || budget === null) return null;
+  if (video.status !== 'ready' || !video.meta || !tariff || budget === null) return null;
+  const { durationSec, width, height, sizeBytes } = video.meta;
+  if (durationSec === null || width === null || height === null || sizeBytes === null) return null;
   return {
     name: form.name.trim(),
     description: form.description.trim(),
     tariffCode: tariff,
-    video: { url: video.url, fileName: video.fileName, sizeBytes: null, durationSec: null, width: null, height: null, ...video.meta },
+    video: { url: video.url, fileName: video.fileName, durationSec, width, height, sizeBytes },
     cover: cover.status === 'ready' ? { url: cover.url, fileName: cover.fileName } : null,
     storeIds: form.storeIds,
     zoneIds: skipsZones(tariff) ? [] : selectedZones(form, catalog).map((zone) => zone.id),
     budget,
+    requestId: form.requestId,
   };
 }
 
@@ -66,7 +70,7 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
     });
 
   const submission = useMutation({
-    mutationFn: (payload: CampaignSubmission) => (api.submit ? api.submit(payload, mode) : Promise.reject(new Error('Submitting is not available yet.'))),
+    mutationFn: (payload: CampaignSubmission) => api.submit(payload, mode),
     onSuccess: (campaignId, payload) => {
       clearForm(storageKey);
       void queryClient.invalidateQueries({ queryKey: queryKeys.campaigns(userId) });
@@ -83,9 +87,11 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
     step,
     errors: state.attempted.includes(step) ? validateStep(step, form, catalog) : {},
     attempts: state.attempts,
-    canSubmit: Boolean(api.submit),
+    /** «Исправить»: the plan and the budget stay as they were. */
+    fixing: mode.kind === 'fix',
     submitting: submission.isPending,
-    submitFailed: submission.isError,
+    /** Code of the server check that failed (`invalid_video`, `missing_email`…), `network` for anything else. */
+    submitError: submission.error ? (submission.error instanceof CampaignRpcError ? submission.error.code : 'network') : null,
     goTo,
     next: () => {
       if (!isStepValid(step, form, catalog)) {
@@ -100,7 +106,6 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       if (target) goTo(target);
     },
     submit: () => {
-      if (!api.submit) return;
       const invalid = firstInvalidStep(form, catalog);
       const payload = toSubmission(form, catalog);
       if (invalid || !payload) {

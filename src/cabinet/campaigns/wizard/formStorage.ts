@@ -39,6 +39,7 @@ function readForm(value: unknown): CampaignForm {
   const description = prop(value, 'description');
   const storeIds = prop(value, 'storeIds');
   const zoneIds = prop(value, 'zoneIds');
+  const requestId = prop(value, 'requestId');
   return {
     name: isString(name) ? name : '',
     description: isString(description) ? description : '',
@@ -49,6 +50,7 @@ function readForm(value: unknown): CampaignForm {
     zoneIds: isStringArray(zoneIds) ? zoneIds : [],
     budget: readNumber(prop(value, 'budget')),
     rulesAccepted: prop(value, 'rulesAccepted') === true,
+    requestId: isString(requestId) && requestId ? requestId : crypto.randomUUID(),
   };
 }
 

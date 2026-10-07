@@ -5,7 +5,7 @@ import { ButtonLink } from '../../ui/ButtonLink';
 import { LoadError } from '../../ui/LoadError';
 import { CampaignWizard } from './CampaignWizard';
 import { formStorageKey, loadForm } from './formStorage';
-import { EMPTY_FORM } from './reducer';
+import { emptyForm } from './reducer';
 import type { WizardMode } from './types';
 import { useWizardData, type WizardSource } from './useWizardData';
 
@@ -57,6 +57,6 @@ export function WizardScreen({ source }: { source: WizardSource }) {
   const mode: WizardMode = source.kind === 'fix' ? { kind: 'fix', campaignId: source.campaignId, moderation: data.moderation } : { kind: 'new' };
   const storageKey = formStorageKey(data.userId, mode);
   // A copy always starts from the source campaign; otherwise what was typed in this tab wins.
-  const initial = (source.kind === 'copy' ? null : loadForm(storageKey)) ?? data.prefill ?? EMPTY_FORM;
+  const initial = (source.kind === 'copy' ? null : loadForm(storageKey)) ?? data.prefill ?? emptyForm();
   return <CampaignWizard key={storageKey} userId={data.userId} initial={initial} catalog={data.catalog} mode={mode} storageKey={storageKey} api={data.api} />;
 }

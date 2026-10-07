@@ -8,7 +8,7 @@ import type { CampaignCard, CampaignStage, StageKind } from '../types';
 
 export const STAGE_BADGE: Record<StageKind, { tone: BadgeTone; labelKey: string }> = {
   review: { tone: STATUS_TONE.pending, labelKey: statusLabelKey('pending') },
-  awaitingPayment: { tone: 'warning', labelKey: 'cabinet.status.awaiting_payment' },
+  awaitingPayment: { tone: STATUS_TONE.awaiting_payment, labelKey: statusLabelKey('awaiting_payment') },
   rejected: { tone: STATUS_TONE.rejected, labelKey: statusLabelKey('rejected') },
   active: { tone: STATUS_TONE.active, labelKey: statusLabelKey('active') },
   paused: { tone: STATUS_TONE.paused, labelKey: statusLabelKey('paused') },

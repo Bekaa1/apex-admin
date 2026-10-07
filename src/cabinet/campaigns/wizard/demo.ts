@@ -1,5 +1,5 @@
 import type { CampaignForm, CatalogZone, MediaState, WizardApi, WizardCatalog } from './types';
-import { EMPTY_FORM } from './reducer';
+import { emptyForm } from './reducer';
 
 // Dev-only fixtures: the stores, zones and returned campaign drawn in «Apex — Мои кампании». Nothing here reaches Supabase.
 
@@ -31,7 +31,7 @@ const DEMO_VIDEO: MediaState = { status: 'ready', url: '', fileName: 'new-year.m
 export function demoReturnedForm(): CampaignForm {
   const storeIds = ['s1', 's2', 's3', 's5', 's7', 's8'];
   return {
-    ...EMPTY_FORM,
+    ...emptyForm(),
     name: 'Новогодняя распродажа',
     description: 'Скидки до 30% на подарочные наборы с 15 декабря по 7 января.',
     video: DEMO_VIDEO,

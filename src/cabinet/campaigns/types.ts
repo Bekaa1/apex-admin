@@ -1,39 +1,35 @@
 // Rows the campaigns list reads from Supabase and the cards it shows.
-import type { Database, Tables } from '../../lib/database.types';
+import type { Database } from '../../lib/database.types';
 import type { BudgetFigures } from '../campaignBudget';
-import type { CampaignStatus } from '../campaignStatus';
 import type { DailyPlaysRow } from '../plays';
 import type { TariffCode } from '../tariffs';
 
 type StatsView = Database['public']['Views']['my_campaigns_stats']['Row'];
 
-/**
- * Fields requested from the backend (session-log, «Запрос бэкенд-разработчику»): live rows lack them until
- * the view gains them; demo fixtures fill them so every state of the design can be checked.
- */
-interface RequestedFields {
-  status: CampaignStatus | 'awaiting_payment' | null;
-  tariff_code?: string | null;
-  store_count?: number | null;
-  cart_count?: number | null;
-  paid_amount?: number | null;
-  invoice_amount?: number | null;
-  invoice_sent_to?: string | null;
-  rejection_reasons?: string[] | null;
-  moderator_comment?: string | null;
-}
-
 /** `my_campaigns_stats` (filtered by auth.uid() in the view). */
 export type CampaignStatsRow = Pick<
   StatsView,
-  'ad_id' | 'title' | 'name' | 'budget' | 'spent_budget' | 'remaining_budget' | 'total_plays' | 'start_date' | 'end_date' | 'created_at'
-> &
-  RequestedFields;
-
-/** Own `ads` columns the view lacks: the cover and the store. */
-export type CampaignAdRow = Pick<Tables<'ads'>, 'id' | 'content_url' | 'store_id'>;
-
-export type StoreRow = Pick<Tables<'stores'>, 'id' | 'name'>;
+  | 'ad_id'
+  | 'title'
+  | 'name'
+  | 'status'
+  | 'budget'
+  | 'spent_budget'
+  | 'remaining_budget'
+  | 'total_plays'
+  | 'start_date'
+  | 'end_date'
+  | 'created_at'
+  | 'tariff_code'
+  | 'store_count'
+  | 'cart_count'
+  | 'content_url'
+  | 'paid_amount'
+  | 'unpaid_amount'
+  | 'invoice_sent_to'
+  | 'rejection_reasons'
+  | 'moderator_comment'
+>;
 
 export interface CampaignsSource {
   /** YYYY-MM-DD in Almaty; play windows end on this day. */
@@ -41,8 +37,6 @@ export interface CampaignsSource {
   campaigns: CampaignStatsRow[];
   /** The last 30 days. */
   dailyPlays: DailyPlaysRow[];
-  ads: CampaignAdRow[];
-  stores: StoreRow[];
 }
 
 export type PlaysPeriod = 'week' | 'month' | 'all';

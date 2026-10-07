@@ -1,6 +1,6 @@
 import { skipsZones } from './steps';
 import type { CampaignForm, CampaignPrefill, CatalogStore, CatalogZone, WizardCatalog } from './types';
-import { EMPTY_FORM } from './reducer';
+import { emptyForm } from './reducer';
 import { minimumBudget } from './validation';
 
 /** Quick budget amounts: the plan minimum and two steps above it (2, 3 and 5 million for «Премиум»). */
@@ -45,9 +45,18 @@ export function summarize(form: CampaignForm, catalog: WizardCatalog): WizardSum
 
 /** Form for «Исправить» and «Повторить». A placeholder store («Все магазины») or a store that is gone means every store. */
 export function formFromPrefill(prefill: CampaignPrefill, catalog: WizardCatalog): CampaignForm {
-  const { storeId } = prefill;
-  let storeIds: string[] = [];
-  if (storeId !== null) storeIds = catalog.stores.some((store) => store.id === storeId) ? [storeId] : catalog.stores.map((store) => store.id);
+  // Stores that left the catalog (no carts any more) are dropped; the advertiser picks again.
+  const storeIds = prefill.storeIds.filter((id) => catalog.stores.some((store) => store.id === id));
   const zoneIds = prefill.zoneIds.filter((id) => catalog.zones.some((zone) => zone.id === id && storeIds.includes(zone.storeId)));
-  return { ...EMPTY_FORM, name: prefill.name, video: prefill.video, cover: prefill.cover, budget: prefill.budget, storeIds, zoneIds };
+  return {
+    ...emptyForm(),
+    name: prefill.name,
+    description: prefill.description,
+    video: prefill.video,
+    cover: prefill.cover,
+    tariff: prefill.tariff,
+    budget: prefill.budget,
+    storeIds,
+    zoneIds,
+  };
 }

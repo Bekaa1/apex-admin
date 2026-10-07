@@ -3,19 +3,21 @@ import { buildCampaignCards } from './model';
 import type { CampaignStatsRow, CampaignsListState, CampaignsSource } from './types';
 
 // Dev-only fixtures that reproduce the «Apex — Мои кампании» list. Kept free of top-level calls so production builds drop them.
-// Payment, moderation, tariff and cart fields are not in the database yet; the fixtures show how they will look.
 
 const TODAY = '2026-10-06';
 
-type Row = Omit<CampaignStatsRow, 'title' | 'remaining_budget' | 'end_date' | 'start_date'> &
-  Partial<Pick<CampaignStatsRow, 'remaining_budget' | 'start_date' | 'end_date'>>;
+const EMPTY_ROW: CampaignStatsRow = {
+  ad_id: null, title: null, name: null, status: null, budget: null, spent_budget: null, remaining_budget: null, total_plays: null,
+  start_date: null, end_date: null, created_at: null, tariff_code: null, store_count: null, cart_count: null, content_url: null,
+  paid_amount: null, unpaid_amount: null, invoice_sent_to: null, rejection_reasons: null, moderator_comment: null,
+};
 
-const ROWS: Row[] = [
+const ROWS: Partial<CampaignStatsRow>[] = [
   { ad_id: 'demo-autumn', name: 'Осенняя распродажа', status: 'pending', tariff_code: 'premium', store_count: 6, cart_count: 330, budget: 2_500_000, spent_budget: 0, paid_amount: 0, total_plays: 0, created_at: '2026-10-05T09:00:00Z' },
   { ad_id: 'demo-baby', name: 'Детское питание', status: 'pending', tariff_code: 'standard', store_count: 5, cart_count: 248, budget: 600_000, spent_budget: 0, paid_amount: 600_000, total_plays: 0, created_at: '2026-10-03T09:00:00Z' },
   {
     ad_id: 'demo-coffee', name: 'Кофе с собой', status: 'awaiting_payment', tariff_code: 'zones', store_count: 4, cart_count: 206, budget: 1_200_000, spent_budget: 0,
-    paid_amount: 0, invoice_amount: 1_200_000, invoice_sent_to: 'marketing@company.kz', total_plays: 0, created_at: '2026-09-30T09:00:00Z',
+    paid_amount: 0, unpaid_amount: 1_200_000, invoice_sent_to: 'marketing@company.kz', total_plays: 0, created_at: '2026-09-30T09:00:00Z',
   },
   {
     ad_id: 'demo-new-year', name: 'Новогодняя распродажа', status: 'rejected', tariff_code: 'premium', store_count: 10, cart_count: 488, budget: 3_000_000, spent_budget: 0,
@@ -41,10 +43,8 @@ const DAILY: Array<[string, string, number]> = [
 function demoSource(): CampaignsSource {
   return {
     today: TODAY,
-    campaigns: ROWS.map((row) => ({ title: null, remaining_budget: null, start_date: null, end_date: null, ...row })),
+    campaigns: ROWS.map((row) => ({ ...EMPTY_ROW, ...row })),
     dailyPlays: DAILY.map(([ad_id, play_date, plays]) => ({ ad_id, play_date, plays })),
-    ads: [],
-    stores: [],
   };
 }
 

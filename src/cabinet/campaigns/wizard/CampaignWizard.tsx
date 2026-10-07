@@ -11,6 +11,7 @@ import { StepTariff } from './steps/StepTariff';
 import { StepZones } from './steps/StepZones';
 import { useCampaignWizard, type WizardOptions } from './useCampaignWizard';
 import { ReturnedAlert } from './ReturnedAlert';
+import { SubmitError } from './SubmitError';
 import { WizardActions } from './WizardActions';
 import { WizardHelp } from './WizardHelp';
 import { WizardStepper } from './WizardStepper';
@@ -95,17 +96,8 @@ export function CampaignWizard(options: WizardOptions) {
             {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} /> : null}
             {step === 'budget' ? <StepBudget wizard={wizard} catalog={catalog} /> : null}
           </section>
-          {step === 'budget' && !wizard.canSubmit ? (
-            <Alert tone="info" title={t('campaigns.wizard.submitSoon.title')}>
-              {t('campaigns.wizard.submitSoon.text')}
-            </Alert>
-          ) : null}
-          {wizard.submitFailed ? (
-            <Alert tone="danger" title={t('campaigns.wizard.submitError.title')}>
-              {t('campaigns.wizard.submitError.text')}
-            </Alert>
-          ) : null}
-          <WizardActions step={step} form={form} canSubmit={wizard.canSubmit} submitting={wizard.submitting} onBack={wizard.back} />
+          {wizard.submitError ? <SubmitError code={wizard.submitError} /> : null}
+          <WizardActions step={step} form={form} submitting={wizard.submitting} onBack={wizard.back} />
         </form>
         <aside className="cmp-wizard__aside">
           <WizardSummary step={step} form={form} catalog={catalog} />

@@ -164,13 +164,25 @@
     "prev": "Back",
     "submit": "Send for review",
     "fixErrors": "Fix what is marked in red.",
-    "submitSoon": {
-      "title": "Sending for review is coming soon",
-      "text": "We are connecting it to the server. If you need to launch a campaign now, message a manager."
-    },
     "submitError": {
       "title": "Couldn't send the campaign",
-      "text": "Check your connection and try again."
+      "text": "Check your connection and try again.",
+      "codes": {
+        "invalid_name": "Check the name: 1 to 80 characters.",
+        "invalid_description": "The description is longer than 300 characters — shorten it.",
+        "invalid_tariff": "This plan can’t be bought right now. Choose another one.",
+        "invalid_video": "The video didn’t pass the check. Upload it again: MP4 or MOV, 7 seconds, 16:9, from 1280×720, up to 50 MB.",
+        "invalid_cover": "The cover didn’t pass the check. Upload a JPG or PNG again or remove it.",
+        "invalid_stores": "One of the stores isn’t available now. Check your choice on the “Stores” step.",
+        "invalid_zones": "Choose at least one zone in each store on the “Shelf zones” step.",
+        "invalid_budget": "The budget is below the plan’s minimum. Increase it.",
+        "missing_email": "Add an email to your profile — the campaign invoice goes there.",
+        "not_found": "Campaign not found. Go back to your campaigns.",
+        "invalid_status": "This campaign can’t be fixed any more — it may have been sent already. Go back to your campaigns.",
+        "tariff_change_not_allowed": "The plan can’t be changed in a fix. For another plan, create a new campaign.",
+        "not_authenticated": "Your session has ended. Sign in again and send the campaign."
+      },
+      "toProfile": "Open profile"
     },
     "loading": "Loading stores and zones",
     "loadError": {
@@ -207,7 +219,7 @@
       },
       "tariff": {
         "title": "How to choose",
-        "text": "First campaign — “Standard”. Need specific shelves — “Standard + Zones”. Want to play more often — “Premium”. Special terms — “Corporate”."
+        "text": "First campaign — “Standard”. Need specific shelves — “Standard + Zones”. Need sound — “Premium”. Special terms — “Corporate”."
       },
       "stores": {
         "title": "Where the video is seen more often",
@@ -227,7 +239,9 @@
       "title": "The moderator returned the campaign",
       "failed": "Not met: {rules}.",
       "comment": "Moderator’s comment: {comment}",
-      "after": "Fix the video and send it again — we’ll check it within a working day."
+      "after": "Fix the video and send it again — we’ll check it within a working day.",
+      "tariffLocked": "The plan stays the same in a fix. Need another one? Create a new campaign.",
+      "budgetLocked": "The budget stays the same in a fix."
     },
     "media": {
       "title": "Video and details",
@@ -461,9 +475,19 @@
       "messagePlaceholder": "Brand, cities, timing, approximate budget",
       "optional": "Optional",
       "submit": "Send request",
-      "soon": {
-        "title": "Online requests are coming soon",
-        "text": "For now call or message a manager — we’ll answer within a working day."
+      "sent": {
+        "title": "Request sent",
+        "text": "A manager will call back within a working day.",
+        "copy": "We sent a copy of the request to {email}."
+      },
+      "errors": {
+        "company": "Enter the company",
+        "phone": "Enter a phone number, e.g. +7 777 123 45 67",
+        "tooMany": "Too many requests from this number today. Try tomorrow or call a manager."
+      },
+      "failed": {
+        "title": "Couldn’t send the request",
+        "text": "Check your connection and try again."
       }
     }
   }

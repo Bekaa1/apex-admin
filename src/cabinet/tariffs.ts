@@ -1,8 +1,8 @@
-// Plans as drawn in the design; the backend `tariffs` table does not match them yet.
+// Plans as drawn in the design; codes and minimums match the backend `tariffs` table (the server checks them again).
 // Names and texts live in `cabinet.tariffs.<code>`.
 
 export type TariffCode = 'standard' | 'zones' | 'premium';
-export type TariffFeature = 'allCarts' | 'zonePriority' | 'moreShows' | 'brandOnly';
+export type TariffFeature = 'allCarts' | 'zonePriority' | 'sound' | 'brandOnly';
 
 export interface Tariff {
   code: TariffCode;
@@ -20,7 +20,7 @@ export const TARIFFS: Tariff[] = [
   { code: 'premium', level: 3, minimum: 2_000_000, hasZones: true },
 ];
 
-export const TARIFF_FEATURES: TariffFeature[] = ['allCarts', 'zonePriority', 'moreShows', 'brandOnly'];
+export const TARIFF_FEATURES: TariffFeature[] = ['allCarts', 'zonePriority', 'sound', 'brandOnly'];
 export const TARIFF_LEVELS = [1, 2, 3, 4];
 /** The corporate plan has every feature; its terms are agreed with a manager. */
 export const CORPORATE_LEVEL = 4;

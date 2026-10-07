@@ -17,7 +17,7 @@ export function useCampaignsList(): CampaignsListState {
 
   const query = useQuery({
     queryKey: queryKeys.campaignList(userId),
-    queryFn: userId && !demo ? ({ signal }) => fetchCampaignsSource(userId, signal) : skipToken,
+    queryFn: userId && !demo ? ({ signal }) => fetchCampaignsSource(signal) : skipToken,
     select: buildCampaignCards,
   });
 

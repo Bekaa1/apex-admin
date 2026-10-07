@@ -26,17 +26,20 @@ export type WizardAction =
   | { type: 'rules'; value: boolean }
   | { type: 'attempt'; steps: StepId[] };
 
-export const EMPTY_FORM: CampaignForm = {
-  name: '',
-  description: '',
-  video: { status: 'empty' },
-  cover: { status: 'empty' },
-  tariff: null,
-  storeIds: [],
-  zoneIds: [],
-  budget: null,
-  rulesAccepted: false,
-};
+export function emptyForm(): CampaignForm {
+  return {
+    name: '',
+    description: '',
+    video: { status: 'empty' },
+    cover: { status: 'empty' },
+    tariff: null,
+    storeIds: [],
+    zoneIds: [],
+    budget: null,
+    rulesAccepted: false,
+    requestId: crypto.randomUUID(),
+  };
+}
 
 function toggle(ids: string[], id: string): string[] {
   return ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id];

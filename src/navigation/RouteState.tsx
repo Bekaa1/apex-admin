@@ -10,7 +10,7 @@ import styles from './RouteState.module.css';
 export function RouteFrame({ children, admin = false, wide = false }: { children: ReactNode; admin?: boolean; wide?: boolean }) {
   const { t, lang, setLang } = useI18n();
   const { session } = useAuthSession();
-  const { signOut, pending, failed } = useSignOut();
+  const { signOut, pending, failed } = useSignOut(admin ? '/admin/login' : undefined);
   useEffect(() => {
     const previous = document.title;
     document.title = admin ? 'ApexAdmin' : 'Apexmedia';

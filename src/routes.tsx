@@ -31,7 +31,7 @@ const cabinetRoutes: RouteObject[] = [
 ];
 
 export const routes: RouteObject[] = [
-  { path: '/', element: <Navigate to="/admin" replace /> },
+  { path: '/', element: <Navigate to={CABINET_ROOT} replace /> },
   { path: '/access-denied', element: <AccessDenied /> },
   {
     path: '/admin', element: <RequireAdmin />, children: [
@@ -53,7 +53,8 @@ export const routes: RouteObject[] = [
       { path: 'how-it-works', lazy: async () => ({ Component: (await import('./landing/HowItWorksPage')).HowItWorksPage }) },
     ],
   },
-  { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow admin /> },
+  { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow /> },
+  { path: '/admin/login', element: <LoginFlow admin /> },
   { path: DEFAULT_AUTH_LINKS.signup, element: <SignupFlow /> },
   { path: DEFAULT_AUTH_LINKS.verify, element: <VerificationRoute /> },
   { path: DEFAULT_AUTH_LINKS.profile, element: <SignupProfileFlow /> },
@@ -72,5 +73,5 @@ export const routes: RouteObject[] = [
       children: cabinetRoutes,
     }],
   },
-  { path: '*', element: <RouteFrame><RouteState /></RouteFrame> },
+  { path: '*', element: <RouteFrame admin><RouteState /></RouteFrame> },
 ];

@@ -21,9 +21,8 @@ export function AuthLayout({
   const links = useAuthLinks();
   const homeLabel = t('landing.nav.home');
   useEffect(() => {
-    if (!admin) return;
     const previous = document.title;
-    document.title = 'ApexAdmin';
+    document.title = admin ? 'ApexAdmin' : 'Apexmedia';
     return () => { document.title = previous; };
   }, [admin]);
   return (

@@ -7,7 +7,7 @@ import { AdminShell } from './AdminShell';
 /** Mounted only in RequireAdmin's successful Outlet. */
 export function AdminLayout() {
   const { t } = useI18n();
-  const { signOut, pending, failed } = useSignOut();
+  const { signOut, pending, failed } = useSignOut('/admin/login');
   return <AdminShell accountAction={<button type="button" className="cab-nav__item cab-nav__item--button" onClick={() => void signOut()} disabled={pending} aria-busy={pending}>
     <Icon name="log-out" /><span className="cab-nav__label">{t('cabinet.nav.logout')}</span>
   </button>}>

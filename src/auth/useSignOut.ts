@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { requireSupabase } from '../lib/supabase';
 import { DEFAULT_AUTH_LINKS } from './links';
 
-export function useSignOut() {
+export function useSignOut(redirectTo = DEFAULT_AUTH_LINKS.login) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [pending, setPending] = useState(false);
@@ -18,7 +18,7 @@ export function useSignOut() {
       const { error } = await requireSupabase().auth.signOut({ scope: 'local' });
       if (error) throw error;
       queryClient.clear();
-      await navigate(DEFAULT_AUTH_LINKS.login, { replace: true });
+      await navigate(redirectTo, { replace: true });
     } catch {
       setFailed(true);
     } finally {

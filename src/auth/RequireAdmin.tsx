@@ -28,7 +28,7 @@ export function RequireAdmin() {
 
   const access = adminAccessState({ configured: Boolean(supabase), sessionStatus: status, hasSession: Boolean(session), roleError: check.isError, rolePending: check.isPending, roleFetching: check.isFetching, role: check.data });
   if (access === 'unconfigured') return <RouteFrame admin><Alert title={t('adminAuth.notConfigured')} /></RouteFrame>;
-  if (access === 'signedOut') return <Navigate to="/login" replace />;
+  if (access === 'signedOut') return <Navigate to="/admin/login" replace />;
   if (access === 'error') return <RouteFrame admin>
     <Alert tone="danger" title={t('navigation.accessError.title')}>{t('navigation.accessError.body')}</Alert>
     <Button size="md" disabled={check.isFetching} onClick={() => status === 'error' ? window.location.reload() : void check.refetch()}>{t('cabinet.retry')}</Button>

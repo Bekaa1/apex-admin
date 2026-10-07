@@ -17,7 +17,7 @@
 ---
 
 ## 2026-10-07 — Лендинг: видео на первом экране
-Ветка: `feature/landing-video` · PR: —
+Ветка: `feature/landing-video` · PR: https://github.com/Bekaa1/apex-admin/pull/15
 Образец — https://y.co. Лендинг — зона Bekaa1; изменения согласовать с ним.
 
 **Что сделано**

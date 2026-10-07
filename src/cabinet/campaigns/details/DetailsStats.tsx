@@ -1,41 +1,11 @@
 import { useId } from 'react';
 import { Link } from 'react-router';
-import { ColumnsChart, Delta, Icon, type ColumnsChartBar, type DeltaTone } from '../../../design-system';
-import { useI18n, type Lang } from '../../../i18n/i18n';
+import { ColumnsChart, Delta, Icon } from '../../../design-system';
+import { useI18n } from '../../../i18n/i18n';
 import { formatDayMonth, formatDelta, formatMoney, formatNumber, formatPrice, pluralKey } from '../../../lib/format';
+import { deltaTone, playsChartBars } from '../../charts';
 import { CABINET_LINKS } from '../../sections';
-import type { CampaignDetails, ChartBucket } from './types';
-
-/** Every 4th column gets a label, every 8th keeps it on narrow charts; a label names the month when it changes. */
-function chartBars(buckets: ChartBucket[], lang: Lang, unit: (n: number) => string): ColumnsChartBar[] {
-  let labelledMonth = '';
-  return buckets.map((bucket, index) => {
-    const month = bucket.from.slice(0, 7);
-    const tick = index % 8 === 0 ? 'major' : index % 4 === 0 ? 'minor' : undefined;
-    const withMonth = tick !== undefined && month !== labelledMonth;
-    if (withMonth) labelledMonth = month;
-    const day = `${bucket.from}T12:00:00+05:00`;
-    return {
-      key: bucket.from,
-      value: bucket.plays,
-      label: withMonth ? formatDayMonth(day, lang) : String(Number(bucket.from.slice(8))),
-      tick,
-      tip: {
-        value: formatNumber(bucket.plays, lang),
-        unit: unit(bucket.plays),
-        caption:
-          bucket.from === bucket.to ? formatDayMonth(day, lang) : `${formatDayMonth(day, lang)} — ${formatDayMonth(`${bucket.to}T12:00:00+05:00`, lang)}`,
-      },
-    };
-  });
-}
-
-// The tone follows the rounded percent, so «0 %» never looks like a drop.
-function deltaTone(delta: number): DeltaTone {
-  const pct = Math.round(delta * 100);
-  if (pct > 0) return 'success';
-  return pct < 0 ? 'danger' : 'neutral';
-}
+import type { CampaignDetails } from './types';
 
 export function DetailsStats({ details }: { details: CampaignDetails }) {
   const { t, lang } = useI18n();
@@ -102,7 +72,7 @@ export function DetailsStats({ details }: { details: CampaignDetails }) {
         </div>
       </dl>
       <ColumnsChart
-        bars={chartBars(stats.buckets, lang, unit)}
+        bars={playsChartBars(stats.buckets, stats.buckets[0]?.from === stats.buckets[0]?.to ? 'day' : 'week', lang, unit)}
         label={t('campaigns.details.stats.chartLabel')}
         formatValue={(value) => formatNumber(value, lang)}
         keyboardHint={t('campaigns.details.stats.chartHint')}

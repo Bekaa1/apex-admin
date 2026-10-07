@@ -1,22 +1,10 @@
-// How a campaign stage looks in the list and on the campaign card: badge, sub-line, the main button and the «⋯» menu.
-import type { BadgeTone, IconName } from '../../../design-system';
+// How a campaign stage looks in the list and on the campaign card: sub-line, the main button and the «⋯» menu.
+import type { IconName } from '../../../design-system';
 import type { Lang } from '../../../i18n/i18n';
 import { formatDayMonth } from '../../../lib/format';
-import { STATUS_TONE, statusLabelKey } from '../../campaignStatus';
+import { LAUNCHED_STAGES, type CampaignStage } from '../../campaignStage';
 import { CABINET_LINKS } from '../../sections';
-import type { CampaignCard, CampaignStage, StageKind } from '../types';
-
-export const STAGE_BADGE: Record<StageKind, { tone: BadgeTone; labelKey: string }> = {
-  review: { tone: STATUS_TONE.pending, labelKey: statusLabelKey('pending') },
-  changesReview: { tone: STATUS_TONE.pending, labelKey: statusLabelKey('pending') },
-  awaitingPayment: { tone: STATUS_TONE.awaiting_payment, labelKey: statusLabelKey('awaiting_payment') },
-  rejected: { tone: STATUS_TONE.rejected, labelKey: statusLabelKey('rejected') },
-  active: { tone: STATUS_TONE.active, labelKey: statusLabelKey('active') },
-  paused: { tone: STATUS_TONE.paused, labelKey: statusLabelKey('paused') },
-  hoursEnded: { tone: STATUS_TONE.hours_ended, labelKey: statusLabelKey('hours_ended') },
-  noBudget: { tone: STATUS_TONE.budget_ended, labelKey: statusLabelKey('budget_ended') },
-  finished: { tone: STATUS_TONE.completed, labelKey: statusLabelKey('completed') },
-};
+import type { CampaignCard } from '../types';
 
 type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
@@ -94,12 +82,10 @@ export function mainActionKind({ stage, canTopUp }: Pick<CampaignCard, 'stage' |
   }
 }
 
-const LAUNCHED: StageKind[] = ['changesReview', 'active', 'paused', 'hoursEnded', 'noBudget', 'finished'];
-
 /** Everything else the campaign allows, for the «⋯» menu; `except` are the actions already shown as buttons. */
 export function moreActionKinds(card: Pick<CampaignCard, 'stage' | 'canEdit' | 'canTopUp'>, except: CampaignActionKind[]): CampaignActionKind[] {
   const kinds: CampaignActionKind[] = [];
-  if (LAUNCHED.includes(card.stage.kind)) kinds.push('stats');
+  if (LAUNCHED_STAGES.includes(card.stage.kind)) kinds.push('stats');
   if (card.canEdit && card.stage.kind !== 'rejected') kinds.push('edit');
   if (card.canTopUp) kinds.push('topUp');
   if (card.stage.kind !== 'finished') kinds.push('repeat');

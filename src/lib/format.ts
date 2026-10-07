@@ -98,3 +98,34 @@ export function formatDayMonth(value: string | Date, lang: Lang): string {
   }
   return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', { timeZone: 'Asia/Almaty', day: 'numeric', month: 'short' }).format(date);
 }
+
+/** `fraction` 0.42 → «42 %». */
+export function formatPercent(fraction: number, lang: Lang): string {
+  return new Intl.NumberFormat(NUMBER_LOCALE[lang], { style: 'percent', maximumFractionDigits: 0 }).format(fraction);
+}
+
+/** «12:05»: the time of a backend timestamp in Almaty. */
+export function formatTime(value: string | Date, lang: Lang): string {
+  const date = typeof value === 'string' ? new Date(value) : value;
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'ru-RU', { timeZone: 'Asia/Almaty', hour: '2-digit', minute: '2-digit' }).format(date);
+}
+
+/** «8 сент. — 7 окт.»: two dates of a period. */
+export function formatDayRange(from: string, to: string, lang: Lang): string {
+  return `${formatDayMonth(from, lang)} — ${formatDayMonth(to, lang)}`;
+}
+
+// A YYYY-MM-DD day is formatted at its Almaty noon, so no time zone moves it to a neighbouring day.
+const almatyNoon = (day: string) => new Date(`${day}T12:00:00+05:00`);
+
+/** «сентябрь 2026 г.» / «қыркүйек 2026» / «September 2026» for a YYYY-MM-DD day. */
+export function formatMonthYear(day: string, lang: Lang): string {
+  if (lang === 'kk') return `${KK_MONTHS[Number(day.slice(5, 7)) - 1]} ${day.slice(0, 4)}`;
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', { timeZone: 'Asia/Almaty', month: 'long', year: 'numeric' }).format(almatyNoon(day));
+}
+
+/** «сент.» / «қыркүйек» / «Sep»: a month on a chart axis. */
+export function formatMonthShort(day: string, lang: Lang): string {
+  if (lang === 'kk') return KK_MONTHS[Number(day.slice(5, 7)) - 1];
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', { timeZone: 'Asia/Almaty', month: 'short' }).format(almatyNoon(day));
+}

@@ -1,12 +1,11 @@
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router';
 import { useAuthSession } from '../../../auth/useAuthSession';
+import { campaignAbilities, type Moderation } from '../../campaignStage';
 import { parseDemoVariant, type DemoVariant } from '../../demo';
 import { queryKeys } from '../../queryKeys';
 import { useTariffTerms } from '../../useTariffTerms';
 import { editCampaign, fetchCampaignPrefill, fetchStoreCatalog, submitCampaign, uploadCampaignMedia } from '../api';
-import { campaignAbilities } from '../model';
-import type { Moderation } from '../types';
 import { DEMO_MODERATION, demoCatalog, demoReturnedForm, demoWizardApi } from './demo';
 import { formFromPrefill } from './summary';
 import type { CampaignForm, CampaignPrefill, EditedCampaign, WizardApi, WizardCatalog } from './types';

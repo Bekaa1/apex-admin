@@ -35,6 +35,12 @@ export function playsFor(amount: number, pricePerPlay: number): number {
   return pricePerPlay > 0 ? Math.floor(amount / pricePerPlay) : 0;
 }
 
+/** The plan code a campaign row names, or `null` for an unknown one. */
+export function tariffOf(code: string | null | undefined): TariffCode | 'corporate' | null {
+  if (code === 'corporate') return code;
+  return TARIFFS.find((tariff) => tariff.code === code)?.code ?? null;
+}
+
 export function termsOf(terms: TariffTerms[], code: TariffCode | null): TariffTerms | null {
   return terms.find((plan) => plan.code === code) ?? null;
 }

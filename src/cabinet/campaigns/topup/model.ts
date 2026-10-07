@@ -1,9 +1,9 @@
 import { budgetFigures, type BudgetFigures } from '../../campaignBudget';
-import type { TariffCode } from '../../tariffs';
+import { coverTone } from '../../campaignCover';
+import { campaignAbilities, isExtendableStatus, stageOf, type CampaignStage } from '../../campaignStage';
+import { tariffOf, type TariffCode } from '../../tariffs';
 import { dailySpend } from '../details/model';
 import type { CampaignDetailsSource } from '../details/types';
-import { campaignAbilities, coverTone, isExtendableStatus, stageOf, tariffOf } from '../model';
-import type { CampaignStage } from '../types';
 
 /** Why a campaign can't be topped up: its status, or its plan is no longer sold. */
 export type TopUpBlock = 'status' | 'tariff';

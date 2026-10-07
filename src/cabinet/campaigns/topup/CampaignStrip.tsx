@@ -1,7 +1,7 @@
 import { Badge, Icon, Meter } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatMoney, formatNumber, pluralKey } from '../../../lib/format';
-import { STAGE_BADGE } from '../list/rowView';
+import { STAGE_BADGE } from '../../campaignStage';
 import type { TopUpCampaign } from './model';
 
 /** The campaign being topped up: cover, name, status and what is left of the budget. */

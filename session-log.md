@@ -17,7 +17,7 @@
 ---
 
 ## 2026-10-07 — Кампании: карточка, пополнение и редактирование
-Ветка: `feature/campaign-manage` · PR: —
+Ветка: `feature/campaign-manage` · PR: https://github.com/Bekaa1/apex-admin/pull/10
 Дизайн: «Apex — Мои кампании» (Claude Design), строки «Карточка кампании», «Пополнение», «Редактирование», «Список: меню «⋯»». Бэкенд — `edit_campaign`, `extend_campaign` и поля условий тарифа в `my_campaigns_stats` от 07.10, сверено только чтением.
 
 **Что сделано**

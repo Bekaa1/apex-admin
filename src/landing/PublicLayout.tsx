@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
-import { Button, IconButton, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system';
+import { Button, cx, IconButton, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system';
 import { useAuthSession } from '../auth/useAuthSession';
 import { useI18n } from '../i18n/i18n';
 import { ContactDropdown } from './ContactDropdown';
 import { CampaignLink } from './CampaignLink';
 import styles from './PublicLayout.module.css';
+import { useOverHero } from './useOverHero';
 
 const NAV = [{ path: '/how-it-works', key: 'how' }, { path: '/stores', key: 'stores' }, { path: '/pricing', key: 'pricing' }];
 
@@ -59,15 +60,17 @@ export function PublicLayout() {
   const [year] = useState(() => new Date().getFullYear());
   const { session } = useAuthSession();
   const { pathname } = useLocation();
+  const home = pathname === '/';
+  const overHero = useOverHero(home);
   useEffect(() => {
     const titleKey = pathname === '/pricing' ? 'pricing' : pathname === '/stores' ? 'stores' : pathname === '/how-it-works' ? 'how' : 'home';
     document.title = `${t(`landing.nav.${titleKey}`)} · Apexmedia`;
   }, [pathname, t]);
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
 
-  return <div className={styles.layout}>
+  return <div className={cx(styles.layout, home && styles.home)}>
     <a className={styles.skip} href="#public-main">{t('public.skip')}</a>
-    <header className={styles.header}>
+    <header className={cx(styles.header, overHero && styles.overHero)}>
       <Logo size={30} href="/" label={t('landing.nav.home')} />
       <nav className={styles.desktopNav} aria-label={t('landing.nav.label')}><Navigation /><ContactDropdown key={pathname} /></nav>
       <div className={styles.actions}>

@@ -4,6 +4,7 @@ import { useI18n } from '../i18n/i18n';
 import { AuthLayout } from './AuthLayout';
 import { useAuthSession } from './useAuthSession';
 import { DEFAULT_AUTH_LINKS } from './links';
+import { needsSignupContactVerification } from './signupContacts';
 
 export function SessionLoading() {
   const { t } = useI18n();
@@ -32,5 +33,7 @@ export function RequireSession() {
       </AuthLayout>
     );
   }
-  return session ? <Outlet /> : <Navigate to={DEFAULT_AUTH_LINKS.login} replace />;
+  if (!session) return <Navigate to={DEFAULT_AUTH_LINKS.login} replace />;
+  if (needsSignupContactVerification(session.user)) return <Navigate to={DEFAULT_AUTH_LINKS.signup} replace />;
+  return <Outlet />;
 }

@@ -9,7 +9,7 @@ export function AuthLayout({
   showLegalLinks = true,
   children,
 }: {
-  back?: { href: string; label: string };
+  back?: { href: string; label: string; onClick?: () => void };
   showLegalLinks?: boolean;
   children: ReactNode;
 }) {
@@ -37,7 +37,7 @@ export function AuthLayout({
       <div className="auth__main">
         <div className={back ? 'auth__top auth__top--with-back' : 'auth__top'}>
           {back ? (
-            <Button variant="ghost" size="md" iconLeft="arrow-left" href={back.href}>
+            <Button variant="ghost" size="md" iconLeft="arrow-left" href={back.href} onClick={back.onClick ? (event) => { event.preventDefault(); back.onClick?.(); } : undefined}>
               {back.label}
             </Button>
           ) : null}
@@ -85,7 +85,7 @@ export function AuthNote({ text, link, href }: { text: string; link: string; hre
 }
 
 /** «Отправить код ещё раз через 0:59» → after the countdown a resend link; plus «Не та почта? Изменить». */
-export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref, wrongContactLabel }: { seconds?: number; forceAvailable?: boolean; onResend?: () => void | Promise<void>; changeHref: string; wrongContactLabel?: string }) {
+export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref, wrongContactLabel, onChangeContact, disabled }: { seconds?: number; forceAvailable?: boolean; onResend?: () => void | Promise<void>; changeHref: string; wrongContactLabel?: string; onChangeContact?: () => void; disabled?: boolean }) {
   const { t } = useI18n();
   const [left, setLeft] = useState(forceAvailable ? 0 : seconds);
   useEffect(() => {
@@ -105,6 +105,7 @@ export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref
             href="#resend"
             onClick={(e) => {
               e.preventDefault();
+              if (disabled) return;
               void onResend?.();
               setLeft(seconds);
             }}
@@ -115,7 +116,7 @@ export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref
       )}
       <p>
         {wrongContactLabel ?? t('common.wrongEmail')}{' '}
-        <a className="auth__link" href={changeHref}>
+        <a className="auth__link" href={changeHref} onClick={onChangeContact ? (event) => { event.preventDefault(); if (!disabled) onChangeContact(); } : undefined}>
           {t('common.change')}
         </a>
       </p>

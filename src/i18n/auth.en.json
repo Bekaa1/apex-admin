@@ -51,10 +51,17 @@
   },
   "signup": {
     "title": "Create an account",
-    "subtitle": "Enter your email or phone number and password. We'll send a verification code.",
+    "subtitle": "Enter your email, phone number and password. First verify your email, then your phone by SMS.",
+    "phoneLabel": "Phone number",
+    "phoneSubtitle": "Now verify your phone number to continue signing up.",
+    "emailConfirmed": "Email verified",
+    "emailCodeSubtitle": "We sent a code to {email}. Verify your email, then we'll verify your phone number.",
+    "phoneCodeSubtitle": "We sent an SMS code to {email}. Verify your number to continue to company details.",
+    "sendSms": "Send SMS code",
+    "useAnotherAccount": "Use another email",
     "contactLabel": "Email or phone number",
     "terms": "I accept the <offer>terms of service</offer> and the <privacy>privacy policy</privacy>",
-    "submit": "Send code",
+    "submit": "Send email code",
     "step1": "Step 1 of 2",
     "profile": {
       "step": "Step 2 of 2",
@@ -76,8 +83,12 @@
     "login": "Sign in",
     "errors": {
       "contactTaken": "This email or phone number is already registered — sign in or recover access",
-      "contactTakenTitle": "This contact is already registered",
-      "contactTakenBody": "This email or phone number is already linked to an account.",
+      "contactTakenTitle": "Email already registered",
+      "contactTakenBody": "This email is already linked to an account. Sign in or recover access.",
+      "phoneTakenTitle": "Phone number already registered",
+      "phoneTakenBody": "This number is linked to another account. Enter another number or recover access to the existing account.",
+      "phoneSendTitle": "Couldn't send the SMS",
+      "phoneFormat": "Enter a Kazakhstan phone number, e.g. 701 123 45 67",
       "resetPassword": "Reset password",
       "contactFormat": "Enter an email or Kazakhstan phone number, e.g. name@company.kz or 701 123 45 67",
       "passwordShort": "Password is too short — use at least 8 characters",
@@ -98,7 +109,7 @@
     "phoneSubtitle": "We sent an SMS with a 6-digit code to {email}. Enter it to open your account.",
     "submit": "Confirm",
     "errors": {
-      "invalid": "This code doesn't match. Check the email or request a new one",
+      "invalid": "The code is incorrect or expired. Check the digits or request a new one",
       "expired": "The code has expired — we sent a new one",
       "unavailable": "We couldn't process the code. Check your connection and try again."
     }

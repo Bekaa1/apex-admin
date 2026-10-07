@@ -4,7 +4,9 @@ import { useI18n } from '../i18n/i18n';
 import { AuthHead, AuthLayout, AuthNote } from './AuthLayout';
 import { useAuthLinks } from './links';
 import { useContactInput } from './useContactInput';
-import { CONTACT_ERROR_KEY, PASSWORD_ERROR_KEY, validateNewPassword, validateSignupContact } from './validation';
+import { EMAIL_ERROR_KEY, PASSWORD_ERROR_KEY, normalizeKazakhstanPhone, validateEmail, validateNewPassword } from './validation';
+
+export interface SignupValues { email: string; phone: string; password: string }
 
 export interface SignupScreenProps {
   loading?: boolean;
@@ -15,36 +17,38 @@ export interface SignupScreenProps {
   /** Supabase is temporarily limiting signup or code requests. */
   rateLimited?: boolean;
   unavailable?: boolean;
-  defaultValues?: { contact?: string; password?: string; terms?: boolean };
+  defaultValues?: { email?: string; phone?: string; password?: string; terms?: boolean };
   /** Show validation errors immediately (used for previews of the error state). */
   showErrors?: boolean;
-  onSubmit?: (values: { contact: string; password: string }) => void | Promise<void>;
+  onSubmit?: (values: SignupValues) => void | Promise<void>;
   onContactChange?: () => void;
   onResetPassword?: () => void;
 }
 
-/** Sign-up asks only for a contact, password and consent. Company name and БИН come later, in onboarding. */
+/** Both contacts are required; company details follow their OTP confirmation. */
 export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimited, unavailable, defaultValues, showErrors, onSubmit, onContactChange, onResetPassword }: SignupScreenProps) {
   const { t, tRich } = useI18n();
   const links = useAuthLinks();
   const returnToSignup = `?returnTo=${encodeURIComponent(links.signup)}`;
-  const { contact, handleBeforeInput: handleContactBeforeInput, handleChange: handleContactChange, handleBlur: handleContactBlur } = useContactInput(defaultValues?.contact ?? '');
+  const [email, setEmail] = useState(defaultValues?.email ?? '');
+  const { contact: phone, handleBeforeInput, handleChange, handleBlur } = useContactInput(defaultValues?.phone ?? '');
   const [password, setPassword] = useState(defaultValues?.password ?? '');
   const [terms, setTerms] = useState(defaultValues?.terms ?? false);
   const [submitted, setSubmitted] = useState(Boolean(showErrors));
 
-  const contactProblem = submitted ? validateSignupContact(contact) : null;
+  const emailProblem = submitted ? validateEmail(email) : null;
   const passwordProblem = submitted ? validateNewPassword(password) : null;
-  const contactError = contactProblem ? t(CONTACT_ERROR_KEY[contactProblem]) : undefined;
+  const emailError = emailProblem ? t(EMAIL_ERROR_KEY[emailProblem]) : undefined;
+  const phoneError = submitted && !normalizeKazakhstanPhone(phone)
+    ? t(phone.trim() ? 'signup.errors.phoneFormat' : 'login.errors.required') : undefined;
   const passwordError = passwordProblem ? t(PASSWORD_ERROR_KEY[passwordProblem]) : passwordRejected ? t('signup.errors.passwordWeak') : undefined;
   const termsError = submitted && !terms ? t('signup.errors.terms') : undefined;
-  const isPhoneInput = /^[+\d]/.test(contact.trim());
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    if (validateSignupContact(contact) || validateNewPassword(password) || !terms) return;
-    void onSubmit?.({ contact: contact.trim(), password });
+    if (loading || validateEmail(email) || !normalizeKazakhstanPhone(phone) || validateNewPassword(password) || !terms) return;
+    void onSubmit?.({ email: email.trim(), phone: phone.trim(), password });
   };
 
   return (
@@ -76,19 +80,33 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
           </Alert>
         ) : null}
         <TextField
-          label={t('signup.contactLabel')}
-          type="text"
-          inputMode={isPhoneInput ? 'tel' : 'email'}
-          autoComplete="username"
-          placeholder={t('common.contactPlaceholder')}
-          value={contact}
-          onBeforeInput={handleContactBeforeInput}
+          label={t('common.email')}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder={t('common.emailPlaceholder')}
+          value={email}
           onChange={(e) => {
-            handleContactChange(e)
+            setEmail(e.target.value)
             onContactChange?.()
           }}
-          onBlur={handleContactBlur}
-          error={contactError}
+          error={emailError}
+          disabled={loading}
+          required
+        />
+        <TextField
+          label={t('signup.phoneLabel')}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="701 123 45 67"
+          value={phone}
+          onBeforeInput={handleBeforeInput}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={phoneError}
+          disabled={loading}
+          required
         />
         <PasswordField
           label={t('common.password')}
@@ -99,6 +117,8 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
           error={passwordError}
           showLabel={t('common.showPassword')}
           hideLabel={t('common.hidePassword')}
+          disabled={loading}
+          required
         />
         <Checkbox className="signup__terms" checked={terms} onChange={(e) => setTerms(e.target.checked)} error={termsError}>
           {tRich('signup.terms', {

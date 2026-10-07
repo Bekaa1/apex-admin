@@ -58,7 +58,7 @@
 - Проверки: lint ✓ (8 существующих предупреждений), build ✓.
 
 ## 2026-10-06 — Новая кампания: мастер, экран успеха, корпоративный тариф
-Ветка: `feature/campaign-wizard` (от `feature/campaigns`) · PR: —
+Ветка: `feature/campaign-wizard` (от `feature/campaigns`) · PR: https://github.com/Bekaa1/apex-admin/pull/6
 Дизайн: «Apex — Мои кампании» https://claude.ai/artifact/RfDdgYYsieCJF2gF9xQp8H (версия 1791306169-f9ee)
 
 **Что сделано**

@@ -44,7 +44,7 @@ export const CABINET_SECTIONS: CabinetSection[] = [
       { path: 'campaigns/:campaignId', titleKey: 'cabinet.nav.campaigns', page: () => import('./campaigns/details/CampaignDetailsPage').then((m) => m.CampaignDetailsPage) },
     ],
   },
-  { id: 'stats', path: 'stats', labelKey: 'cabinet.nav.stats', icon: 'chart' },
+  { id: 'stats', path: 'stats', labelKey: 'cabinet.nav.stats', icon: 'chart', page: () => import('./stats/StatsPage').then((m) => m.StatsPage) },
   {
     id: 'analytics',
     path: 'analytics',

@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router';
 import { Badge, Icon, Menu } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatDayMonth, formatNumber, pluralKey } from '../../../lib/format';
+import { STAGE_BADGE } from '../../campaignStage';
 import { ButtonLink } from '../../ui/ButtonLink';
-import { campaignAction, moreActionKinds, STAGE_BADGE, type CampaignActionKind } from '../list/rowView';
+import { campaignAction, moreActionKinds, type CampaignActionKind } from '../list/rowView';
 import { formatClock } from '../wizard/media';
 import type { CampaignDetails } from './types';
 

@@ -1,8 +1,11 @@
 // Rows the campaigns list reads from Supabase and the cards it shows.
 import type { Database } from '../../lib/database.types';
 import type { BudgetFigures } from '../campaignBudget';
+import type { CampaignStage } from '../campaignStage';
 import type { DailyPlaysRow } from '../plays';
 import type { TariffCode } from '../tariffs';
+
+export type { CampaignStage, Moderation, StageKind } from '../campaignStage';
 
 type StatsView = Database['public']['Views']['my_campaigns_stats']['Row'];
 
@@ -44,27 +47,6 @@ export interface CampaignsSource {
 export type PlaysPeriod = 'week' | 'month' | 'all';
 export type CampaignTab = 'all' | 'running' | 'review' | 'finished';
 export type CampaignSort = 'new' | 'budgetLeft' | 'shows' | 'name';
-
-export interface Moderation {
-  /** Codes of the broken rules, texts in `campaigns.rules.*`. */
-  rules: string[];
-  comment: string | null;
-}
-
-/** Where the campaign is. `null` means the backend doesn't tell yet, and that part is not shown. */
-export type CampaignStage =
-  | { kind: 'review'; paid: boolean | null }
-  /** A launched campaign was edited: shows are paused until the moderator approves the changes. */
-  | { kind: 'changesReview'; since: string | null }
-  | { kind: 'awaitingPayment'; invoice: { amount: number; sentTo: string } | null }
-  | { kind: 'rejected'; paid: boolean | null; moderation: Moderation | null }
-  | { kind: 'active'; since: string | null; low: boolean }
-  | { kind: 'paused'; since: string | null }
-  | { kind: 'hoursEnded' }
-  | { kind: 'noBudget' }
-  | { kind: 'finished'; from: string | null; to: string | null };
-
-export type StageKind = CampaignStage['kind'];
 
 export interface CampaignCard {
   id: string;

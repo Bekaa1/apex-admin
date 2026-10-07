@@ -48,11 +48,15 @@ src/
     CabinetLayout.tsx     каркас: SideNav (меню → рейка ≤1100px), TopBar, TabBar (телефон ≤760px)
     sections.ts           разделы: путь, ключ названия, иконка, lazy-страница, подстраницы; CABINET_LINKS — адреса
     campaignStatus.ts     статусы кампаний → цвет бейджа, подписи в cabinet.status.*
+    campaignStage.ts      стадия кампании (stageOf, бейдж, запущенные стадии) и что с ней можно сделать — для кампаний и статистики
+    charts.ts             графики показов (столбцы по дням, неделям, месяцам) и цвет и стрелка дельты
     campaignBudget.ts, plays.ts, stores.ts, tariffs.ts, queryKeys.ts — общее для разделов: бюджет, показы,
                           «Все магазины», тарифы по дизайну (тексты в cabinet.tariffs.*), ключи react-query;
                           useTariffTerms.ts — условия тарифов из базы: цена показа, минимум, зоны, версия
-    cabinet.css           общий слой кабинета из дизайна (cab-): каркас, карточки, таблица, KPI, чек, тарифы
-    ui/ButtonLink.tsx     ссылка роутера в виде кнопки кита (Button с href перезагружает страницу)
+    cabinet.css           общий слой кабинета из дизайна (cab-): каркас, карточки, таблица, KPI, чек, тарифы;
+                          блоки cmp-, нужные и кампаниям, и статистике: обложка, строка меты, пустое состояние, «назад»
+    ui/ButtonLink.tsx     ссылка роутера в виде кнопки кита (Button с href перезагружает страницу); IconLink — в виде IconButton
+    ui/CampaignCover.tsx  обложка кампании 16:9 (cover tone — campaignCover.ts)
     ui/LoadError.tsx      «Не удалось загрузить» с кнопкой «Повторить»
     demo.ts               ?demo=new|active|loading|error — превью состояний, только в dev
     home/                 главная: model.ts (строки вью → данные экрана), useHomeState, гид и сводка
@@ -61,6 +65,8 @@ src/
       details/              карточка кампании (cmpd-)
       topup/                пополнение (cmpt-)
       corporate/            корпоративный тариф
+    stats/                «Статистика» (st-, stats.css): фильтры в URL (?campaign, period, scope, step); selection → model → lines,
+                          периоды и столбцы в period.ts и buckets.ts; блоки без данных бэкенда приходят как null и не рисуются
     <раздел>/             остальные разделы
       XxxPage.tsx           страница раздела: подключает данные
       Xxx*.tsx              презентационные компоненты: props → UI
@@ -101,7 +107,7 @@ src/
 - В репозитории лежит экспорт кита от 05.10.2026: `apex-design-kit/apex-design-kit/`. Перед вёрсткой читаем его `AGENTS.md` и `docs/`.
 - Стили пишем только на токенах (`var(--…)` из `tokens.css`). Свои hex, размеры шрифтов, радиусы и тени запрещены. Шрифты: Geologica для заголовков и цифр, Onest для текста. Inter, Manrope и Unbounded не используем.
 - Стили:
-  - экраны, перенесённые из Claude Design один в один, держат глобальный префикс: `ax-` (кит), `auth…`, `land…`, `cab-` (кабинет), `cmp-` (кампании);
+  - экраны, перенесённые из Claude Design один в один, держат глобальный префикс: `ax-` (кит), `auth…`, `land…`, `cab-` (кабинет), `cmp-` (кампании), `st-` (статистика);
   - собственные стили разделов пишем на CSS Modules;
   - блок, нужный двум разделам, переносим в `cabinet.css`.
 - Каждый экран проверяем в светлой и тёмной теме, на ширине 1440 и 390, в состояниях default, loading, empty и error. Все тексты берём из i18n на ru/kk/en (kk пока черновик). Вёрстка должна выдерживать длинные казахские строки.
@@ -133,7 +139,7 @@ src/
   - После изменений бэкенда генерируем заново.
 - Ключи храним только в `.env.local` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`). В git лежит `.env.example` с шаблонными значениями. Во фронте используем только anon (publishable) ключ; service_role и secret сюда не попадают никогда.
 - Данные защищает RLS, а не фронт. Фильтр по `user_id` на клиенте нужен только для отображения, безопасности он не даёт. Компоненты не обращаются к Supabase напрямую, только через `api.ts`.
-- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свои `public.users.company_name` и `email` (на него бэкенд шлёт счета) через `cabinet/api.ts`. Условия тарифов — цену показа, минимум, есть ли зоны (`can_select_zone`) и версию — читаем из `tariffs` (`useTariffTerms`), в коде их не держим; в коде только вид карточек тарифа. `has_sound` не используем. Главная читает данные через `cabinet/home/api.ts`: `my_campaigns_stats`, `my_daily_plays_by_campaign` (14 дней), свои строки `ads` (обложка, магазин) и `stores`. Список кампаний — через `cabinet/campaigns/api.ts`: только `my_campaigns_stats` (обложка, тариф, магазины, тележки, оплата, модерация) и показы за 30 дней. Все списки читаются через `allRows`. Мастер кампании берёт каталог из `catalog_stores` и `catalog_zones`, для «Повторить», «Редактировать» и «Исправить» — свою строку `ads`, её `ad_stores` и `ad_zones`; ролики и обложки грузит в бакет `campaign-media/<uid>/` (имена файлов латиницей, исходное имя уходит в `file_name`); отправляет через `submit_campaign` с `tariff_version` показанных условий, «Редактировать» и «Исправить» — через `edit_campaign` (тариф и бюджет не меняются). Карточка кампании читает строку `my_campaigns_stats`, свою строку `ads` (имена файлов), `my_campaign_locations`, `my_daily_plays_by_campaign` и `advertiser_invoices` кампании; пополнение — `extend_campaign` с текущей `tariff_version`. Корпоративная заявка — `submit_corporate_request`. `?demo=` доступен только в dev после входа.
+- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свои `public.users.company_name` и `email` (на него бэкенд шлёт счета) через `cabinet/api.ts`. Условия тарифов — цену показа, минимум, есть ли зоны (`can_select_zone`) и версию — читаем из `tariffs` (`useTariffTerms`), в коде их не держим; в коде только вид карточек тарифа. `has_sound` не используем. Главная читает данные через `cabinet/home/api.ts`: `my_campaigns_stats`, `my_daily_plays_by_campaign` (14 дней), свои строки `ads` (обложка, магазин) и `stores`. Список кампаний — через `cabinet/campaigns/api.ts`: только `my_campaigns_stats` (обложка, тариф, магазины, тележки, оплата, модерация) и показы за 30 дней. Все списки читаются через `allRows`. Мастер кампании берёт каталог из `catalog_stores` и `catalog_zones`, для «Повторить», «Редактировать» и «Исправить» — свою строку `ads`, её `ad_stores` и `ad_zones`; ролики и обложки грузит в бакет `campaign-media/<uid>/` (имена файлов латиницей, исходное имя уходит в `file_name`); отправляет через `submit_campaign` с `tariff_version` показанных условий, «Редактировать» и «Исправить» — через `edit_campaign` (тариф и бюджет не меняются). Карточка кампании читает строку `my_campaigns_stats`, свою строку `ads` (имена файлов), `my_campaign_locations`, `my_daily_plays_by_campaign` и `advertiser_invoices` кампании; пополнение — `extend_campaign` с текущей `tariff_version`. Корпоративная заявка — `submit_corporate_request`. Статистика — через `cabinet/stats/api.ts`: `my_campaigns_stats` (с `online_cart_count`), все строки `my_daily_plays_by_campaign`, `my_campaign_locations` и `catalog_stores`; «Потрачено» за 7/30/90 дней — показы × `price_per_play` (цена показа не хранится), за всё время — `spent_budget`. Разбивку по магазинам, зонам, часам и тележкам ждём от бэкенда (запрос 07.10 в session-log), пока эти блоки видны только на `?demo=`. `?demo=` доступен только в dev после входа.
 
 ## Процесс (git)
 - Одна фича — одна ветка от свежего `main`: `feature/<коротко>`, для исправлений `fix/…`, для служебных задач `chore/…`. Отдельной ветки «claude» нет. В `main` напрямую не коммитим. Ветки `agent/*` и worktree второго разработчика не трогаем.

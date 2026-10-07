@@ -139,6 +139,128 @@ export type Database = {
           },
         ]
       }
+      ad_events: {
+        Row: {
+          ad_id: string
+          amount: number | null
+          created_at: string
+          id: number
+          invoice_id: string | null
+          kind: string
+          status: string | null
+        }
+        Insert: {
+          ad_id: string
+          amount?: number | null
+          created_at?: string
+          id?: never
+          invoice_id?: string | null
+          kind: string
+          status?: string | null
+        }
+        Update: {
+          ad_id?: string
+          amount?: number | null
+          created_at?: string
+          id?: never
+          invoice_id?: string | null
+          kind?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_stores: {
         Row: {
           actually_paid: number | null
@@ -701,6 +823,7 @@ export type Database = {
           display_id: number
           earned_points: number | null
           end_date: string | null
+          exclusive_zone: boolean
           hours_per_day: number | null
           hours_used_pct: number | null
           id: string
@@ -747,6 +870,7 @@ export type Database = {
           display_id?: number
           earned_points?: number | null
           end_date?: string | null
+          exclusive_zone?: boolean
           hours_per_day?: number | null
           hours_used_pct?: number | null
           id?: string
@@ -793,6 +917,7 @@ export type Database = {
           display_id?: number
           earned_points?: number | null
           end_date?: string | null
+          exclusive_zone?: boolean
           hours_per_day?: number | null
           hours_used_pct?: number | null
           id?: string
@@ -965,6 +1090,7 @@ export type Database = {
           id: string
           issued_at: string
           kind: string
+          min_amount: number | null
           number: number
           paid_at: string | null
           paid_by: string | null
@@ -981,6 +1107,7 @@ export type Database = {
           id?: string
           issued_at?: string
           kind?: string
+          min_amount?: number | null
           number?: never
           paid_at?: string | null
           paid_by?: string | null
@@ -997,6 +1124,7 @@ export type Database = {
           id?: string
           issued_at?: string
           kind?: string
+          min_amount?: number | null
           number?: never
           paid_at?: string | null
           paid_by?: string | null
@@ -3420,6 +3548,7 @@ export type Database = {
           moderated_at: string | null
           moderator_comment: string | null
           name: string | null
+          online_cart_count: number | null
           paid_amount: number | null
           plays_count: number | null
           price_per_play: number | null
@@ -3435,6 +3564,7 @@ export type Database = {
           store_name: string | null
           submitted_at: string | null
           tariff_can_extend: boolean | null
+          tariff_can_select_zone: boolean | null
           tariff_code: string | null
           tariff_current_price: number | null
           tariff_min_amount: number | null

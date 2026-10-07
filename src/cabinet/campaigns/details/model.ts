@@ -1,7 +1,9 @@
 import { shiftDate, todayInAlmaty } from '../../../lib/dates';
 import { budgetFigures } from '../../campaignBudget';
-import { storesOf } from '../../stores';
-import { campaignAbilities, coverTone, stageOf, tariffOf } from '../model';
+import { coverTone } from '../../campaignCover';
+import { campaignAbilities, stageOf } from '../../campaignStage';
+import { linkedStores } from '../../stores';
+import { tariffOf } from '../../tariffs';
 import type { StoreCatalog } from '../wizard/types';
 import type { CampaignDetails, CampaignDetailsSource, ChartBucket, DetailsStats, DetailsStore, HistoryEvent } from './types';
 
@@ -53,21 +55,8 @@ function statsOf(source: CampaignDetailsSource): DetailsStats | null {
 
 /** Stores of the campaign with their address, carts and the chosen shelf zones. «Все магазины» stands for every store. */
 function storesOfCampaign(source: CampaignDetailsSource, catalog: StoreCatalog): DetailsStore[] {
-  const linked = source.locations.filter((location) => location.kind === 'store' && location.location_id);
-  // Stores that left the catalog are still shown, by the name the campaign keeps.
-  const known = [
-    ...catalog.stores,
-    ...linked.flatMap((location) =>
-      location.location_id && !catalog.stores.some((store) => store.id === location.location_id)
-        ? [{ id: location.location_id, name: location.location_name ?? '', address: null, city: null, carts: null, activeCampaigns: null }]
-        : [],
-    ),
-  ];
   const zones = source.locations.filter((location) => location.kind === 'zone');
-  return storesOf(
-    linked.map((location) => location.location_id),
-    known,
-  ).map((store) => ({
+  return linkedStores(source.locations, catalog.stores, (id, name) => ({ id, name, address: null, city: null, carts: null, activeCampaigns: null })).map((store) => ({
     id: store.id,
     name: store.name,
     address: [store.address, store.city].filter(Boolean).join(', ') || null,

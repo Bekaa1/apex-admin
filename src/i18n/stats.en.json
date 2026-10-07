@@ -1,0 +1,209 @@
+{
+  "filters": {
+    "campaign": "Campaign",
+    "allCampaigns": "All campaigns",
+    "period": "Period",
+    "periods": {
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "90d": "Last 90 days",
+      "all": "All time"
+    },
+    "scope": "Which campaigns to count",
+    "scopes": {
+      "all": "All",
+      "running": "Running",
+      "finished": "Finished"
+    },
+    "back": "All statistics"
+  },
+  "meta": {
+    "compare": "Compared with {range}",
+    "noCompare": "No comparison: nothing was shown in the previous period",
+    "updated": "Updated at {time}"
+  },
+  "kpi": {
+    "label": "Totals for the period",
+    "plays": "Impressions",
+    "spent": "Spent",
+    "price": "Cost per impression",
+    "priceAverage": "average for the period",
+    "cartsOnline": "Carts online",
+    "cartsOf": " of {total}",
+    "onlineNow": "{pct} online now",
+    "carts": "Carts",
+    "cartsWere": "were in the campaign",
+    "cartsWereAll": "were in the campaigns",
+    "vs": {
+      "7d": "vs previous 7 days",
+      "30d": "vs previous 30 days",
+      "90d": "vs previous 90 days"
+    }
+  },
+  "chart": {
+    "title": "Impressions over time",
+    "titleCampaign": "Campaign impressions",
+    "average": {
+      "day": "{value} a day on average",
+      "week": "{value} a week on average",
+      "month": "{value} a month on average"
+    },
+    "peak": {
+      "day": "peak — {date}, {weekday}: {value}",
+      "week": "peak — week of {range}: {value}",
+      "month": "peak — {month}: {value}"
+    },
+    "step": "Chart step",
+    "steps": {
+      "day": "Days",
+      "week": "Weeks",
+      "month": "Months"
+    },
+    "showTable": "Show as a table",
+    "label": {
+      "day": "Impressions by day",
+      "week": "Impressions by week",
+      "month": "Impressions by month"
+    },
+    "hint": "Left and right arrows move between columns",
+    "partial": {
+      "week": "Hatched columns are partial weeks: the period starts or ends mid-week. They are left out of the average.",
+      "month": "Hatched columns are partial months: the period starts or ends mid-month. They are left out of the average."
+    },
+    "table": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "plays": "Impressions",
+      "partial": "partial"
+    },
+    "playsUnit": {
+      "one": "impression",
+      "other": "impressions"
+    }
+  },
+  "campaigns": {
+    "title": "By campaign",
+    "lead": "Impressions, spending and cost per impression of each campaign for the chosen period.",
+    "columns": {
+      "campaign": "Campaign",
+      "plays": "Impressions",
+      "share": "Share of impressions",
+      "spent": "Spent",
+      "price": "Cost per impression",
+      "trend": "Trend",
+      "more": "Details"
+    },
+    "shareLabel": "{pct} of all impressions",
+    "more": "Details: {name}",
+    "note": "Campaigns under review and drafts will appear here after the launch."
+  },
+  "change": {
+    "new": "new"
+  },
+  "stores": {
+    "title": "By store",
+    "lead": {
+      "one": "{count} store with impressions in the period. Compare impressions per cart to see where the video works best.",
+      "other": "{count} stores with impressions in the period. Compare impressions per cart to see where the video works best."
+    },
+    "columns": {
+      "store": "Store",
+      "plays": "Impressions",
+      "share": "Share of impressions",
+      "perCart": "Per cart",
+      "online": "Carts online"
+    },
+    "onlineOf": "{online} of {total}",
+    "showAll": "Show all ({count})"
+  },
+  "carts": {
+    "title": "Carts",
+    "lead": "Cart screens in the stores of your campaigns.",
+    "leadCampaign": "Cart screens in the stores of this campaign.",
+    "now": "of {total} online now",
+    "meterLabel": "{pct} online now",
+    "online": "Online",
+    "offline": "Offline",
+    "worked": "Showed your video in the period",
+    "worst": "Most offline",
+    "worstCount": "{count} offline",
+    "note": "Offline means the screen is off, out of battery or without connection. The video doesn’t play on such carts."
+  },
+  "zones": {
+    "title": "Impressions at the shelf",
+    "lead": "How many impressions came from the chosen zones and how many from the general rotation.",
+    "split": "At the shelf {zones}, general rotation {rotation}",
+    "atShelves": "At the shelf",
+    "rotation": "General rotation",
+    "listLabel": "Impressions by zone",
+    "stores": {
+      "one": "in {count} store",
+      "other": "in {count} stores"
+    }
+  },
+  "hours": {
+    "title": "When the video played",
+    "lead": "Most impressions on average — {days}, {from} to {to}.",
+    "label": "Impressions by weekday and hour. Most — {days}, {from} to {to}.",
+    "labelEmpty": "Impressions by weekday and hour.",
+    "cell": "{weekday}, {hour} — {value} on average",
+    "less": "Fewer",
+    "more": "More",
+    "and": "and",
+    "weekdays": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    }
+  },
+  "head": {
+    "budget": "Campaign budget",
+    "left": "{left} left of {total}",
+    "spentOf": "{spent} spent of {total}",
+    "meterLabel": "{pct} of the budget spent",
+    "since": "Since {date}",
+    "period": "{from} — {to}",
+    "stores": {
+      "one": "{count} store",
+      "other": "{count} stores"
+    },
+    "carts": {
+      "one": "{count} cart",
+      "other": "{count} carts"
+    },
+    "topUp": "Top up"
+  },
+  "empty": {
+    "title": "Statistics will appear after a campaign launches",
+    "lead": "As soon as the moderator approves a campaign and impressions start, you’ll see numbers by day, store and zone here.",
+    "waiting": "Waiting for launch: {count}",
+    "toCampaigns": "To my campaigns",
+    "create": "Create a campaign",
+    "points": {
+      "days": "Impressions and spending by day, week and month",
+      "stores": "Impressions in every store",
+      "carts": "How many carts are online",
+      "shelves": "Impressions at the shelf and by hour"
+    }
+  },
+  "noPlays": {
+    "title": "No impressions in this period",
+    "titleAll": "No impressions yet",
+    "all": "Your campaigns had no impressions in this period. Check all time.",
+    "running": "Running campaigns had no impressions in this period. Check all time.",
+    "finished": "Finished campaigns had no impressions in this period. Check all time.",
+    "campaign": "The campaign had no impressions in this period. Check all time.",
+    "soon": "Statistics arrive once an hour: the first impressions will appear here soon after the launch.",
+    "showAll": "Show all time"
+  },
+  "error": {
+    "title": "Couldn’t load statistics",
+    "text": "Check your connection and try again."
+  },
+  "loading": "Loading statistics"
+}

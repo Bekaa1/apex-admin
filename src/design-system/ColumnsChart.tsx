@@ -8,6 +8,8 @@ export interface ColumnsChartBar {
   label: string;
   /** major — always shown; minor — hidden when the chart is narrow; none — never shown. */
   tick?: 'major' | 'minor';
+  /** Hatched: the column covers only part of its week or month. */
+  muted?: boolean;
   /** Tooltip: «1 713 показов» over «6 окт.». Screen readers hear «6 окт.: 1 713 показов». */
   tip: { value: string; unit?: string; caption: string };
 }
@@ -24,13 +26,18 @@ export interface ColumnsChartProps {
   className?: string;
 }
 
-const NICE_STEPS = [1, 2, 4, 6, 8, 10];
+const NICE_STEPS = [1, 2, 5];
+const MAX_INTERVALS = 3;
 
-/** Top of the axis: the next round number above the peak, even so the middle line is a whole number too. */
-function niceMax(value: number): number {
-  const top = Math.max(value, 2);
-  const power = 10 ** Math.floor(Math.log10(top));
-  return (NICE_STEPS.find((step) => step * power >= top) ?? 10) * power;
+/** Axis lines: the smallest 1, 2 or 5 × 10ⁿ step that covers the peak in at most three intervals (0 / 2 000 / 4 000 / 6 000). */
+function axisTicks(peak: number): number[] {
+  const top = Math.max(peak, 1);
+  for (let power = Math.max(1, 10 ** Math.floor(Math.log10(top / MAX_INTERVALS))); ; power *= 10) {
+    for (const step of NICE_STEPS) {
+      const intervals = Math.ceil(top / (step * power));
+      if (intervals <= MAX_INTERVALS) return Array.from({ length: intervals + 1 }, (_, index) => index * step * power);
+    }
+  }
 }
 
 const EDGE_SHARE = 0.15;
@@ -38,8 +45,8 @@ const EDGE_SHARE = 0.15;
 /** One series of columns, e.g. plays per day. Hover or arrow keys show a column's value; the peak is labelled. */
 export function ColumnsChart({ bars, label, formatValue, keyboardHint, plotHeight = 240, className }: ColumnsChartProps) {
   const [active, setActive] = useState<number | null>(null);
-  const max = niceMax(Math.max(0, ...bars.map((bar) => bar.value)));
-  const ticks = [0, max / 2, max];
+  const ticks = axisTicks(Math.max(0, ...bars.map((bar) => bar.value)));
+  const max = ticks[ticks.length - 1];
   const pct = (value: number) => `${(value / max) * 100}%`;
   const peak = bars.reduce((best, bar, index) => (bar.value > bars[best].value ? index : best), 0);
   const shown = active === null ? null : bars[active];
@@ -86,7 +93,7 @@ export function ColumnsChart({ bars, label, formatValue, keyboardHint, plotHeigh
         </div>
         <div className="ax-cols__bars" aria-hidden="true">
           {bars.map((bar, index) => (
-            <div key={bar.key} className={cx('ax-cols__slot', index === active && 'is-active')} onPointerEnter={() => setActive(index)}>
+            <div key={bar.key} className={cx('ax-cols__slot', bar.muted && 'is-muted', index === active && 'is-active')} onPointerEnter={() => setActive(index)}>
               <span className="ax-cols__bar" style={{ height: pct(bar.value) }} />
               {index === peak && active === null && bar.value > 0 ? (
                 <span className="ax-cols__peak" style={{ bottom: pct(bar.value) }}>

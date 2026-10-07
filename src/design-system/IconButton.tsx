@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
-import { cx } from './cx';
+import { iconButtonClassName, type IconButtonVariant } from './buttonClassName';
 import { Icon, type IconName } from './Icon';
 
 export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
@@ -7,12 +7,12 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   /** Required accessible name (aria-label + tooltip). */
   label: string;
   /** outline — standalone actions (theme, menu); ghost — inside fields and alerts. */
-  variant?: 'outline' | 'ghost';
+  variant?: IconButtonVariant;
 }
 
 export function IconButton({ icon, label, variant = 'outline', className, type = 'button', ...rest }: IconButtonProps) {
   return (
-    <button {...rest} type={type} aria-label={label} title={label} className={cx('ax-iconbtn', variant === 'ghost' && 'ax-iconbtn--ghost', className)}>
+    <button {...rest} type={type} aria-label={label} title={label} className={iconButtonClassName(variant, className)}>
       <Icon name={icon} />
     </button>
   );

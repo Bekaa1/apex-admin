@@ -7,10 +7,6 @@
 /* ── Shared ────────────────────────────────────────────── */
 .cmp-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--success); font-weight: 600; }
 
-/* Cover 16:9 — placeholder gradient comes from .cab-thumb--N */
-.cmp-cover { position: relative; flex: none; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; color: var(--on-primary); aspect-ratio: 16 / 9; }
-.cmp-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.cmp-cover--md { width: 96px; border-radius: var(--radius-sm); }
 
 /* ── List page ─────────────────────────────────────────── */
 .cmp-toolbar { display: flex; flex-direction: column; gap: var(--space-4); }
@@ -38,8 +34,6 @@
 .cmp-row__name { font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--text); text-decoration: none; overflow-wrap: anywhere; }
 .cmp-row__name:hover { color: var(--link); text-decoration: underline; }
 .cmp-row__name:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-xs); }
-.cmp-row__meta { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 0; font-size: 13px; line-height: 1.4; color: var(--text-muted); }
-.cmp-row__meta span:not(:last-child)::after { content: '·'; margin: 0 6px; color: var(--text-subtle); }
 .cmp-row__status { grid-area: status; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .cmp-row__note { font-size: 13px; line-height: 1.35; color: var(--text-muted); }
 .cmp-row__budget { grid-area: budget; min-width: 0; }
@@ -63,17 +57,12 @@
 .cmp-row--draft .cmp-row__name { color: var(--text-muted); }
 
 /* Empty state */
-.cmp-empty { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); padding: var(--space-10) var(--space-8); text-align: center; }
-.cmp-empty--small { padding: var(--space-9) var(--space-6); gap: var(--space-3); }
-.cmp-empty--small .cab-muted { max-width: 30em; }
 .cmp-empty__art { position: relative; width: 220px; height: 112px; margin-bottom: var(--space-2); }
 .cmp-empty__card { position: absolute; width: 150px; aspect-ratio: 16 / 9; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--on-primary); box-shadow: var(--shadow-md); }
 .cmp-empty__card:first-child { left: 0; top: 0; transform: rotate(-6deg); opacity: .55; }
 .cmp-empty__card:nth-child(2) { right: 8px; bottom: 0; transform: rotate(3deg); }
 .cmp-empty__plus { position: absolute; right: -4px; top: 0; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
   background: var(--primary); color: var(--on-primary); box-shadow: 0 0 0 5px var(--surface); }
-.cmp-empty__lead { max-width: 34em; margin: 0; }
-.cmp-empty__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
 .cmp-empty__chain { justify-content: center; margin-top: var(--space-4); }
 .cmp-prep { display: flex; flex-direction: column; gap: var(--space-4); }
 .cmp-prep__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
@@ -116,14 +105,11 @@
   .cmp-row__action > .ax-btn { flex: 1 1 auto; min-width: 0; }
   .cmp-row__foot { padding: var(--space-3) var(--space-4); }
   .cmp-row__foot-note { margin-left: 0; }
-  .cmp-empty { padding: var(--space-8) var(--space-5); }
-  .cmp-empty__ctas, .cmp-empty__ctas .ax-btn { width: 100%; }
   .cmp-empty__chain { justify-content: flex-start; }
   .cmp-corp-banner { padding: var(--space-5); }
 }
 
 /* ═══ Wizard, success, corporate plan ═══════════════════ */
-.cmp-back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: var(--control-md); font-size: 15px; }
 .cmp-num { text-align: right; font-variant-numeric: tabular-nums; }
 .cmp-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .cmp-fields { display: flex; flex-direction: column; gap: var(--space-6); }
@@ -131,7 +117,6 @@
 .cmp-fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cmp-level--accent span.is-on { background: var(--accent); }
 .cmp-level--accent span { background: var(--accent-soft); }
-.cmp-cover--lg { width: 160px; border-radius: var(--radius-md); }
 /* The only raw colour: a dark scrim under the timecode, over a video frame or the logo gradient (media layer, like .cab-thumb). */
 .cmp-cover__time { position: absolute; right: 6px; bottom: 6px; padding: 2px 6px; border-radius: var(--radius-xs); background: rgba(5, 6, 12, 0.6); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
@@ -358,7 +343,6 @@
 }
 
 /* ═══ Campaign card, top-up, edit (prefixes cmpd-, cmpt-, cmp-change) ═══ */
-.cmp-cover--sm { width: 72px; border-radius: var(--radius-sm); }
 .cmp-changes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-xl); }
 .cmp-change { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-5); min-width: 0; }
 .cmp-change + .cmp-change { border-top: 1px solid var(--border); }

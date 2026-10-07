@@ -56,6 +56,8 @@ src/
     demo.ts               ?demo=new|active|loading|error — превью состояний, только в dev
     home/                 главная: model.ts (строки вью → данные экрана), useHomeState, гид и сводка
     campaigns/            «Мои кампании»: список (list/), стили cmp- в campaigns.css; фильтры в URL
+      wizard/               мастер «Новая кампания»: шаг в ?step=, форма в useReducer и sessionStorage вкладки
+      corporate/            корпоративный тариф
     <раздел>/             остальные разделы
       XxxPage.tsx           страница раздела: подключает данные
       Xxx*.tsx              презентационные компоненты: props → UI
@@ -63,7 +65,8 @@ src/
       api.ts                запросы раздела к Supabase
       useXxx.ts             хуки (react-query)
   lib/                  format.ts (деньги, числа, %, списки, plural, даты), contacts.ts, queryClient.ts;
-                        supabase.ts — общий типизированный клиент и allRows (чтение постранично), database.types.ts — сгенерированные типы,
+                        supabase.ts — общий типизированный клиент, allRows (чтение постранично) и uploadToStorage (загрузка с прогрессом),
+                        database.types.ts — сгенерированные типы,
                         dates.ts — даты по Алматы
   assets/               шрифты и картинки
 ```
@@ -127,7 +130,7 @@ src/
   - После изменений бэкенда генерируем заново.
 - Ключи храним только в `.env.local` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`). В git лежит `.env.example` с шаблонными значениями. Во фронте используем только anon (publishable) ключ; service_role и secret сюда не попадают никогда.
 - Данные защищает RLS, а не фронт. Фильтр по `user_id` на клиенте нужен только для отображения, безопасности он не даёт. Компоненты не обращаются к Supabase напрямую, только через `api.ts`.
-- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свой `public.users.company_name` через `cabinet/api.ts`. Главная читает данные через `cabinet/home/api.ts`: `my_campaigns_stats`, `my_daily_plays_by_campaign` (14 дней), свои строки `ads` (обложка, магазин) и `stores`. Список кампаний — через `cabinet/campaigns/api.ts`: то же, показы за 30 дней. Все списки читаются через `allRows`. `?demo=` доступен только в dev после входа.
+- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свой `public.users.company_name` через `cabinet/api.ts`. Главная читает данные через `cabinet/home/api.ts`: `my_campaigns_stats`, `my_daily_plays_by_campaign` (14 дней), свои строки `ads` (обложка, магазин) и `stores`. Список кампаний — через `cabinet/campaigns/api.ts`: то же, показы за 30 дней. Все списки читаются через `allRows`. Мастер кампании читает `stores` и `zones`, для «Повторить» и «Исправить» — свою строку `ads` и её `ad_zones`; ролики и обложки грузит в бакет `documents` (`campaigns/<uid>/…`). В `ads` мастер ничего не пишет: отправка включится с RPC `submit_campaign`. `?demo=` доступен только в dev после входа.
 
 ## Процесс (git)
 - Одна фича — одна ветка от свежего `main`: `feature/<коротко>`, для исправлений `fix/…`, для служебных задач `chore/…`. Отдельной ветки «claude» нет. В `main` напрямую не коммитим. Ветки `agent/*` и worktree второго разработчика не трогаем.

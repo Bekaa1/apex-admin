@@ -13,10 +13,12 @@ export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   trailing?: ReactNode;
   /** Link on the right of the label row, e.g. «Забыли пароль?». */
   labelAction?: ReactNode;
+  /** Mark of an optional field next to the label, e.g. «Необязательно». */
+  optional?: ReactNode;
   inputClassName?: string;
 }
 
-export function TextField({ id, label, hint, error, trailing, labelAction, className, inputClassName, type = 'text', ...input }: TextFieldProps) {
+export function TextField({ id, label, hint, error, trailing, labelAction, optional, className, inputClassName, type = 'text', ...input }: TextFieldProps) {
   const autoId = useId();
   const fieldId = id ?? autoId;
   const hintId = `${fieldId}-hint`;
@@ -27,6 +29,7 @@ export function TextField({ id, label, hint, error, trailing, labelAction, class
         <label className="ax-label" htmlFor={fieldId}>
           {label}
         </label>
+        {optional ? <span className="ax-field__optional">{optional}</span> : null}
         {labelAction}
       </div>
       <div className="ax-field__wrap">

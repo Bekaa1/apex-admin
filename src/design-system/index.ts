@@ -21,3 +21,8 @@ export { Tabs, type TabsProps, type TabItem } from './Tabs';
 export { SearchField, type SearchFieldProps } from './SearchField';
 export { Select, type SelectProps, type SelectOption } from './Select';
 export { Timeline, type TimelineProps, type TimelineItem, type TimelineState } from './Timeline';
+export { Stepper, type StepperProps, type StepperStep, type StepperState } from './Stepper';
+export { ChoiceCard, type ChoiceCardProps } from './ChoiceCard';
+export { Chip, type ChipProps } from './Chip';
+export { FileDrop, type FileDropProps } from './FileDrop';
+export { TextAreaField, type TextAreaFieldProps } from './TextAreaField';

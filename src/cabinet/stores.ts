@@ -2,6 +2,8 @@ import type { Tables } from '../lib/database.types';
 
 /** Placeholder store the backend assigns to campaigns that run in every store. */
 export const ALL_STORES_NAME = 'Все магазины';
+/** Placeholder zone of campaigns that play in every zone. */
+export const ALL_ZONES_NAME = 'Все зоны';
 
 type StoreRef = Pick<Tables<'stores'>, 'id' | 'name'>;
 

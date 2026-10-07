@@ -1,5 +1,5 @@
 /*
- * Cabinet → «Мои кампании»: list, empty and search states, corporate banner. Prefix: cmp-.
+ * Cabinet → «Мои кампании»: list, the «Новая кампания» wizard, success screen and corporate plan page. Prefix: cmp-.
  * Ported from the «Apex — Мои кампании» design and aligned with the kit (type scale, token radii, 44px controls).
  * Load after cabinet.css. Cover placeholders reuse .cab-thumb--1…3 (logo gradient). Blocks adapt with container queries on .cab__content.
  */
@@ -98,7 +98,7 @@
   .cmp-toolbar__period { flex: 1 1 0; min-width: 0; }
   .cmp-toolbar__label { display: none; }
   .cmp-toolbar__period .ax-seg { flex: 1 1 auto; min-width: 0; }
-  .cmp-toolbar__period .ax-seg__item { flex: 1 1 0; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; }
+  .cmp-toolbar__period .ax-seg__item { flex: 1 1 auto; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; }
   .cmp-toolbar__sort { flex: none; width: var(--control-md); min-width: 0; }
   .cmp-toolbar__sort .ax-select__input { height: var(--control-md); padding: 0; color: transparent; }
   .cmp-toolbar__sort .ax-select__input option { color: var(--text); }
@@ -119,4 +119,236 @@
   .cmp-empty__ctas, .cmp-empty__ctas .ax-btn { width: 100%; }
   .cmp-empty__chain { justify-content: flex-start; }
   .cmp-corp-banner { padding: var(--space-5); }
+}
+
+/* ═══ Wizard, success, corporate plan ═══════════════════ */
+.cmp-back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: var(--control-md); font-size: 15px; }
+.cmp-num { text-align: right; font-variant-numeric: tabular-nums; }
+.cmp-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.cmp-fields { display: flex; flex-direction: column; gap: var(--space-6); }
+.cmp-fields--loose { gap: var(--space-8); }
+.cmp-fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.cmp-level--accent span.is-on { background: var(--accent); }
+.cmp-level--accent span { background: var(--accent-soft); }
+.cmp-cover--lg { width: 160px; border-radius: var(--radius-md); }
+/* The only raw colour: a dark scrim under the timecode, over a video frame or the logo gradient (media layer, like .cab-thumb). */
+.cmp-cover__time { position: absolute; right: 6px; bottom: 6px; padding: 2px 6px; border-radius: var(--radius-xs); background: rgba(5, 6, 12, 0.6); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ── Wizard ────────────────────────────────────────────── */
+.cmp-wizard { display: flex; flex-direction: column; gap: var(--space-5); }
+.cmp-wizard__stepper { padding: var(--space-5) var(--space-6); }
+.cmp-wizard__grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: var(--space-6); align-items: start; }
+.cmp-wizard__main { min-width: 0; display: flex; flex-direction: column; }
+.cmp-wizard__aside { position: sticky; top: 100px; display: flex; flex-direction: column; gap: var(--space-4); }
+.cmp-step { container: step / inline-size; display: flex; flex-direction: column; gap: var(--space-7); padding: var(--space-8); }
+.cmp-step__head { display: flex; flex-direction: column; gap: var(--space-2); }
+.cmp-step__head .cab-lead { margin-top: 0; }
+/* Focused on a failed «Далее»: keep it clear of the sticky top bar, like the sticky aside. */
+.cmp-step__errors { margin-top: calc(-1 * var(--space-3)); scroll-margin-top: 100px; }
+
+.cmp-actions { position: sticky; bottom: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-4); padding: var(--space-4) 0;
+  background: var(--bg); box-shadow: 0 -1px 0 var(--border); }
+.cmp-actions > :first-child { margin-right: auto; }
+/* Step 1 has no «Назад»: «Далее» stays on the right. */
+.cmp-actions > .cmp-actions__next:first-child { margin-right: 0; margin-left: auto; }
+.cmp-actions__next .cmp-next__short { display: none; }
+
+.cmp-aside-card { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); padding: var(--space-5); }
+.cmp-aside-card__head { display: flex; align-items: center; gap: var(--space-3); }
+.cmp-aside-card__title { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; }
+.cmp-aside-card__link { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; }
+
+/* Summary (receipt look from the Home hero) */
+.cmp-summary { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5); }
+.cmp-summary__list { box-shadow: none; background: var(--bg); }
+.cmp-summary__list dd { min-width: 0; overflow-wrap: anywhere; }
+.cmp-summary__stack { display: flex; flex-direction: column; align-items: flex-end; }
+.cmp-summary__sub { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+.cmp-summary__total { display: flex; flex-direction: column; gap: 2px; padding-top: var(--space-1); }
+.cmp-summary__total > span:first-child { font-size: 13px; color: var(--text-muted); }
+.cmp-summary__total strong { font-family: var(--font-display); font-size: 30px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+
+/* Rules */
+.cmp-rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45; }
+.cmp-rules li { display: flex; align-items: flex-start; gap: var(--space-2); }
+.cmp-rules li .ax-icon { margin-top: 1px; color: var(--success); }
+.cmp-rules li.is-failed { color: var(--danger); font-weight: 600; }
+.cmp-rules li.is-failed .ax-icon { color: var(--danger); }
+
+/* Step 1 — media */
+.cmp-file { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--bg); }
+.cmp-file.is-invalid { border-color: var(--danger); background: var(--danger-soft); }
+.cmp-file__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.cmp-file__name { margin: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cmp-file__meta { margin: 0; font-size: 14px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.cmp-file__ok { margin: 2px 0 0; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--success); }
+.cmp-file__progress { display: flex; flex-direction: column; gap: 6px; max-width: 280px; font-size: 13px; color: var(--text-muted); }
+.cmp-file__actions { flex: none; display: flex; align-items: center; gap: var(--space-2); }
+.cmp-cover-field { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+.cmp-cover-field > .ax-field { align-self: stretch; }
+
+/* Step 2 — tariffs */
+.cmp-tariff-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.cmp-tariff-choice .cab-tariff__text { min-height: 0; }
+.cmp-corp-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); background: var(--surface); }
+.cmp-corp-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 24px; }
+.cmp-corp-card .cab-tariff__text { min-height: 0; }
+.cmp-corp-card .cab-tariff__min .cmp-corp-card__price { font-size: 20px; }
+.cmp-corp-card .cab-tariff__features li.is-on .ax-icon { color: var(--accent); }
+.cmp-corp-card > .ax-btn { margin-top: var(--space-1); }
+
+/* Step 3 — stores */
+.cmp-filters { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.cmp-filters__search { flex: 1 1 240px; }
+.cmp-filters > .ax-field { flex: 0 1 200px; min-width: 150px; }
+.cmp-selbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); margin-top: calc(-1 * var(--space-2)); }
+.cmp-selbar__text { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 15px; color: var(--text-muted); }
+.cmp-selbar__text strong { color: var(--text); }
+.cmp-stores { border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; }
+.cmp-stores.is-invalid { border-color: var(--danger); }
+.cmp-stores__head, .cmp-store { display: grid; grid-template-columns: 20px minmax(0, 2fr) minmax(72px, 0.8fr) 92px minmax(150px, 1.4fr); align-items: center; gap: var(--space-4); }
+.cmp-stores--no-carts .cmp-stores__head, .cmp-stores--no-carts .cmp-store { grid-template-columns: 20px minmax(0, 2fr) minmax(72px, 0.8fr) minmax(150px, 1.4fr); }
+.cmp-stores__head { padding: 10px var(--space-4); background: var(--bg); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.cmp-stores__list { list-style: none; margin: 0; padding: 0; }
+.cmp-stores__list li + li { border-top: 1px solid var(--border); }
+.cmp-store.ax-check { padding: 14px var(--space-4); font-size: 14px; color: var(--text); cursor: pointer; }
+.cmp-store:hover { background: var(--bg); }
+.cmp-store.is-checked { background: var(--primary-soft); }
+.cmp-store__main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cmp-store__name { font-size: 15px; font-weight: 600; }
+.cmp-store__address { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--text-muted); }
+.cmp-store__address .ax-icon { flex: none; color: var(--text-subtle); }
+.cmp-store__city { color: var(--text-muted); }
+.cmp-store__carts { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px; font-weight: 600; }
+.cmp-store__carts .ax-icon { color: var(--text-subtle); }
+.cmp-store__unit { display: none; font-weight: 400; color: var(--text-muted); }
+.cmp-store__load { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; color: var(--text-muted); }
+.cmp-store__zones { flex-basis: 100%; font-size: 13px; color: var(--text-subtle); }
+.cmp-stores__empty { margin: 0; padding: var(--space-6) var(--space-4); text-align: center; color: var(--text-muted); }
+
+/* Step 4 — zones */
+.cmp-quick { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); border-radius: var(--radius-xl); background: var(--bg); border: 1px solid var(--border); }
+.cmp-quick__head { display: flex; flex-direction: column; gap: 4px; }
+.cmp-quick__title { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; }
+.cmp-quick__title .ax-icon { color: var(--link); }
+.cmp-zones-progress { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font-size: 14px; font-weight: 600; color: var(--text-muted); }
+.cmp-zones-progress__meter { flex: 1 1 160px; max-width: 260px; }
+.cmp-zone-stores { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.cmp-zone-store { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+.cmp-zone-store.is-invalid { border-color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); }
+.cmp-zone-store__head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+.cmp-zone-store__name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cmp-zone-store__name strong { font-size: 16px; }
+.cmp-zone-store__name span { font-size: 13px; color: var(--text-muted); }
+
+/* Step 5 — budget and review */
+.cmp-sub { display: flex; flex-direction: column; gap: var(--space-4); }
+.cmp-sub + .cmp-sub { padding-top: var(--space-8); border-top: 1px solid var(--border); }
+.cmp-sub__title { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; }
+.cmp-min { margin: 0; display: flex; align-items: flex-start; gap: var(--space-2); padding: 12px 14px; border-radius: var(--radius-md); background: var(--primary-soft); font-size: 15px; font-weight: 600; line-height: 1.45; }
+.cmp-min .ax-icon { flex: none; margin-top: 1px; color: var(--link); }
+.cmp-budget-row { display: grid; grid-template-columns: minmax(0, 440px); gap: var(--space-4); align-items: start; }
+.cmp-budget-field .ax-input { font-family: var(--font-display); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cmp-currency { display: inline-flex; align-items: center; justify-content: center; width: var(--control-md); height: var(--control-md); font-size: 20px; font-weight: 600; color: var(--text-muted); }
+.cmp-review { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-xl); }
+.cmp-review__item { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-5); }
+.cmp-review__item + .cmp-review__item { border-top: 1px solid var(--border); }
+.cmp-review__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.cmp-review__label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.cmp-review__edit { margin: -8px -12px -8px 0; }
+.cmp-review__media { display: flex; align-items: flex-start; gap: var(--space-4); }
+.cmp-review__text { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.cmp-review__text strong { font-size: 16px; }
+.cmp-review__text p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+.cmp-review__meta { font-size: 13px; color: var(--text-subtle); }
+.cmp-review__value { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 15px; }
+.cmp-review__value span { color: var(--text-muted); font-size: 14px; }
+.cmp-review__list { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+
+/* Success */
+.cmp-done { display: flex; justify-content: center; }
+.cmp-done__card { width: 100%; max-width: 720px; display: flex; flex-direction: column; align-items: center; gap: var(--space-5); padding: var(--space-10) var(--space-9); text-align: center; }
+.cmp-done__icon { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--success-soft); color: var(--success); }
+.cmp-done__lead { max-width: 32em; margin: 0; }
+.cmp-done__receipt { align-self: stretch; text-align: left; box-shadow: none; background: var(--bg); }
+.cmp-done__timeline { align-self: stretch; text-align: left; padding: var(--space-2) 0; }
+.cmp-done__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
+
+/* ── Corporate ─────────────────────────────────────────── */
+.cmp-corp { gap: var(--space-9); }
+.cmp-corp > .cmp-back { margin-bottom: calc(-1 * var(--space-6)); }
+.cmp-corp-hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: var(--space-8); padding: var(--space-8); border-radius: var(--radius-2xl); }
+.cmp-corp-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-5); min-width: 0; padding: var(--space-2) 0; }
+.cmp-corp-hero__panel { display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-4); min-width: 0; padding: var(--space-7); border-radius: var(--radius-xl);
+  background: var(--brand-panel); color: var(--on-brand-panel); }
+[data-theme="dark"] .cmp-corp-hero__panel { background: var(--bg); border: 1px solid var(--border); }
+.cmp-corp-hero__panel > svg { margin-bottom: auto; }
+.cmp-corp-hero__panel-title { margin: var(--space-6) 0 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.cmp-corp-hero__promises { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; line-height: 1.45; color: var(--on-brand-panel-muted); }
+.cmp-corp-hero__promises li { display: flex; align-items: flex-start; gap: 10px; }
+.cmp-corp-hero__promises .ax-icon { flex: none; margin-top: 1px; color: var(--on-brand-panel); }
+.cmp-corp-features { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.cmp-corp-feature { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); padding: var(--space-6); }
+.cmp-corp-feature__title { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; }
+.cmp-corp-how, .cmp-corp-form { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-7); }
+.cmp-corp-form .cmp-fields { gap: var(--space-5); }
+
+@container content (max-width: 1079px) {
+  .cmp-corp-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container content (max-width: 899px) {
+  .cmp-wizard__grid { grid-template-columns: minmax(0, 1fr); }
+  .cmp-wizard__aside { position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+  .cmp-corp-hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); padding: var(--space-7); }
+  .cmp-corp-hero__panel-title { margin-top: var(--space-2); }
+}
+@container content (max-width: 767px) {
+  .cmp-step__head .cab-overline { display: none; }
+}
+@container content (max-width: 639px) {
+  .cmp-corp-banner { padding: var(--space-5); }
+  .cmp-wizard__stepper { padding: var(--space-4); }
+  .cmp-step { padding: var(--space-5); gap: var(--space-6); }
+  .cmp-done__card { padding: var(--space-8) var(--space-5); }
+  .cmp-done__ctas, .cmp-done__ctas .ax-btn { width: 100%; }
+  .cmp-corp-hero { padding: var(--space-5); border-radius: var(--radius-xl); }
+  .cmp-corp-hero .cab-hero__title { font-size: 30px; }
+  .cmp-corp-hero .cab-hero__ctas, .cmp-corp-hero .cab-hero__ctas .ax-btn { width: 100%; }
+  .cmp-corp-hero__panel { padding: var(--space-5); }
+  .cmp-corp-features { grid-template-columns: minmax(0, 1fr); }
+  .cmp-corp-feature, .cmp-corp-how, .cmp-corp-form { padding: var(--space-5); }
+}
+@container step (max-width: 559px) {
+  .cmp-tariff-grid { grid-template-columns: minmax(0, 1fr); }
+  .cmp-budget-row { grid-template-columns: minmax(0, 1fr); }
+  .cmp-filters > .ax-field { flex: 1 1 140px; min-width: 0; }
+  .cmp-filters__search { flex-basis: 100%; }
+  .cmp-stores__head { display: none; }
+  .cmp-filters .ax-select__icon { display: none; }
+  .cmp-filters .ax-select--icon .ax-select__input { padding-left: 14px; padding-right: 36px; }
+  .cmp-filters .ax-select__chevron { right: 10px; }
+  .cmp-store.ax-check { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding-left: calc(var(--space-4) + 32px); }
+  .cmp-store > input { position: absolute; left: var(--space-4); top: 16px; }
+  .cmp-store__main { flex: 1 1 100%; }
+  .cmp-store__city { display: none; }
+  .cmp-store__carts { justify-content: flex-start; }
+  .cmp-store__unit { display: inline; }
+  .cmp-store__load { display: contents; }
+  .cmp-file { flex-wrap: wrap; }
+  .cmp-file .cmp-cover--lg { width: 120px; }
+  .cmp-file__body { flex-basis: calc(100% - 140px); }
+  .cmp-file__actions { width: 100%; justify-content: flex-end; }
+  .cmp-review__media { flex-direction: column; }
+}
+
+/* ── Phone: the wizard owns the bottom of the screen ───── */
+@media (max-width: 760px) {
+  .cab:has(.cmp-wizard) .cab-tabs { display: none; }
+  .cab:has(.cmp-wizard) .cab__main { padding-bottom: var(--space-6); }
+  .cmp-actions { padding: var(--space-3) 0 calc(var(--space-3) + env(safe-area-inset-bottom)); gap: var(--space-2); flex-wrap: nowrap; }
+  .cmp-actions .ax-btn { height: var(--control-md); padding: 0 16px; font-size: 15px; }
+  .cmp-actions > :first-child { margin-right: 0; }
+  .cmp-actions__next { flex: 1 1 auto; min-width: 0; }
+  .cmp-actions__next .cmp-next__long { display: none; }
+  .cmp-actions__next .cmp-next__short { display: inline; }
 }

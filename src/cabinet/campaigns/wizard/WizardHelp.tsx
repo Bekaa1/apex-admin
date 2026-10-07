@@ -11,6 +11,7 @@ const HELP: Record<StepId, { icon: IconName; tone: 'success' | 'brand' }> = {
   stores: { icon: 'store', tone: 'brand' },
   zones: { icon: 'shelf', tone: 'brand' },
   budget: { icon: 'message-circle', tone: 'brand' },
+  review: { icon: 'message-circle', tone: 'brand' },
 };
 
 /** The help card under the summary: moderation rules on step 1, tips on the next steps, the manager on the last one. */
@@ -45,7 +46,7 @@ export function WizardHelp({ step, failedRules }: { step: StepId; failedRules: s
           })}
         </ul>
       ) : null}
-      {step === 'budget' ? (
+      {step === 'budget' || step === 'review' ? (
         <Button href={SUPPORT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer" variant="secondary" size="md" iconLeft="message-circle">
           {t('campaigns.wizard.help.budget.whatsapp')}
         </Button>

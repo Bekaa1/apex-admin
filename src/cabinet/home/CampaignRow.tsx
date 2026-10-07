@@ -11,7 +11,7 @@ function RowAction({ campaign }: { campaign: CampaignItem }) {
   const { t } = useI18n();
   if (campaign.action === 'topUp') {
     return (
-      <ButtonLink to={CABINET_LINKS.campaign(campaign.id)} variant="secondary" size="md">
+      <ButtonLink to={CABINET_LINKS.campaignTopUp(campaign.id)} variant="secondary" size="md">
         {t('home.campaigns.topUp')}
       </ButtonLink>
     );

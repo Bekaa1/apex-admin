@@ -3,7 +3,7 @@ import { Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatMoney, formatNumber, pluralKey } from '../../../lib/format';
 import { summarize } from './summary';
-import type { CampaignForm, MediaState, StepId, WizardCatalog } from './types';
+import type { CampaignForm, EditedCampaign, MediaState, StepId, WizardCatalog } from './types';
 
 function Stack({ main, sub }: { main: ReactNode; sub?: ReactNode }) {
   return (
@@ -28,8 +28,16 @@ function MediaValue({ media, optional }: { media: MediaState; optional?: string 
   );
 }
 
+interface WizardSummaryProps {
+  step: StepId;
+  form: CampaignForm;
+  catalog: WizardCatalog;
+  /** An edit shows the campaign's budget, which the edit doesn't change. */
+  edited: EditedCampaign | null;
+}
+
 /** «Ваша кампания»: what is chosen so far and the budget. */
-export function WizardSummary({ step, form, catalog }: { step: StepId; form: CampaignForm; catalog: WizardCatalog }) {
+export function WizardSummary({ step, form, catalog, edited }: WizardSummaryProps) {
   const { t, lang } = useI18n();
   const titleId = useId();
   const summary = summarize(form, catalog);
@@ -47,10 +55,16 @@ export function WizardSummary({ step, form, catalog }: { step: StepId; form: Cam
     );
   }
 
-  const total = onBudget ? form.budget : summary.minimum;
-  const totalSub = onBudget
+  let totalLabel = t(onBudget ? 'campaigns.wizard.summary.yourBudget' : 'campaigns.wizard.summary.minimum');
+  let total = onBudget ? form.budget : summary.minimum;
+  let totalSub = onBudget
     ? summary.minimum !== null && t('campaigns.wizard.summary.minimumOf', { amount: formatMoney(summary.minimum, lang) })
     : summary.minimum === null && t('campaigns.wizard.summary.dependsOnTariff');
+  if (edited) {
+    totalLabel = t('campaigns.edit.summary.budget');
+    total = edited.budget;
+    totalSub = edited.launched && t('campaigns.edit.summary.left', { amount: formatMoney(edited.left, lang) });
+  }
 
   return (
     <section className="cab-card cmp-summary" aria-labelledby={titleId}>
@@ -76,7 +90,9 @@ export function WizardSummary({ step, form, catalog }: { step: StepId; form: Cam
         </div>
         <div>
           <dt>{t('campaigns.wizard.summary.tariff')}</dt>
-          <dd>{form.tariff ? t(`cabinet.tariffs.${form.tariff}.name`) : <Empty />}</dd>
+          <dd>
+            {form.tariff ? <Stack main={t(`cabinet.tariffs.${form.tariff}.name`)} sub={edited ? t('campaigns.edit.tariffNote') : undefined} /> : <Empty />}
+          </dd>
         </div>
         <div>
           <dt>{t('campaigns.wizard.summary.stores')}</dt>
@@ -94,7 +110,7 @@ export function WizardSummary({ step, form, catalog }: { step: StepId; form: Cam
         </div>
       </dl>
       <div className="cmp-summary__total">
-        <span>{t(onBudget ? 'campaigns.wizard.summary.yourBudget' : 'campaigns.wizard.summary.minimum')}</span>
+        <span>{totalLabel}</span>
         <strong>{total === null ? '—' : formatMoney(total, lang)}</strong>
         {totalSub ? <span className="cmp-summary__sub">{totalSub}</span> : null}
       </div>

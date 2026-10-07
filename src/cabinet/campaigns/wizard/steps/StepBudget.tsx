@@ -8,10 +8,10 @@ import type { WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 import { ReviewList } from './ReviewList';
 
-/** Step 5: budget, review of the campaign, what happens next and the rules consent. A fix keeps the paid budget. */
+/** Step 5: budget, review of the campaign, what happens next and the rules consent. */
 export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
   const { t, lang } = useI18n();
-  const { form, errors, dispatch, fixing } = wizard;
+  const { form, errors, dispatch } = wizard;
   const { contact } = useAccount();
   const budgetId = useId();
   const reviewId = useId();
@@ -37,7 +37,7 @@ export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; c
         <h3 className="cmp-sub__title" id={budgetId}>
           {t('campaigns.wizard.budget.section')}
         </h3>
-        {minimum !== null && !fixing ? (
+        {minimum !== null ? (
           <p className="cmp-min">
             <Icon name="info" size={18} />
             {t('campaigns.wizard.budget.minimum', { tariff: tariffName, amount: minimumText })}
@@ -47,9 +47,8 @@ export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; c
           <TextField
             className="cmp-budget-field"
             label={t('campaigns.wizard.budget.label')}
-            hint={t(fixing ? 'campaigns.wizard.fix.budgetLocked' : 'campaigns.wizard.budget.hint')}
+            hint={t('campaigns.wizard.budget.hint')}
             error={budgetError}
-            disabled={fixing}
             inputMode="numeric"
             autoComplete="off"
             value={text}
@@ -64,7 +63,7 @@ export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; c
             }}
             onBlur={() => setText(form.budget === null ? '' : formatNumber(form.budget, lang))}
           />
-          {minimum !== null && !fixing ? (
+          {minimum !== null ? (
             <div className="cmp-chips" role="group" aria-label={t('campaigns.wizard.budget.presets')}>
               {budgetPresets(minimum).map((amount) => (
                 <Chip key={amount} pressed={form.budget === amount} label={formatMoney(amount, lang)} onClick={() => setBudget(amount, formatNumber(amount, lang))} />

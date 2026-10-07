@@ -64,5 +64,6 @@ export function demoWizardApi(): WizardApi {
         });
       }),
     submit: () => new Promise((resolve) => window.setTimeout(() => resolve('demo-sent'), 600)),
+    edit: (campaignId) => new Promise((resolve) => window.setTimeout(() => resolve(campaignId), 600)),
   };
 }

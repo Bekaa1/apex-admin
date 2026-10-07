@@ -1,4 +1,4 @@
-// How a campaign stage looks in the list: badge, sub-line and the row button.
+// How a campaign stage looks in the list and on the campaign card: badge, sub-line, the main button and the «⋯» menu.
 import type { BadgeTone, IconName } from '../../../design-system';
 import type { Lang } from '../../../i18n/i18n';
 import { formatDayMonth } from '../../../lib/format';
@@ -8,6 +8,7 @@ import type { CampaignCard, CampaignStage, StageKind } from '../types';
 
 export const STAGE_BADGE: Record<StageKind, { tone: BadgeTone; labelKey: string }> = {
   review: { tone: STATUS_TONE.pending, labelKey: statusLabelKey('pending') },
+  changesReview: { tone: STATUS_TONE.pending, labelKey: statusLabelKey('pending') },
   awaitingPayment: { tone: STATUS_TONE.awaiting_payment, labelKey: statusLabelKey('awaiting_payment') },
   rejected: { tone: STATUS_TONE.rejected, labelKey: statusLabelKey('rejected') },
   active: { tone: STATUS_TONE.active, labelKey: statusLabelKey('active') },
@@ -24,6 +25,8 @@ export function stageNote(stage: CampaignStage, t: Translate, lang: Lang): strin
   switch (stage.kind) {
     case 'review':
       return t('campaigns.row.note.review');
+    case 'changesReview':
+      return t('campaigns.row.note.changes');
     case 'awaitingPayment':
       return t('campaigns.row.note.approved');
     case 'rejected':
@@ -41,39 +44,64 @@ export function stageNote(stage: CampaignStage, t: Translate, lang: Lang): strin
   }
 }
 
-export interface RowAction {
+export type CampaignActionKind = 'open' | 'howToPay' | 'fix' | 'edit' | 'topUp' | 'stats' | 'repeat';
+
+export interface CampaignAction {
+  kind: CampaignActionKind;
   labelKey: string;
   to: string;
-  variant: 'secondary' | 'ghost';
-  iconLeft?: IconName;
-  iconRight?: IconName;
+  icon: IconName;
 }
 
-function topUp(id: string): RowAction {
-  // Payment screens are not designed yet: like Home, «Пополнить» leads to the campaign card.
-  return { labelKey: 'campaigns.row.actions.topUp', to: CABINET_LINKS.campaign(id), variant: 'secondary', iconLeft: 'wallet' };
+export function campaignAction(kind: CampaignActionKind, id: string): CampaignAction {
+  switch (kind) {
+    case 'open':
+      return { kind, labelKey: 'campaigns.row.actions.open', to: CABINET_LINKS.campaign(id), icon: 'arrow-right' };
+    case 'howToPay':
+      return { kind, labelKey: 'campaigns.row.actions.howToPay', to: CABINET_LINKS.campaign(id), icon: 'receipt' };
+    case 'fix':
+      return { kind, labelKey: 'campaigns.row.actions.fix', to: CABINET_LINKS.campaignEdit(id), icon: 'pencil' };
+    case 'edit':
+      return { kind, labelKey: 'campaigns.row.actions.edit', to: CABINET_LINKS.campaignEdit(id), icon: 'pencil' };
+    case 'topUp':
+      return { kind, labelKey: 'campaigns.row.actions.topUp', to: CABINET_LINKS.campaignTopUp(id), icon: 'wallet' };
+    case 'stats':
+      return { kind, labelKey: 'campaigns.row.actions.stats', to: CABINET_LINKS.campaignStats(id), icon: 'chart' };
+    case 'repeat':
+      return { kind, labelKey: 'campaigns.row.actions.repeat', to: CABINET_LINKS.campaignCopy(id), icon: 'copy' };
+  }
 }
 
-function stats(id: string): RowAction {
-  return { labelKey: 'campaigns.row.actions.stats', to: CABINET_LINKS.campaignStats(id), variant: 'ghost', iconRight: 'arrow-right' };
-}
-
-export function rowAction({ id, stage }: CampaignCard): RowAction {
+/** The row button: what the advertiser most likely needs at this stage. */
+export function mainActionKind({ stage, canTopUp }: Pick<CampaignCard, 'stage' | 'canTopUp'>): CampaignActionKind {
   switch (stage.kind) {
     case 'review':
-      return { labelKey: 'campaigns.row.actions.open', to: CABINET_LINKS.campaign(id), variant: 'ghost', iconRight: 'arrow-right' };
+    case 'changesReview':
+      return 'open';
     case 'awaitingPayment':
-      return { labelKey: 'campaigns.row.actions.howToPay', to: CABINET_LINKS.campaign(id), variant: 'secondary', iconLeft: 'receipt' };
+      return 'howToPay';
     case 'rejected':
-      return { labelKey: 'campaigns.row.actions.fix', to: CABINET_LINKS.campaignFix(id), variant: 'secondary', iconLeft: 'pencil' };
+      return 'fix';
     case 'active':
-      return stage.low ? topUp(id) : stats(id);
+      return stage.low && canTopUp ? 'topUp' : 'stats';
     case 'noBudget':
-      return topUp(id);
+      return canTopUp ? 'topUp' : 'stats';
     case 'paused':
     case 'hoursEnded':
-      return stats(id);
+      return 'stats';
     case 'finished':
-      return { labelKey: 'campaigns.row.actions.repeat', to: CABINET_LINKS.campaignCopy(id), variant: 'ghost', iconLeft: 'copy' };
+      return 'repeat';
   }
+}
+
+const LAUNCHED: StageKind[] = ['changesReview', 'active', 'paused', 'hoursEnded', 'noBudget', 'finished'];
+
+/** Everything else the campaign allows, for the «⋯» menu; `except` are the actions already shown as buttons. */
+export function moreActionKinds(card: Pick<CampaignCard, 'stage' | 'canEdit' | 'canTopUp'>, except: CampaignActionKind[]): CampaignActionKind[] {
+  const kinds: CampaignActionKind[] = [];
+  if (LAUNCHED.includes(card.stage.kind)) kinds.push('stats');
+  if (card.canEdit && card.stage.kind !== 'rejected') kinds.push('edit');
+  if (card.canTopUp) kinds.push('topUp');
+  if (card.stage.kind !== 'finished') kinds.push('repeat');
+  return kinds.filter((kind) => !except.includes(kind));
 }

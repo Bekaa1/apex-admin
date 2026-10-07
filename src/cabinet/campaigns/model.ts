@@ -15,10 +15,11 @@ function paidState(row: CampaignStatsRow): boolean | null {
   return row.paid_amount >= row.budget;
 }
 
-function stageOf(row: CampaignStatsRow, money: BudgetFigures): CampaignStage | null {
+export function stageOf(row: CampaignStatsRow, money: BudgetFigures): CampaignStage | null {
   switch (row.status) {
     case 'pending':
-      return { kind: 'review', paid: paidState(row) };
+      // Only an edit sends a campaign that has already shown back to moderation.
+      return row.start_date ? { kind: 'changesReview', since: row.submitted_at } : { kind: 'review', paid: paidState(row) };
     case 'awaiting_payment':
       return {
         kind: 'awaitingPayment',
@@ -49,10 +50,23 @@ function stageOf(row: CampaignStatsRow, money: BudgetFigures): CampaignStage | n
   }
 }
 
-const LAUNCHED: StageKind[] = ['active', 'paused', 'hoursEnded', 'noBudget', 'finished'];
+// The statuses `edit_campaign` and `extend_campaign` accept; the server checks them again.
+const EDITABLE = ['pending', 'rejected', 'awaiting_payment', 'active', 'budget_ended'];
+const EXTENDABLE = ['active', 'budget_ended'];
+
+export function isExtendableStatus(status: string | null): boolean {
+  return EXTENDABLE.includes(status ?? '');
+}
+
+export function campaignAbilities(row: { status: string | null; tariff_can_extend: boolean | null }): { canEdit: boolean; canTopUp: boolean } {
+  return { canEdit: EDITABLE.includes(row.status ?? ''), canTopUp: isExtendableStatus(row.status) && row.tariff_can_extend === true };
+}
+
+const LAUNCHED: StageKind[] = ['changesReview', 'active', 'paused', 'hoursEnded', 'noBudget', 'finished'];
 
 const TAB_OF: Record<StageKind, Exclude<CampaignTab, 'all'>> = {
   review: 'review',
+  changesReview: 'review',
   awaitingPayment: 'review',
   rejected: 'review',
   active: 'running',
@@ -68,13 +82,13 @@ export function tabOf(card: CampaignCard): Exclude<CampaignTab, 'all'> {
 
 const COVER_TONES = [1, 2, 3] as const;
 
-function coverTone(id: string): 1 | 2 | 3 {
+export function coverTone(id: string): 1 | 2 | 3 {
   let sum = 0;
   for (const char of id) sum += char.charCodeAt(0);
   return COVER_TONES[sum % COVER_TONES.length];
 }
 
-function tariffOf(code: string | null | undefined): TariffCode | 'corporate' | null {
+export function tariffOf(code: string | null | undefined): TariffCode | 'corporate' | null {
   if (code === 'corporate') return code;
   return TARIFFS.find((tariff) => tariff.code === code)?.code ?? null;
 }
@@ -100,6 +114,7 @@ export function buildCampaignCards(source: CampaignsSource): CampaignCard[] {
       cartsCount: row.cart_count,
       createdAt: row.created_at ?? '',
       stage,
+      ...campaignAbilities(row),
       budget: money,
       plays: played ? { week: week.get(id) ?? 0, month: month.get(id) ?? 0, all: row.total_plays ?? 0 } : null,
     });

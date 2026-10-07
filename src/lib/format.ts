@@ -21,6 +21,17 @@ export function formatMoney(value: number, lang: Lang): string {
   }).format(value);
 }
 
+/** A play costs about 10 ₸, so tiyn are shown: «9,95 ₸». */
+export function formatPrice(value: number, lang: Lang): string {
+  return new Intl.NumberFormat(NUMBER_LOCALE[lang], {
+    style: 'currency',
+    currency: 'KZT',
+    currencyDisplay: 'narrowSymbol',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 /** `fraction` 0.12 → «+12 %». */
 export function formatDelta(fraction: number, lang: Lang): string {
   return new Intl.NumberFormat(NUMBER_LOCALE[lang], { style: 'percent', signDisplay: 'exceptZero', maximumFractionDigits: 0 }).format(fraction);

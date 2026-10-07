@@ -3,9 +3,10 @@ import { todayInAlmaty } from '../../lib/dates';
 import { allRows, requireSupabase, uploadToStorage } from '../../lib/supabase';
 import { TARIFFS, type TariffCode } from '../tariffs';
 import { monthStart } from './model';
+import type { CampaignDetailsSource } from './details/types';
 import type { CampaignsSource } from './types';
 import { extensionOf } from './wizard/media';
-import type { CampaignPrefill, CampaignSubmission, MediaMeta, MediaState, UploadedMedia, WizardCatalog } from './wizard/types';
+import type { CampaignEdit, CampaignPrefill, CampaignSubmission, MediaMeta, MediaState, UploadedMedia, WizardCatalog } from './wizard/types';
 
 const MEDIA_BUCKET = 'campaign-media';
 const MEDIA_EXTENSIONS = ['mp4', 'mov', 'jpg', 'jpeg', 'png'];
@@ -29,6 +30,9 @@ function rpcError(error: PostgrestError): Error {
   return error.code === 'P0001' ? new CampaignRpcError(error.message, error.hint || null) : error;
 }
 
+const CAMPAIGN_COLUMNS =
+  'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend';
+
 /** Everything the campaigns list shows, read in parallel. The my_* views return only the signed-in advertiser's rows. */
 export async function fetchCampaignsSource(signal: AbortSignal): Promise<CampaignsSource> {
   const sb = requireSupabase();
@@ -37,7 +41,7 @@ export async function fetchCampaignsSource(signal: AbortSignal): Promise<Campaig
     allRows((from, to) => sb
       .from('my_campaigns_stats')
       .select(
-        'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment',
+        CAMPAIGN_COLUMNS,
         { count: 'exact' },
       )
       .order('ad_id')
@@ -54,6 +58,49 @@ export async function fetchCampaignsSource(signal: AbortSignal): Promise<Campaig
       .abortSignal(signal)),
   ]);
   return { today, campaigns, dailyPlays };
+}
+
+/** One own campaign for its card, with its files, stores and zones, daily plays and invoices; null when it is not the advertiser's. */
+export async function fetchCampaignDetails(campaignId: string, signal: AbortSignal): Promise<CampaignDetailsSource | null> {
+  const sb = requireSupabase();
+  const [campaign, ad, locations, dailyPlays, invoices, tariffs] = await Promise.all([
+    sb
+      .from('my_campaigns_stats')
+      .select(
+        'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend, moderated_at, description, video_url, video_duration_sec, price_per_play, plays_count, tariff_version, tariff_min_amount',
+      )
+      .eq('ad_id', campaignId)
+      .abortSignal(signal)
+      .maybeSingle(),
+    sb.from('ads').select('video_original_filename, video_width, video_height, cover_original_filename').eq('id', campaignId).abortSignal(signal).maybeSingle(),
+    sb.from('my_campaign_locations').select('kind, location_id, location_name, parent_store_id').eq('ad_id', campaignId).abortSignal(signal),
+    allRows((from, to) => sb
+      .from('my_daily_plays_by_campaign')
+      .select('ad_id, play_date, plays', { count: 'exact' })
+      .eq('ad_id', campaignId)
+      .order('play_date')
+      .range(from, to)
+      .abortSignal(signal)),
+    sb.from('advertiser_invoices').select('id, kind, amount, status, issued_at, paid_at, sent_to, tariff_version').eq('ad_id', campaignId).order('issued_at').abortSignal(signal),
+    sb.from('tariffs').select('code, updated_at').abortSignal(signal),
+  ]);
+  for (const result of [campaign, ad, locations, invoices, tariffs]) if (result.error) throw result.error;
+  if (!campaign.data) return null;
+  const row = campaign.data;
+  return {
+    today: todayInAlmaty(),
+    campaign: row,
+    files: {
+      video: ad.data?.video_original_filename ?? null,
+      width: ad.data?.video_width ?? null,
+      height: ad.data?.video_height ?? null,
+      cover: ad.data?.cover_original_filename ?? null,
+    },
+    locations: locations.data ?? [],
+    dailyPlays,
+    invoices: invoices.data ?? [],
+    tariffChangedAt: tariffs.data?.find((tariff) => tariff.code === row.tariff_code)?.updated_at ?? null,
+  };
 }
 
 /** Stores with carts and their shelf zones with a working beacon, as the backend offers them for sale. */
@@ -95,14 +142,14 @@ function tariffCode(code: string | null | undefined): TariffCode | null {
   return TARIFFS.find((tariff) => tariff.code === code)?.code ?? null;
 }
 
-/** Own campaign for «Исправить» and «Повторить»; null when it is not the advertiser's. */
+/** Own campaign for «Редактировать», «Исправить» and «Повторить»; null when it is not the advertiser's. */
 export async function fetchCampaignPrefill(userId: string, campaignId: string, signal: AbortSignal): Promise<CampaignPrefill | null> {
   const sb = requireSupabase();
   const [ad, stores, zones] = await Promise.all([
     sb
       .from('ads')
       .select(
-        'status, title, name, description, budget, rejection_reasons, moderator_comment, video_url, video_original_filename, video_duration_sec, video_width, video_height, video_size_bytes, content_url, cover_original_filename, tariff:tariffs(code)',
+        'status, title, name, description, budget, spent_budget, start_date, rejection_reasons, moderator_comment, video_url, video_original_filename, video_duration_sec, video_width, video_height, video_size_bytes, content_url, cover_original_filename, tariff:tariffs(code, purchasable, is_archived)',
       )
       .eq('id', campaignId)
       .eq('user_id', userId)
@@ -120,6 +167,9 @@ export async function fetchCampaignPrefill(userId: string, campaignId: string, s
   const reasons = row.rejection_reasons ?? [];
   return {
     status: row.status,
+    spent: row.spent_budget,
+    launched: row.start_date !== null,
+    tariffSold: row.tariff ? row.tariff.purchasable && !row.tariff.is_archived : false,
     name: row.title || row.name || '',
     description: row.description ?? '',
     tariff: tariffCode(row.tariff?.code),
@@ -145,33 +195,47 @@ export async function uploadCampaignMedia(userId: string, file: Blob, fileName: 
   return { url, fileName };
 }
 
-function campaignPayload(submission: CampaignSubmission) {
-  const { video, cover } = submission;
+function contentPayload(content: CampaignEdit) {
+  const { video, cover } = content;
   return {
-    name: submission.name,
-    description: submission.description,
-    tariff_code: submission.tariffCode,
+    name: content.name,
+    description: content.description,
     video: { url: video.url, file_name: video.fileName, duration_sec: video.durationSec, width: video.width, height: video.height, size_bytes: video.sizeBytes },
     cover: cover ? { url: cover.url, file_name: cover.fileName } : null,
-    store_ids: submission.storeIds,
-    zone_ids: submission.zoneIds,
-    budget: submission.budget,
-    request_id: submission.requestId,
+    store_ids: content.storeIds,
+    zone_ids: content.zoneIds,
   };
 }
 
 /** Creates the campaign (status «На проверке») and its invoice; resending the same request returns the same id. */
 export async function submitCampaign(submission: CampaignSubmission): Promise<string> {
-  const { data, error } = await requireSupabase().rpc('submit_campaign', { p: campaignPayload(submission) });
+  const p = { ...contentPayload(submission), tariff_code: submission.tariffCode, budget: submission.budget, request_id: submission.requestId };
+  const { data, error } = await requireSupabase().rpc('submit_campaign', { p });
   if (error) throw rpcError(error);
   return data;
 }
 
-/** «Исправить»: the rejected campaign goes back to moderation. The plan and the budget stay as they were. */
-export async function resubmitCampaign(campaignId: string, submission: CampaignSubmission): Promise<string> {
-  const { data, error } = await requireSupabase().rpc('resubmit_campaign', { p_id: campaignId, p: campaignPayload(submission) });
+/** «Редактировать» and «Исправить»: the campaign goes back to moderation and stops showing until approved. The plan and the budget stay. */
+export async function editCampaign(campaignId: string, content: CampaignEdit): Promise<string> {
+  const { data, error } = await requireSupabase().rpc('edit_campaign', { p_id: campaignId, p: contentPayload(content) });
   if (error) throw rpcError(error);
   return data;
+}
+
+export interface TopUpInvoice {
+  amount: number;
+  /** null when the backend didn't record the address. */
+  sentTo: string | null;
+}
+
+/** «Пополнить»: a new invoice for the same campaign at the plan's current terms. An unpaid top-up invoice is replaced. */
+export async function extendCampaign(campaignId: string, amount: number, tariffVersion: number): Promise<TopUpInvoice> {
+  const sb = requireSupabase();
+  const { data: invoiceId, error } = await sb.rpc('extend_campaign', { p_id: campaignId, p_amount: amount, p_tariff_version: tariffVersion });
+  if (error) throw rpcError(error);
+  const invoice = await sb.from('advertiser_invoices').select('amount, sent_to').eq('id', invoiceId).maybeSingle();
+  // The invoice exists either way; without the read-back the screen shows the amount that was asked for.
+  return { amount: invoice.data?.amount ?? amount, sentTo: invoice.data?.sent_to ?? null };
 }
 
 export interface CorporateRequest {

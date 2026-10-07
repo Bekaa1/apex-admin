@@ -9,7 +9,7 @@ const TODAY = '2026-10-06';
 const EMPTY_ROW: CampaignStatsRow = {
   ad_id: null, title: null, name: null, status: null, budget: null, spent_budget: null, remaining_budget: null, total_plays: null,
   start_date: null, end_date: null, created_at: null, tariff_code: null, store_count: null, cart_count: null, content_url: null,
-  paid_amount: null, unpaid_amount: null, invoice_sent_to: null, rejection_reasons: null, moderator_comment: null,
+  paid_amount: null, unpaid_amount: null, invoice_sent_to: null, rejection_reasons: null, moderator_comment: null, submitted_at: null, tariff_can_extend: true,
 };
 
 const ROWS: Partial<CampaignStatsRow>[] = [
@@ -24,7 +24,10 @@ const ROWS: Partial<CampaignStatsRow>[] = [
     paid_amount: 3_000_000, rejection_reasons: ['languages_kk_ru'], moderator_comment: 'В конце ролика условия акции только на русском. Добавьте текст на казахском.',
     total_plays: 0, created_at: '2026-09-26T09:00:00Z',
   },
-  { ad_id: 'demo-snacks', name: 'Снеки к футболу', status: 'active', tariff_code: 'standard', store_count: 8, cart_count: 410, budget: 800_000, spent_budget: 310_000, total_plays: 21_400, start_date: '2026-09-12T00:00:00+05:00', created_at: '2026-09-10T09:00:00Z' },
+  {
+    ad_id: 'demo-snacks', name: 'Снеки к футболу', status: 'pending', tariff_code: 'standard', store_count: 8, cart_count: 410, budget: 800_000, spent_budget: 232_000, paid_amount: 800_000,
+    total_plays: 21_400, start_date: '2026-09-12T00:00:00+05:00', submitted_at: '2026-10-06T08:00:00Z', created_at: '2026-09-10T09:00:00Z',
+  },
   { ad_id: 'demo-milk', name: 'Молочная неделя', status: 'budget_ended', tariff_code: 'zones', store_count: 3, cart_count: 150, budget: 500_000, spent_budget: 500_000, total_plays: 15_300, start_date: '2026-08-24T00:00:00+05:00', created_at: '2026-08-20T09:00:00Z' },
   { ad_id: 'demo-lemonade', name: 'Летний лимонад', status: 'active', tariff_code: 'zones', store_count: 6, cart_count: 312, budget: 1_000_000, spent_budget: 880_000, total_plays: 52_300, start_date: '2026-08-01T00:00:00+05:00', created_at: '2026-07-28T09:00:00Z' },
   {
@@ -39,6 +42,12 @@ const DAILY: Array<[string, string, number]> = [
   ['demo-milk', '2026-10-01', 1_120], ['demo-milk', '2026-09-15', 6_200],
   ['demo-lemonade', '2026-10-05', 5_200], ['demo-lemonade', '2026-10-02', 4_640], ['demo-lemonade', '2026-09-12', 8_800],
 ];
+
+/** A list row of the demo, for the campaign card and the top-up screen. */
+export function demoCampaignRow(id: string): CampaignStatsRow | null {
+  const row = ROWS.find((item) => item.ad_id === id);
+  return row ? { ...EMPTY_ROW, ...row } : null;
+}
 
 function demoSource(): CampaignsSource {
   return {

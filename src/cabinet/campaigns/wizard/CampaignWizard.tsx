@@ -6,6 +6,7 @@ import { CABINET_LINKS } from '../../sections';
 import { activeSteps } from './steps';
 import { StepBudget } from './steps/StepBudget';
 import { StepMedia } from './steps/StepMedia';
+import { StepReview } from './steps/StepReview';
 import { StepStores } from './steps/StepStores';
 import { StepTariff } from './steps/StepTariff';
 import { StepZones } from './steps/StepZones';
@@ -16,20 +17,33 @@ import { WizardActions } from './WizardActions';
 import { WizardHelp } from './WizardHelp';
 import { WizardStepper } from './WizardStepper';
 import { WizardSummary } from './WizardSummary';
+import type { WizardMode } from './types';
+
+/** Above the steps of an edit: why the moderator returned the campaign, or that saving sends it to moderation. */
+function EditNotice({ mode }: { mode: WizardMode }) {
+  const { t } = useI18n();
+  if (mode.kind !== 'edit') return null;
+  if (mode.campaign.rejected) return <ReturnedAlert moderation={mode.moderation} />;
+  return (
+    <Alert tone={mode.campaign.running ? 'warning' : 'info'} title={t('campaigns.edit.notice.title')}>
+      {t(mode.campaign.running ? 'campaigns.edit.notice.running' : 'campaigns.edit.notice.text')}
+    </Alert>
+  );
+}
 
 export function CampaignWizard(options: WizardOptions) {
   const { t } = useI18n();
   const { catalog, mode } = options;
   const wizard = useCampaignWizard(options);
-  const { step, form } = wizard;
+  const { step, form, flow } = wizard;
   const titleId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const errorsRef = useRef<HTMLDivElement>(null);
   const shownStep = useRef(step);
   const [params, setParams] = useSearchParams();
-  const steps = activeSteps(form.tariff);
+  const steps = activeSteps(flow, form.tariff);
   const hasErrors = Object.keys(wizard.errors).length > 0;
-  const moderation = mode.kind === 'fix' ? mode.moderation : null;
+  const backTo = mode.kind === 'edit' ? CABINET_LINKS.campaign(mode.campaign.id) : CABINET_LINKS.campaigns;
 
   // The form came from ?copy=; without it a reload keeps the edits saved in this tab instead of copying again.
   const copied = params.has('copy');
@@ -59,21 +73,21 @@ export function CampaignWizard(options: WizardOptions) {
 
   return (
     <div className="cmp-wizard">
-      <Link className="cab-link cmp-back" to={CABINET_LINKS.campaigns}>
+      <Link className="cab-link cmp-back" to={backTo}>
         <Icon name="arrow-left" size={18} />
-        {t('campaigns.wizard.back')}
+        {t(mode.kind === 'edit' ? 'campaigns.topUp.back' : 'campaigns.wizard.back')}
       </Link>
       <div className="cab-card cmp-wizard__stepper">
-        <WizardStepper step={step} form={form} catalog={catalog} onStepClick={wizard.goTo} />
+        <WizardStepper flow={flow} step={step} form={form} catalog={catalog} original={wizard.original} onStepClick={wizard.goTo} />
       </div>
-      {mode.kind === 'fix' ? <ReturnedAlert moderation={moderation} /> : null}
+      <EditNotice mode={mode} />
       <div className="cmp-wizard__grid">
         <form
           className="cmp-wizard__main"
           noValidate
           onSubmit={(event) => {
             event.preventDefault();
-            if (step === 'budget') wizard.submit();
+            if (step === 'budget' || step === 'review') wizard.submit();
             else wizard.next();
           }}
         >
@@ -95,13 +109,14 @@ export function CampaignWizard(options: WizardOptions) {
             {step === 'stores' ? <StepStores wizard={wizard} catalog={catalog} /> : null}
             {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} /> : null}
             {step === 'budget' ? <StepBudget wizard={wizard} catalog={catalog} /> : null}
+            {step === 'review' && mode.kind === 'edit' ? <StepReview wizard={wizard} catalog={catalog} campaign={mode.campaign} /> : null}
           </section>
           {wizard.submitError ? <SubmitError code={wizard.submitError} /> : null}
-          <WizardActions step={step} form={form} submitting={wizard.submitting} onBack={wizard.back} />
+          <WizardActions flow={flow} step={step} form={form} submitting={wizard.submitting} onBack={wizard.back} cancel={mode.kind === 'edit' ? { to: backTo, onClick: wizard.discard } : null} />
         </form>
         <aside className="cmp-wizard__aside">
-          <WizardSummary step={step} form={form} catalog={catalog} />
-          <WizardHelp step={step} failedRules={moderation?.rules ?? []} />
+          <WizardSummary step={step} form={form} catalog={catalog} edited={mode.kind === 'edit' ? mode.campaign : null} />
+          <WizardHelp step={step} failedRules={mode.kind === 'edit' ? (mode.moderation?.rules ?? []) : []} />
         </aside>
       </div>
     </div>

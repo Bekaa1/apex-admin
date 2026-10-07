@@ -3,6 +3,7 @@ import { Alert, Button, OtpInput, Skeleton, TextField } from '../../design-syste
 import { useI18n } from '../../i18n/i18n';
 import { normalizeKazakhstanPhone, validateEmail } from '../../auth/validation';
 import { useAuthSession } from '../../auth/useAuthSession';
+import { useSignOut } from '../../auth/useSignOut';
 import { useProfileActions, useProfileQuery } from './useProfile';
 import type { ContactChannel, Profile } from './api';
 import styles from './ProfilePage.module.css';
@@ -368,6 +369,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
 export function ProfilePage() {
   const { t } = useI18n();
   const { session } = useAuthSession();
+  const { signOut, pending: signOutPending, failed: signOutFailed } = useSignOut();
   const userId = session?.user.id;
   const profile = useProfileQuery(userId);
 
@@ -386,6 +388,19 @@ export function ProfilePage() {
         email={session.user.email}
         phone={session.user.phone}
       />
+      <div className={styles.mobileAccountActions}>
+        <Button
+          variant="secondary"
+          size="md"
+          fullWidth
+          iconLeft="log-out"
+          loading={signOutPending}
+          onClick={() => void signOut()}
+        >
+          {t('cabinet.nav.logout')}
+        </Button>
+        {signOutFailed ? <Alert tone="danger">{t('cabinet.logoutError')}</Alert> : null}
+      </div>
     </div>
   );
 }

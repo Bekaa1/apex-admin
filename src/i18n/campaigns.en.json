@@ -1,0 +1,470 @@
+{
+  "titles": {
+    "new": "New campaign",
+    "fix": "Fix the campaign",
+    "corporate": "Corporate plan"
+  },
+  "steps": {
+    "media": "Video and details",
+    "tariff": "Plan",
+    "stores": "Stores",
+    "zones": "Shelf zones",
+    "budget": "Budget and review"
+  },
+  "stepsLabel": "Campaign creation steps",
+  "rules": {
+    "duration_7s": "The video is exactly 7 seconds, horizontal 16:9",
+    "languages_kk_ru": "Text in the video is in Kazakh and Russian",
+    "prohibited": "No prohibited ads: alcohol, tobacco and vapes, gambling and betting",
+    "claims": "“The best”, “No. 1” and the like — only with proof",
+    "flashing": "No sharp flashes or fast blinking",
+    "metadata": "The name, description and cover match the video"
+  },
+  "list": {
+    "filterLabel": "Filter by status",
+    "tabs": {
+      "all": "All",
+      "running": "Running",
+      "review": "In review",
+      "finished": "Finished"
+    },
+    "search": "Search by name",
+    "clearSearch": "Clear",
+    "periodLabel": "Impressions for",
+    "periodGroup": "Impressions period",
+    "period": {
+      "week": "7 days",
+      "month": "30 days",
+      "all": "all time"
+    },
+    "sortLabel": "Sort",
+    "sort": {
+      "new": "Newest first",
+      "budgetLeft": "By budget left",
+      "shows": "By impressions",
+      "name": "By name"
+    },
+    "count": {
+      "one": "{count} campaign",
+      "other": "{count} campaigns"
+    },
+    "plays": {
+      "one": "{count} impression {period}",
+      "other": "{count} impressions {period}"
+    },
+    "periodFor": {
+      "week": "in 7 days",
+      "month": "in 30 days",
+      "all": "all time"
+    },
+    "loading": "Loading campaigns"
+  },
+  "row": {
+    "stores": {
+      "one": "{count} store",
+      "other": "{count} stores"
+    },
+    "carts": {
+      "one": "{count} cart",
+      "other": "{count} carts"
+    },
+    "note": {
+      "review": "Usually within 24 hours",
+      "approved": "Video approved",
+      "rejected": "Needs fixing",
+      "since": "Since {date}",
+      "stopped": "Impressions stopped",
+      "period": "{from} — {to}"
+    },
+    "budgetNotSet": "No budget set",
+    "notPaid": "Not paid yet",
+    "paid": "Budget paid",
+    "left": "{left} left of {total}",
+    "spentOf": "{spent} spent of {total}",
+    "ended": "The budget ran out — top it up to continue",
+    "spentPct": "{pct}% of the budget spent",
+    "playsLabel": {
+      "week": "impressions in 7 days",
+      "month": "impressions in 30 days",
+      "all": "impressions all time"
+    },
+    "notStarted": "not started yet",
+    "actions": {
+      "open": "Open",
+      "howToPay": "How to pay",
+      "fix": "Fix",
+      "stats": "Statistics",
+      "topUp": "Top up",
+      "repeat": "Repeat"
+    },
+    "beforeLaunch": "Before launch",
+    "timeline": {
+      "review": "Video review",
+      "approved": "Video approved",
+      "payment": "Budget payment",
+      "paid": "Budget paid",
+      "launch": "Impressions start"
+    },
+    "stepState": {
+      "done": ", done",
+      "current": ", current step",
+      "todo": ", upcoming"
+    },
+    "invoiceSent": "We sent an invoice for {amount} to {email}",
+    "returned": "The moderator returned the campaign:",
+    "comment": "“{text}”"
+  },
+  "empty": {
+    "title": "Your campaigns will be here",
+    "lead": "Create the first one — it takes about 10 minutes. You’ll need a 7-second video and a budget from {amount}.",
+    "how": "How it works",
+    "prepTitle": "What to prepare",
+    "prep": {
+      "video": {
+        "title": "A 7-second video",
+        "text": "MP4 or MOV, horizontal, up to 50 MB. Text in Kazakh and Russian."
+      },
+      "cover": {
+        "title": "Cover — optional",
+        "text": "A 16:9 image for the campaign list and reports. Without a cover we show the first frame of the video."
+      },
+      "budget": {
+        "title": "Budget",
+        "text": "The minimum depends on the plan: from {amount}. Payment by invoice."
+      }
+    }
+  },
+  "notFound": {
+    "titleQuery": "Nothing found for “{query}”",
+    "title": "Nothing found",
+    "text": "Check the name or reset the filters.",
+    "reset": "Show all campaigns"
+  },
+  "banner": {
+    "title": "Need special terms?",
+    "text": "Corporate plan: an exclusive contract for your brand — reach, formats and budget are agreed individually.",
+    "more": "Learn more"
+  },
+  "error": {
+    "title": "Couldn't load campaigns",
+    "text": "Check your connection and try again."
+  },
+  "wizard": {
+    "back": "My campaigns",
+    "stepOf": "Step {n} of {total}",
+    "stepState": {
+      "done": ", done",
+      "current": ", current step",
+      "todo": ", upcoming",
+      "skipped": ", skipped"
+    },
+    "skippedNote": "Not needed for the plan",
+    "next": "Next: {step}",
+    "nextShort": "Next",
+    "prev": "Back",
+    "submit": "Send for review",
+    "fixErrors": "Fix what is marked in red.",
+    "submitSoon": {
+      "title": "Sending for review is coming soon",
+      "text": "We are connecting it to the server. If you need to launch a campaign now, message a manager."
+    },
+    "submitError": {
+      "title": "Couldn't send the campaign",
+      "text": "Check your connection and try again."
+    },
+    "loading": "Loading stores and zones",
+    "loadError": {
+      "title": "Couldn't load stores and zones",
+      "text": "Check your connection and try again."
+    },
+    "missing": {
+      "title": "Campaign not found",
+      "text": "It may have been fixed or deleted already. Go back to the campaign list."
+    },
+    "seconds": "{n} sec",
+    "megabytes": "{n} MB",
+    "summary": {
+      "title": "Your campaign",
+      "name": "Name",
+      "video": "Video",
+      "cover": "Cover",
+      "tariff": "Plan",
+      "stores": "Stores",
+      "zones": "Zones",
+      "optional": "Optional",
+      "zonesNotNeeded": "Not needed",
+      "zonesIn": "in {count} of {total}",
+      "minimum": "Minimum budget",
+      "dependsOnTariff": "Depends on the plan",
+      "yourBudget": "Your budget",
+      "minimumOf": "Minimum {amount}"
+    },
+    "help": {
+      "media": {
+        "title": "What the moderator checks",
+        "text": "We check every video before launch. A campaign with issues comes back with an explanation — fix it and send it again.",
+        "failed": "Not met: "
+      },
+      "tariff": {
+        "title": "How to choose",
+        "text": "First campaign — “Standard”. Need specific shelves — “Standard + Zones”. Want to play more often — “Premium”. Special terms — “Corporate”."
+      },
+      "stores": {
+        "title": "Where the video is seen more often",
+        "text": "The fewer campaigns a store has, the more often your video plays. More carts — more shoppers see the ad."
+      },
+      "zones": {
+        "title": "How zones work",
+        "text": "Only zone-plan videos play in a zone — yours and other brands on the same plan. Next to each zone you see how many brands are already there."
+      },
+      "budget": {
+        "title": "Any questions?",
+        "text": "A manager will help with the budget, stores and video requirements.",
+        "whatsapp": "Message on WhatsApp"
+      }
+    },
+    "fix": {
+      "title": "The moderator returned the campaign",
+      "failed": "Not met: {rules}.",
+      "comment": "Moderator’s comment: {comment}",
+      "after": "Fix the video and send it again — we’ll check it within a working day."
+    },
+    "media": {
+      "title": "Video and details",
+      "lead": "Only you and the moderator see the name and description. Shoppers see the video.",
+      "name": "Campaign name",
+      "namePlaceholder": "For example, Summer lemonade",
+      "nameHint": "For you and reports. Shoppers don’t see it.",
+      "description": "Description",
+      "optional": "Optional",
+      "descriptionPlaceholder": "What you advertise, the offer and until when",
+      "descriptionHint": "Helps the moderator check the video faster.",
+      "video": "Video",
+      "videoDrop": "Drag the video here or choose a file",
+      "videoRules": "MP4 or MOV · exactly 7 seconds · horizontal 16:9, from 1280×720 · up to 50 MB",
+      "cover": "Cover",
+      "coverDrop": "Drag an image or choose a file",
+      "coverHint": "JPG or PNG, 16:9. Shown in the campaign list and reports. Without a cover we show the first frame of the video.",
+      "chooseFile": "Choose file",
+      "replace": "Replace",
+      "remove": "Remove file",
+      "cancel": "Cancel",
+      "uploading": "Uploading",
+      "uploadingPct": "Uploading {pct}%",
+      "videoOk": "Length and format are fine",
+      "coverOk": "Cover uploaded",
+      "firstFrame": "Use the first frame",
+      "errors": {
+        "nameRequired": "Enter the campaign name",
+        "nameTooLong": "Shorten the name to 80 characters",
+        "videoRequired": "Upload a video",
+        "uploading": "Wait until the file is uploaded",
+        "type": "An MP4 or MOV file is needed. Save the video in one of these formats and upload it again.",
+        "coverType": "A JPG or PNG image is needed",
+        "size": "The file is larger than 50 MB. Compress it and upload it again.",
+        "duration": {
+          "one": "The video is {count} second long — it must be exactly 7. Trim it and upload it again.",
+          "other": "The video is {count} seconds long — it must be exactly 7. Trim it and upload it again."
+        },
+        "orientation": "The video is vertical — a horizontal 16:9 one is needed. Re-export it and upload it again.",
+        "ratio": "The video is not 16:9. Re-export it in 16:9 and upload it again.",
+        "resolution": "The resolution is below 1280×720. Upload a higher-quality video.",
+        "unreadable": "Couldn't read the file. Check it or choose another one.",
+        "network": "Couldn't upload the file. Check your connection and try again.",
+        "frame": "Couldn't take the frame. Upload a cover image instead."
+      }
+    },
+    "tariff": {
+      "title": "Choose a plan",
+      "lead": "The plan sets where the video plays and the campaign’s minimum budget.",
+      "legend": "Choose a plan",
+      "note": "You can change the plan until you send the campaign for review.",
+      "error": "Choose a plan",
+      "corporate": {
+        "badge": "B2B",
+        "features": {
+          "reach": "Stores, chains and cities — negotiable",
+          "zonePriority": "Priority in shelf zones",
+          "moreShows": "More impressions in rotation",
+          "brandOnly": "Only your brand in the zone",
+          "manager": "B2B contract and a personal manager"
+        },
+        "discuss": "Discuss terms"
+      }
+    },
+    "stores": {
+      "title": "Choose stores",
+      "lead": "The video plays on every cart of the chosen stores.",
+      "search": "Name or address",
+      "city": "City",
+      "allCities": "All cities",
+      "chain": "Chain",
+      "allChains": "All chains",
+      "selected": "{count} of {total} selected",
+      "selectAll": "Select all ({count})",
+      "unselectAll": "Clear selection",
+      "listLabel": "Choose stores",
+      "head": {
+        "store": "Store",
+        "city": "City",
+        "carts": "Carts",
+        "load": "Campaigns now",
+        "zones": "Shelf zones"
+      },
+      "campaignsNow": {
+        "one": "{count} campaign now",
+        "other": "{count} campaigns now"
+      },
+      "zonesAtShelves": {
+        "one": "{count} shelf zone",
+        "other": "{count} shelf zones"
+      },
+      "empty": "No stores match. Change the search or filters.",
+      "error": "Choose at least one store"
+    },
+    "zones": {
+      "title": "Shelf zones",
+      "lead": "The video starts when a shopper with a cart comes to the chosen shelves. Zones are chosen in each store separately.",
+      "quickTitle": "Quick selection",
+      "quickText": {
+        "one": "Tick zones — we’ll apply them to the chosen store. You can adjust it later.",
+        "other": "Tick zones — we’ll apply them to all chosen stores ({count}). You can adjust each one later."
+      },
+      "progress": {
+        "one": "Zones chosen in {done} of {count} store",
+        "other": "Zones chosen in {done} of {count} stores"
+      },
+      "selectedCount": {
+        "one": "{count} zone",
+        "other": "{count} zones"
+      },
+      "noneSelected": "No zones chosen",
+      "otherBrands": {
+        "one": "{count} more brand",
+        "other": "{count} more brands"
+      },
+      "onlyYou": "only you so far",
+      "storeError": "Choose at least one zone or remove the store in step 3",
+      "noZones": "This store has no shelf zones yet. Remove it in step 3 or choose a plan without zones."
+    },
+    "budget": {
+      "title": "Budget and review",
+      "lead": "Set the budget, check the campaign and send it to the moderator. Impressions start right after approval.",
+      "section": "Budget",
+      "minimum": "Minimum for the “{tariff}” plan — {amount}",
+      "label": "Campaign budget",
+      "hint": "Impressions are paid from the budget. When it runs out, impressions stop — top it up and they continue.",
+      "presets": "Quick amount",
+      "errorRequired": "Enter the campaign budget",
+      "errorMin": "Minimum for the “{tariff}” plan — {amount}. Raise the budget or choose another plan.",
+      "review": "Check the campaign",
+      "edit": "Edit",
+      "withoutCover": "no cover — we’ll show the first frame of the video",
+      "withCover": "with a cover",
+      "from": "from {amount}",
+      "andMore": "{list} and {count} more",
+      "after": "What happens after you send it",
+      "timeline": {
+        "review": "Video review",
+        "reviewText": "A moderator checks the video — usually within 24 hours on working days. The result comes by email.",
+        "payment": "Budget payment",
+        "paymentText": "We’ll send an invoice for {amount} to {email}. You can pay while the review is going on.",
+        "launch": "Impressions start",
+        "launchText": "Impressions start as soon as the moderator approves the campaign: the video is checked and the budget is paid."
+      },
+      "rules": "The video meets the advertising rules",
+      "rulesError": "Confirm that the video meets the rules"
+    }
+  },
+  "sent": {
+    "title": "The campaign is sent for review",
+    "lead": "We’ll check “{name}” within a working day and write to {email}. You can pay the invoice while the review is going on.",
+    "name": "Name",
+    "tariff": "Plan",
+    "toPay": "To pay",
+    "timeline": {
+      "reviewText": "A moderator is watching the video — usually within 24 hours on working days.",
+      "paymentText": "The invoice for {amount} comes to {email}. You can pay it right away.",
+      "launchText": "We’ll start impressions when the video is approved and the budget is paid."
+    },
+    "toList": "To my campaigns",
+    "createAnother": "Create another one"
+  },
+  "corporate": {
+    "backToTariffs": "Back to plans",
+    "badge": "B2B · individual terms",
+    "title": "Ads at the shelf — on your brand’s terms",
+    "text": "An exclusive contract for brands and chains. Reach, zones, formats and budget are agreed with you and fixed in the contract.",
+    "call": "Call a manager",
+    "whatsapp": "Message on WhatsApp",
+    "panelTitle": "Everything is negotiable",
+    "promises": {
+      "exclusive": "Exclusivity in your category",
+      "reach": "Any reach — from a district to the whole country",
+      "budget": "Budget and payment — by contract",
+      "manager": "A personal manager"
+    },
+    "whatTitle": "What’s included",
+    "whatLead": "Everything from the plans on the site — plus what we pick for your brand’s task together with you.",
+    "features": {
+      "reach": {
+        "title": "Any reach",
+        "text": "Stores, chains and cities of your choice — from one district to the whole country."
+      },
+      "exclusive": {
+        "title": "Category exclusivity",
+        "text": "Only your brand plays in your zones and category — no competitors."
+      },
+      "shelves": {
+        "title": "Zones and shelves",
+        "text": "The video starts at the shelves with your product in every store of the contract."
+      },
+      "shows": {
+        "title": "More impressions",
+        "text": "Rotation priority and impression frequency fixed in the contract."
+      },
+      "formats": {
+        "title": "Your own formats",
+        "text": "Video series, other lengths, special projects for a product launch."
+      },
+      "reports": {
+        "title": "Reports for the brand",
+        "text": "Extended statistics by store and zone, exports for your team."
+      }
+    },
+    "howTitle": "How to start",
+    "how": {
+      "task": {
+        "title": "Tell us about the task",
+        "text": "Call, write or leave a request — we’ll clarify goals, cities and timing."
+      },
+      "offer": {
+        "title": "We prepare an offer",
+        "text": "Media plan and cost — within 2 working days."
+      },
+      "contract": {
+        "title": "We sign a contract",
+        "text": "Terms, budget and payment — in a B2B contract."
+      },
+      "launch": {
+        "title": "We launch and support",
+        "text": "A manager runs the campaign and sends reports."
+      }
+    },
+    "form": {
+      "title": "Leave a request",
+      "text": "We’ll call back within a working day.",
+      "company": "Company",
+      "contact": "Your name",
+      "phone": "Phone",
+      "message": "What would you like to discuss",
+      "messagePlaceholder": "Brand, cities, timing, approximate budget",
+      "optional": "Optional",
+      "submit": "Send request",
+      "soon": {
+        "title": "Online requests are coming soon",
+        "text": "For now call or message a manager — we’ll answer within a working day."
+      }
+    }
+  }
+}

@@ -3,34 +3,78 @@ import { useSearchParams } from 'react-router';
 import { useAuthSession } from '../../../auth/useAuthSession';
 import { parseDemoVariant, type DemoVariant } from '../../demo';
 import { queryKeys } from '../../queryKeys';
-import { fetchCampaignPrefill, fetchWizardCatalog, resubmitCampaign, submitCampaign, uploadCampaignMedia } from '../api';
+import { useTariffTerms } from '../../useTariffTerms';
+import { editCampaign, fetchCampaignPrefill, fetchStoreCatalog, submitCampaign, uploadCampaignMedia } from '../api';
+import { campaignAbilities } from '../model';
 import type { Moderation } from '../types';
 import { DEMO_MODERATION, demoCatalog, demoReturnedForm, demoWizardApi } from './demo';
 import { formFromPrefill } from './summary';
-import type { CampaignForm, WizardApi, WizardCatalog } from './types';
+import type { CampaignForm, CampaignPrefill, EditedCampaign, WizardApi, WizardCatalog } from './types';
 
-/** Where the form starts: empty, a copy of a campaign («Повторить») or a returned campaign («Исправить»). */
-export type WizardSource = { kind: 'new' } | { kind: 'copy'; campaignId: string } | { kind: 'fix'; campaignId: string };
+/** Where the form starts: empty, a copy of a campaign («Повторить») or the campaign itself («Редактировать», «Исправить»). */
+export type WizardSource = { kind: 'new' } | { kind: 'copy'; campaignId: string } | { kind: 'edit'; campaignId: string };
 
 export type WizardData =
   | { status: 'loading' }
   | { status: 'error'; retry: () => void }
   | { status: 'missing' }
-  | { status: 'ready'; userId: string; catalog: WizardCatalog; prefill: CampaignForm | null; moderation: Moderation | null; api: WizardApi };
+  /** The campaign exists but `edit_campaign` doesn't accept its status. */
+  | { status: 'locked' }
+  | {
+      status: 'ready';
+      userId: string;
+      catalog: WizardCatalog;
+      prefill: CampaignForm | null;
+      edited: EditedCampaign | null;
+      moderation: Moderation | null;
+      api: WizardApi;
+      /** Reloads the plans' terms after the server answered `tariff_changed`. */
+      refreshTariffs: () => void;
+    };
 
 const CATALOG_STALE_MS = 5 * 60_000;
+
+function editedCampaign(id: string, row: CampaignPrefill): EditedCampaign {
+  const budget = row.budget ?? 0;
+  return {
+    id,
+    running: row.status === 'active',
+    rejected: row.status === 'rejected',
+    launched: row.launched,
+    budget,
+    left: Math.max(budget - (row.spent ?? 0), 0),
+    canTopUp: campaignAbilities({ status: row.status, tariff_can_extend: row.tariffSold }).canTopUp,
+    hasZones: row.tariffZones,
+  };
+}
 
 function demoData(variant: DemoVariant, source: WizardSource): WizardData {
   if (variant === 'loading') return { status: 'loading' };
   if (variant === 'error') return { status: 'error', retry: () => window.location.reload() };
-  const returned = source.kind === 'fix';
+  const prefill = source.kind === 'new' ? null : demoReturnedForm();
+  // ?demo=new opens an edit of a running campaign, ?demo=active the returned one.
+  const returned = source.kind === 'edit' && variant === 'active';
   return {
     status: 'ready',
     userId: 'demo',
     catalog: demoCatalog(),
-    prefill: source.kind === 'new' ? null : demoReturnedForm(),
+    prefill,
+    edited:
+      source.kind === 'edit'
+        ? {
+            id: source.campaignId,
+            running: !returned,
+            rejected: returned,
+            launched: !returned,
+            budget: 3_000_000,
+            left: returned ? 3_000_000 : 1_250_000,
+            canTopUp: !returned,
+            hasZones: true,
+          }
+        : null,
     moderation: returned ? DEMO_MODERATION : null,
     api: demoWizardApi(),
+    refreshTariffs: () => undefined,
   };
 }
 
@@ -41,42 +85,48 @@ export function useWizardData(source: WizardSource): WizardData {
   const demo = import.meta.env.DEV ? parseDemoVariant(params.get('demo')) : null;
   const sourceId = source.kind === 'new' ? null : source.campaignId;
 
+  const tariffs = useTariffTerms();
   const catalog = useQuery({
     queryKey: queryKeys.storeCatalog(userId),
-    queryFn: userId && !demo ? ({ signal }) => fetchWizardCatalog(signal) : skipToken,
+    queryFn: userId && !demo ? ({ signal }) => fetchStoreCatalog(signal) : skipToken,
     staleTime: CATALOG_STALE_MS,
   });
   const prefill = useQuery({
     queryKey: queryKeys.campaignPrefill(userId, sourceId),
     queryFn: userId && sourceId && !demo ? ({ signal }) => fetchCampaignPrefill(userId, sourceId, signal) : skipToken,
-    // A campaign can be fixed only once; never reopen a stale copy of it.
+    // An edit must start from the campaign as it is now, never from a stale copy.
     staleTime: 0,
   });
 
   if (demo) return demoData(demo, source);
-  const failed = catalog.isError || (sourceId !== null && prefill.isError);
+  const failed = catalog.isError || (sourceId !== null && prefill.isError) || tariffs.status === 'error';
   const busy = catalog.isFetching || prefill.isFetching;
-  if (!userId || catalog.isPending || (sourceId !== null && prefill.isPending) || (failed && busy)) return { status: 'loading' };
-  if (failed) {
+  if (!userId || catalog.isPending || (sourceId !== null && prefill.isPending) || tariffs.status === 'loading' || (failed && busy)) return { status: 'loading' };
+  if (failed || tariffs.status !== 'ready') {
     return {
       status: 'error',
       retry: () => {
         void catalog.refetch();
         if (sourceId !== null) void prefill.refetch();
+        if (tariffs.status === 'error') tariffs.retry();
       },
     };
   }
   const row = prefill.data ?? null;
-  if (sourceId !== null && (!row || (source.kind === 'fix' && row.status !== 'rejected'))) return { status: 'missing' };
+  if (sourceId !== null && !row) return { status: 'missing' };
+  if (source.kind === 'edit' && row && !campaignAbilities({ status: row.status, tariff_can_extend: null }).canEdit) return { status: 'locked' };
   return {
     status: 'ready',
     userId,
-    catalog: catalog.data,
+    catalog: { ...catalog.data, tariffs: tariffs.terms },
     prefill: row ? formFromPrefill(row, catalog.data) : null,
-    moderation: row?.moderation ?? null,
+    edited: source.kind === 'edit' && row ? editedCampaign(source.campaignId, row) : null,
+    moderation: source.kind === 'edit' && row?.status === 'rejected' ? row.moderation : null,
     api: {
       uploadMedia: (file, fileName, onProgress, signal) => uploadCampaignMedia(userId, file, fileName, onProgress, signal),
-      submit: (submission, mode) => (mode.kind === 'fix' ? resubmitCampaign(mode.campaignId, submission) : submitCampaign(submission)),
+      submit: submitCampaign,
+      edit: editCampaign,
     },
+    refreshTariffs: () => void tariffs.refetch(),
   };
 }

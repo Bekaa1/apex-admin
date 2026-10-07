@@ -3,7 +3,6 @@ import { Icon, type IconName } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatMoney } from '../../../lib/format';
 import { CABINET_LINKS, CABINET_ROOT } from '../../sections';
-import { TARIFFS } from '../../tariffs';
 import { ButtonLink } from '../../ui/ButtonLink';
 import { CorporateBanner } from './CorporateBanner';
 
@@ -14,12 +13,12 @@ const PREP: Array<{ key: string; icon: IconName }> = [
   { key: 'budget', icon: 'wallet' },
 ];
 
-/** The advertiser has no campaigns yet. */
-export function CampaignsEmpty() {
+/** The advertiser has no campaigns yet. `minimum` is the lowest plan minimum, null while the plans' terms load. */
+export function CampaignsEmpty({ minimum }: { minimum: number | null }) {
   const { t, lang } = useI18n();
   const titleId = useId();
   const prepId = useId();
-  const minimum = formatMoney(Math.min(...TARIFFS.map((tariff) => tariff.minimum)), lang);
+  const amount = minimum === null ? null : formatMoney(minimum, lang);
   return (
     <div className="cab-stack cab-stack--tight">
       <section className="cab-card cmp-empty" aria-labelledby={titleId}>
@@ -37,7 +36,7 @@ export function CampaignsEmpty() {
         <h2 className="cab-h2" id={titleId}>
           {t('campaigns.empty.title')}
         </h2>
-        <p className="cab-lead cmp-empty__lead">{t('campaigns.empty.lead', { amount: minimum })}</p>
+        <p className="cab-lead cmp-empty__lead">{amount ? t('campaigns.empty.lead', { amount }) : t('campaigns.empty.leadNoAmount')}</p>
         <div className="cmp-empty__ctas">
           <ButtonLink to={CABINET_LINKS.newCampaign} variant="primary" size="lg" iconLeft="plus">
             {t('cabinet.createCampaign')}
@@ -68,7 +67,7 @@ export function CampaignsEmpty() {
               </span>
               <span className="cmp-prep__copy">
                 <strong>{t(`campaigns.empty.prep.${item.key}.title`)}</strong>
-                <span>{t(`campaigns.empty.prep.${item.key}.text`, { amount: minimum })}</span>
+                <span>{amount || item.key !== 'budget' ? t(`campaigns.empty.prep.${item.key}.text`, { amount: amount ?? '' }) : t('campaigns.empty.prep.budget.textNoAmount')}</span>
               </span>
             </li>
           ))}

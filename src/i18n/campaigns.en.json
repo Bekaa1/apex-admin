@@ -1,15 +1,18 @@
 {
   "titles": {
     "new": "New campaign",
-    "fix": "Fix the campaign",
-    "corporate": "Corporate plan"
+    "corporate": "Corporate plan",
+    "edit": "Edit the campaign",
+    "sent": "My campaigns",
+    "topUp": "Top up the campaign"
   },
   "steps": {
     "media": "Video and details",
     "tariff": "Plan",
     "stores": "Stores",
     "zones": "Shelf zones",
-    "budget": "Budget and review"
+    "budget": "Budget and review",
+    "review": "Review of changes"
   },
   "stepsLabel": "Campaign creation steps",
   "rules": {
@@ -74,7 +77,8 @@
       "rejected": "Needs fixing",
       "since": "Since {date}",
       "stopped": "Impressions stopped",
-      "period": "{from} — {to}"
+      "period": "{from} — {to}",
+      "changes": "Checking the changes"
     },
     "budgetNotSet": "No budget set",
     "notPaid": "Not paid yet",
@@ -95,7 +99,8 @@
       "fix": "Fix",
       "stats": "Statistics",
       "topUp": "Top up",
-      "repeat": "Repeat"
+      "repeat": "Repeat",
+      "edit": "Edit"
     },
     "beforeLaunch": "Before launch",
     "timeline": {
@@ -103,7 +108,9 @@
       "approved": "Video approved",
       "payment": "Budget payment",
       "paid": "Budget paid",
-      "launch": "Impressions start"
+      "launch": "Impressions start",
+      "changesReview": "Changes review",
+      "resume": "Impressions resume"
     },
     "stepState": {
       "done": ", done",
@@ -112,7 +119,16 @@
     },
     "invoiceSent": "We sent an invoice for {amount} to {email}",
     "returned": "The moderator returned the campaign:",
-    "comment": "“{text}”"
+    "comment": "“{text}”",
+    "beforeResume": "Before impressions resume",
+    "pausedSince": "Impressions paused since {date}",
+    "more": "More actions: {name}",
+    "menu": {
+      "stats": "Statistics",
+      "edit": "Edit",
+      "topUp": "Top up",
+      "repeat": "Repeat the campaign"
+    }
   },
   "empty": {
     "title": "Your campaigns will be here",
@@ -130,9 +146,11 @@
       },
       "budget": {
         "title": "Budget",
-        "text": "The minimum depends on the plan: from {amount}. Payment by invoice."
+        "text": "The minimum depends on the plan: from {amount}. Payment by invoice.",
+        "textNoAmount": "The minimum depends on the plan. Payment by invoice."
       }
-    }
+    },
+    "leadNoAmount": "Create the first one — it takes about 10 minutes. You’ll need a 7-second video and a budget of at least the plan minimum."
   },
   "notFound": {
     "titleQuery": "Nothing found for “{query}”",
@@ -178,9 +196,10 @@
         "invalid_budget": "The budget is below the plan’s minimum. Increase it.",
         "missing_email": "Add an email to your profile — the campaign invoice goes there.",
         "not_found": "Campaign not found. Go back to your campaigns.",
-        "invalid_status": "This campaign can’t be fixed any more — it may have been sent already. Go back to your campaigns.",
+        "invalid_status": "This campaign can’t be changed right now — it may have been sent already. Go back to the campaign.",
         "tariff_change_not_allowed": "The plan can’t be changed in a fix. For another plan, create a new campaign.",
-        "not_authenticated": "Your session has ended. Sign in again and send the campaign."
+        "not_authenticated": "Your session has ended. Sign in again and send the campaign.",
+        "tariff_changed": "The plan’s terms have just changed. Check the minimum budget and send the campaign again."
       },
       "toProfile": "Open profile"
     },
@@ -233,15 +252,17 @@
         "title": "Any questions?",
         "text": "A manager will help with the budget, stores and video requirements.",
         "whatsapp": "Message on WhatsApp"
+      },
+      "review": {
+        "title": "Any questions?",
+        "text": "A manager will help with the budget, stores and video requirements."
       }
     },
     "fix": {
       "title": "The moderator returned the campaign",
       "failed": "Not met: {rules}.",
       "comment": "Moderator’s comment: {comment}",
-      "after": "Fix the video and send it again — we’ll check it within a working day.",
-      "tariffLocked": "The plan stays the same in a fix. Need another one? Create a new campaign.",
-      "budgetLocked": "The budget stays the same in a fix."
+      "after": "Fix the video and send it again — we’ll check it within a working day."
     },
     "media": {
       "title": "Video and details",
@@ -304,7 +325,8 @@
           "manager": "B2B contract and a personal manager"
         },
         "discuss": "Discuss terms"
-      }
+      },
+      "errorUnavailable": "This plan is no longer sold. Pick another one."
     },
     "stores": {
       "title": "Choose stores",
@@ -365,7 +387,7 @@
       "title": "Budget and review",
       "lead": "Set the budget, check the campaign and send it to the moderator. Impressions start right after approval.",
       "section": "Budget",
-      "minimum": "Minimum for the “{tariff}” plan — {amount}",
+      "minimum": "Minimum for the “{tariff}” plan — {amount}, price per impression — {price}",
       "label": "Campaign budget",
       "hint": "Impressions are paid from the budget. When it runs out, impressions stop — top it up and they continue.",
       "presets": "Quick amount",
@@ -388,6 +410,10 @@
       },
       "rules": "The video meets the advertising rules",
       "rulesError": "Confirm that the video meets the rules"
+    },
+    "review": {
+      "title": "Review of changes",
+      "lead": "See what changed and send the campaign to the moderator. The budget doesn’t change here."
     }
   },
   "sent": {
@@ -490,5 +516,259 @@
         "text": "Check your connection and try again."
       }
     }
+  },
+  "details": {
+    "loading": "Loading the campaign",
+    "error": {
+      "title": "Couldn’t load the campaign",
+      "text": "Check your connection and try again."
+    },
+    "missing": {
+      "title": "Campaign not found",
+      "text": "It may have been deleted, or the link is out of date. Go back to your campaigns."
+    },
+    "head": {
+      "since": "Showing since {date}",
+      "created": "Created {date}"
+    },
+    "now": {
+      "review": {
+        "title": "The campaign is under review",
+        "text": "A moderator is watching the video — usually within 24 hours on working days. The result comes to {email}."
+      },
+      "changes": {
+        "title": "Checking the changes",
+        "text": "Sent on {date} — impressions are paused until approval. The review usually takes up to 24 hours; the result comes by email.",
+        "textNoDate": "Impressions are paused until approval. The review usually takes up to 24 hours; the result comes by email."
+      },
+      "payment": {
+        "title": "Video approved — pay the invoice",
+        "text": "We sent an invoice for {amount} to {email}. Impressions start right after payment.",
+        "textNoInvoice": "The invoice comes to the email in your profile. Impressions start right after payment."
+      },
+      "noBudget": {
+        "title": "The budget ran out — impressions stopped",
+        "text": "Top up the budget and impressions continue with the same video. No review needed.",
+        "textManager": "The campaign’s plan is no longer sold. To continue impressions, message your manager."
+      }
+    },
+    "stats": {
+      "title": "Statistics for 30 days",
+      "finishedTitle": "Campaign results",
+      "all": "All statistics",
+      "plays": "Impressions",
+      "deltaContext": "vs the previous 30 days",
+      "spent": "Spent in total",
+      "price": "Average price per impression",
+      "carts": "Carts",
+      "chartLabel": "Impressions by day",
+      "chartHint": "Left and right arrows move between columns",
+      "playsUnit": {
+        "one": "impression",
+        "other": "impressions"
+      },
+      "pausedNote": "Impressions are paused since {date} while we check the changes.",
+      "emptyTitle": "Statistics appear after the launch",
+      "emptyText": "We’ll show impressions, spending and carts as soon as impressions start."
+    },
+    "media": {
+      "title": "Video and description",
+      "video": "Video",
+      "cover": "Cover",
+      "coverUploaded": "Uploaded",
+      "firstFrame": "First frame of the video",
+      "description": "Description"
+    },
+    "stores": {
+      "title": "Stores",
+      "titleZones": "Stores and zones",
+      "cartsUnit": {
+        "one": "cart",
+        "other": "carts"
+      },
+      "none": "The campaign’s stores are unavailable right now.",
+      "all": "Show all ({count})",
+      "less": "Show less",
+      "noZones": "Plan without zones: the video plays in the shared rotation on every cart."
+    },
+    "budget": {
+      "title": "Budget",
+      "leftOf": "left of {total}",
+      "spentOf": "spent of {total}",
+      "spent": "Spent",
+      "minTopUp": "Minimum top-up",
+      "enoughFor": "Enough for about",
+      "days": {
+        "one": "{count} day",
+        "other": "{count} days"
+      },
+      "topUpNote": "A top-up needs no review: impressions continue with the same video."
+    },
+    "history": {
+      "title": "History",
+      "created": "Campaign created",
+      "sent": "Sent for review",
+      "approved": "Video approved",
+      "rejected": "Video rejected",
+      "paid": "Budget paid · {amount}",
+      "toppedUp": "Budget topped up · {amount}",
+      "invoice": "Top-up invoice · {amount}",
+      "started": "Impressions started",
+      "changesSent": "Changes sent for review",
+      "budgetEnded": "The budget ran out",
+      "finished": "Campaign finished"
+    },
+    "help": {
+      "title": "Any questions?",
+      "text": "A manager will help with the budget, stores, zones and the video."
+    }
+  },
+  "topUp": {
+    "title": "Top up the campaign",
+    "lead": "Add money to the budget — impressions continue with the same video. No review needed; the plan stays the same.",
+    "back": "To the campaign",
+    "cancel": "Cancel",
+    "submit": "Get an invoice",
+    "agreeHint": "To get an invoice, agree to the new terms",
+    "ended": "The budget ran out",
+    "amount": {
+      "title": "Top-up amount",
+      "minimum": "The minimum top-up for the “{tariff}” plan is {amount}",
+      "label": "Amount",
+      "hint": "The invoice comes to {email}. Once it’s paid, we add the money to the campaign budget.",
+      "errorRequired": "Enter the top-up amount.",
+      "errorMin": "The minimum top-up for the “{tariff}” plan is {amount}. Increase the amount."
+    },
+    "receipt": {
+      "tariff": "Plan",
+      "minimum": "Minimum top-up",
+      "after": "Budget after payment"
+    },
+    "summary": {
+      "title": "Total",
+      "toPay": "To pay",
+      "enough": "Enough for about {days}"
+    },
+    "next": {
+      "title": "What happens next",
+      "payment": "Invoice payment",
+      "paymentText": "The invoice comes to {email}. You can pay it right away.",
+      "resumeText": "As soon as the money arrives — no review, same video."
+    },
+    "errors": {
+      "title": "Couldn’t create the invoice",
+      "changedTitle": "The plan’s terms have just changed",
+      "network": "Check your connection and try again. No invoice was created.",
+      "tariff_changed": "Check the new terms, agree to them and request the invoice again.",
+      "missing_email": "Add an email to your profile — the invoice goes there.",
+      "invalid_status": "This campaign can’t be topped up right now. Go back to the campaign.",
+      "invalid_tariff": "The campaign’s plan is no longer sold. Message your manager.",
+      "not_found": "Campaign not found. Go back to your campaigns.",
+      "not_authenticated": "Your session ended. Sign in again and request the invoice."
+    },
+    "blocked": {
+      "status": {
+        "title": "This campaign can’t be topped up right now",
+        "text": "You can top up a running campaign or one whose budget ran out."
+      },
+      "tariff": {
+        "title": "The campaign’s plan is no longer sold",
+        "text": "To continue impressions, message your manager — we’ll find the terms."
+      },
+      "missing": {
+        "title": "Campaign not found",
+        "text": "It may have been deleted, or the link is out of date. Go back to your campaigns."
+      }
+    },
+    "sent": {
+      "title": "The invoice is on its way",
+      "lead": "We sent an invoice for {amount} to {email}. Impressions of “{name}” continue right after payment.",
+      "paymentText": "Payment details are in the email to {email}. You can pay right away.",
+      "resumeText": "No review needed: impressions continue with the same video as soon as the money arrives."
+    }
+  },
+  "edit": {
+    "locked": {
+      "title": "This campaign can’t be changed",
+      "text": "You can edit a campaign under review, awaiting payment, rejected, running or out of budget."
+    },
+    "notice": {
+      "title": "After saving, the campaign goes to review",
+      "running": "Impressions stop until approval — usually within 24 hours.",
+      "text": "The review usually takes up to 24 hours on working days."
+    },
+    "tariffNote": "Stays the same",
+    "cancel": "Discard changes",
+    "summary": {
+      "budget": "Campaign budget",
+      "left": "{amount} left"
+    },
+    "changesTitle": "What changed",
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "video": "Video",
+      "cover": "Cover",
+      "stores": "Stores",
+      "zones": "Shelf zones"
+    },
+    "changed": {
+      "name": "name",
+      "description": "description",
+      "video": "video",
+      "cover": "cover",
+      "stores": "stores",
+      "zones": "shelf zones"
+    },
+    "values": {
+      "noVideo": "No video",
+      "noDescription": "No description",
+      "firstFrame": "A frame of the video"
+    },
+    "added": "Added:",
+    "removed": "Removed:",
+    "noChanges": {
+      "title": "You haven’t changed anything yet",
+      "text": "Change the video, description, stores or zones — and send it for review.",
+      "error": "Nothing to send: there are no changes"
+    },
+    "budgetNote": "The budget doesn’t change in an edit.",
+    "budgetNoteTopUp": "The budget doesn’t change in an edit. To add money, top up the campaign — no review needed.",
+    "afterTitle": "What happens after sending",
+    "after": {
+      "reviewText": "The moderator checks the changes — usually within 24 hours on working days. The result comes by email.",
+      "resumeText": "Right after approval — with the new settings."
+    },
+    "sent": {
+      "title": "The changes are sent for review",
+      "lead": "We’ll check the changes to “{name}” within a working day and write to {email}.",
+      "leadPaused": "We’ll check the changes to “{name}” within a working day and write to {email}. Impressions are paused until approval and then continue on their own.",
+      "changed": "What changed",
+      "plays": "Impressions",
+      "paused": "Paused until approval"
+    },
+    "was": "Was",
+    "now": "Now"
+  },
+  "terms": {
+    "title": "The plan’s terms changed",
+    "text": "The terms of the “{tariff}” plan changed.",
+    "textSince": "Since {date}, the terms of the “{tariff}” plan have changed.",
+    "was": "{label}: was",
+    "now": "now",
+    "price": "Price per impression",
+    "minimum": "Minimum budget",
+    "minimumTopUp": "Minimum top-up",
+    "agree": "I agree to the new terms",
+    "error": "Agree to the new terms",
+    "noteTopUp": "The budget you already paid is spent at the old price — the new terms apply only to new top-ups.",
+    "noteNew": "The invoice will use the new terms. Check the budget and send the campaign again."
+  },
+  "plays": {
+    "count": {
+      "one": "{count} impression",
+      "other": "{count} impressions"
+    },
+    "about": "≈ {plays} at {price}"
   }
 }

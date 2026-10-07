@@ -1,7 +1,8 @@
 import { Button, Disclosure, DisclosureGroup, Icon } from '../design-system';
-import { TARIFFS, TARIFF_FEATURES } from '../cabinet/tariffs';
+import { TARIFFS, TARIFF_FEATURES, termsOf } from '../cabinet/tariffs';
+import { useTariffTerms } from '../cabinet/useTariffTerms';
 import { useI18n } from '../i18n/i18n';
-import { formatMoney } from '../lib/format';
+import { formatMoney, formatPrice } from '../lib/format';
 import { SUPPORT_WHATSAPP_URL } from '../lib/contacts';
 import { CampaignLink } from './CampaignLink';
 import { PageHeading } from './PageParts';
@@ -9,14 +10,22 @@ import styles from './PublicPages.module.css';
 
 export function PricingPage() {
   const { t, lang } = useI18n();
+  const tariffs = useTariffTerms();
+  // Prices come from the `tariffs` table; plans off sale are hidden, «—» while the terms load.
+  const terms = tariffs.status === 'ready' ? tariffs.terms : null;
+  const plans = TARIFFS.flatMap((tariff) => {
+    const plan = terms ? termsOf(terms, tariff.code) : null;
+    return terms && !plan ? [] : [{ ...tariff, plan }];
+  });
   return <div className={styles.page}>
     <PageHeading page="pricing" />
     <div className={styles.pricingGrid}>
-      {TARIFFS.map((tariff) => <article key={tariff.code} className={`${styles.plan} ${tariff.code === 'zones' ? styles.featuredPlan : ''}`}>
+      {plans.map((tariff) => <article key={tariff.code} className={`${styles.plan} ${tariff.code === 'zones' ? styles.featuredPlan : ''}`}>
         <div className={styles.planTop}><span className={styles.iconTile}><Icon name={tariff.code === 'standard' ? 'cart' : tariff.code === 'zones' ? 'shelf' : 'zap'} size={24} /></span><span className={styles.planTag}>{t(`public.pricing.tag.${tariff.code}`)}</span></div>
         <h2>{t(`cabinet.tariffs.${tariff.code}.name`)}</h2>
         <p className={styles.planDescription}>{t(`cabinet.tariffs.${tariff.code}.text`)}</p>
-        <div className={styles.price}><span>{t('cabinet.tariffs.minimum')}</span><strong>{t('cabinet.tariffs.from', { amount: formatMoney(tariff.minimum, lang) })}</strong></div>
+        <div className={styles.price}><span>{t('cabinet.tariffs.pricePerPlay')}</span><strong>{tariff.plan ? formatPrice(tariff.plan.pricePerPlay, lang) : '—'}</strong></div>
+        <div className={styles.price}><span>{t('cabinet.tariffs.minimum')}</span><strong>{tariff.plan ? t('cabinet.tariffs.from', { amount: formatMoney(tariff.plan.minimum, lang) }) : '—'}</strong></div>
         <CampaignLink tariff={tariff.code} variant={tariff.code === 'zones' ? 'primary' : 'secondary'} fullWidth>{t('public.pricing.choose')}</CampaignLink>
         <ul className={styles.features}>{TARIFF_FEATURES.slice(0, 3).map((feature, index) => <li key={feature} className={index < tariff.level ? styles.included : styles.excluded}><Icon name={index < tariff.level ? 'check-circle' : 'minus'} size={18} /><span><span className="ax-sr">{t(index < tariff.level ? 'cabinet.tariffs.has' : 'cabinet.tariffs.hasNot')} </span>{t(`cabinet.tariffs.feature.${feature}`)}</span></li>)}</ul>
       </article>)}

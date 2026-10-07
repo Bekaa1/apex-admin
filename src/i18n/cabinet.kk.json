@@ -57,6 +57,8 @@
     "minimum": "Ең төменгі бюджет",
     "from": "{amount} бастап",
     "budget": "Бюджет",
-    "byAgreement": "Келісім бойынша"
+    "byAgreement": "Келісім бойынша",
+    "pricePerPlay": "Көрсетілім бағасы",
+    "perPlay": "бір көрсетілім — {amount}"
   }
 }

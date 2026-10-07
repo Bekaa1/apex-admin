@@ -7,6 +7,7 @@ import { KpiTiles } from './KpiTiles';
 import { LowBudgetAlert } from './LowBudgetAlert';
 import { NextCampaignCard } from './NextCampaignCard';
 import { SupportCard } from './SupportCard';
+import type { TariffTerms } from '../tariffs';
 import type { HomeData } from './types';
 
 function scrollToGuide() {
@@ -15,7 +16,7 @@ function scrollToGuide() {
 }
 
 /** Home for an advertiser with campaigns: alerts, 7-day summary, latest campaigns. */
-export function HomeDashboard({ data }: { data: HomeData }) {
+export function HomeDashboard({ data, tariffTerms }: { data: HomeData; tariffTerms: TariffTerms[] | null }) {
   const [guideOpen, setGuideOpen] = useState(false);
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export function HomeDashboard({ data }: { data: HomeData }) {
       {guideOpen ? (
         <>
           <GuideSteps />
-          <GuideTariffs />
+          <GuideTariffs terms={tariffTerms} />
           <GuideBudget />
         </>
       ) : null}

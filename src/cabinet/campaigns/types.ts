@@ -29,6 +29,8 @@ export type CampaignStatsRow = Pick<
   | 'invoice_sent_to'
   | 'rejection_reasons'
   | 'moderator_comment'
+  | 'submitted_at'
+  | 'tariff_can_extend'
 >;
 
 export interface CampaignsSource {
@@ -52,6 +54,8 @@ export interface Moderation {
 /** Where the campaign is. `null` means the backend doesn't tell yet, and that part is not shown. */
 export type CampaignStage =
   | { kind: 'review'; paid: boolean | null }
+  /** A launched campaign was edited: shows are paused until the moderator approves the changes. */
+  | { kind: 'changesReview'; since: string | null }
   | { kind: 'awaitingPayment'; invoice: { amount: number; sentTo: string } | null }
   | { kind: 'rejected'; paid: boolean | null; moderation: Moderation | null }
   | { kind: 'active'; since: string | null; low: boolean }
@@ -74,6 +78,10 @@ export interface CampaignCard {
   cartsCount: number | null;
   createdAt: string;
   stage: CampaignStage;
+  /** The backend accepts `edit_campaign` in this status. */
+  canEdit: boolean;
+  /** The backend accepts `extend_campaign`: the campaign runs or ran out of money, and its plan is still sold. */
+  canTopUp: boolean;
   budget: BudgetFigures;
   /** null — impressions have not started yet. */
   plays: Record<PlaysPeriod, number> | null;

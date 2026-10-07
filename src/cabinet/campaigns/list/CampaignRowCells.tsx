@@ -1,9 +1,10 @@
-import { Meter } from '../../../design-system';
+import { useNavigate } from 'react-router';
+import { Menu, Meter } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatCompactNumber, formatMoney } from '../../../lib/format';
 import { ButtonLink } from '../../ui/ButtonLink';
 import type { CampaignCard, PlaysPeriod } from '../types';
-import { rowAction } from './rowView';
+import { campaignAction, mainActionKind, moreActionKinds, type CampaignActionKind } from './rowView';
 
 /** Not launched yet: the budget and whether it is paid. Launched: how much is spent. */
 export function BudgetCell({ card }: { card: CampaignCard }) {
@@ -71,14 +72,41 @@ export function PlaysCell({ plays, period }: { plays: CampaignCard['plays']; per
   );
 }
 
+const BUTTON_LOOK: Record<CampaignActionKind, { variant: 'secondary' | 'ghost'; arrow?: boolean }> = {
+  open: { variant: 'ghost', arrow: true },
+  howToPay: { variant: 'secondary' },
+  fix: { variant: 'secondary' },
+  edit: { variant: 'secondary' },
+  topUp: { variant: 'secondary' },
+  stats: { variant: 'ghost', arrow: true },
+  repeat: { variant: 'ghost' },
+};
+
+/** The row button and the «⋯» menu with the rest of the campaign's actions. */
 export function ActionCell({ card }: { card: CampaignCard }) {
   const { t } = useI18n();
-  const action = rowAction(card);
+  const navigate = useNavigate();
+  const main = mainActionKind(card);
+  const action = campaignAction(main, card.id);
+  const look = BUTTON_LOOK[main];
+  const more = moreActionKinds(card, [main]).map((kind) => campaignAction(kind, card.id));
   return (
     <div className="cmp-row__action">
-      <ButtonLink to={action.to} variant={action.variant} size="md" iconLeft={action.iconLeft} iconRight={action.iconRight}>
+      <ButtonLink
+        to={action.to}
+        variant={look.variant}
+        size="md"
+        iconLeft={look.arrow ? undefined : action.icon}
+        iconRight={look.arrow ? 'arrow-right' : undefined}
+      >
         {t(action.labelKey)}
       </ButtonLink>
+      {more.length ? (
+        <Menu
+          label={t('campaigns.row.more', { name: card.name })}
+          items={more.map((item) => ({ key: item.kind, label: t(`campaigns.row.menu.${item.kind}`), icon: item.icon, onSelect: () => navigate(item.to) }))}
+        />
+      ) : null}
     </div>
   );
 }

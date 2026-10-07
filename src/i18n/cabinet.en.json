@@ -57,6 +57,8 @@
     "minimum": "Minimum budget",
     "from": "from {amount}",
     "budget": "Budget",
-    "byAgreement": "By agreement"
+    "byAgreement": "By agreement",
+    "pricePerPlay": "Price per impression",
+    "perPlay": "{amount} per impression"
   }
 }

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Button, Icon } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
-import { formatMoney, formatNumber, pluralKey } from '../../../../lib/format';
-import { TARIFFS } from '../../../tariffs';
+import { formatMoney, formatNumber, formatPrice, pluralKey } from '../../../../lib/format';
+import { termsOf } from '../../../tariffs';
 import { formatClock } from '../media';
 import { selectedStores, selectedZones, summarize } from '../summary';
 import type { StepId, WizardCatalog } from '../types';
@@ -29,8 +29,8 @@ function Item({ label, step, onEdit, children }: { label: string; step: StepId; 
 export function ReviewList({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
   const { t, lang } = useI18n();
   const { form, goTo } = wizard;
-  const summary = summarize(form, catalog);
-  const tariff = TARIFFS.find((plan) => plan.code === form.tariff);
+  const summary = summarize(form, wizard.ctx);
+  const tariff = termsOf(catalog.tariffs, form.tariff);
   const count = (key: string, n: number) => t(pluralKey(key, n, lang), { count: formatNumber(n, lang) });
   const video = form.video.status === 'ready' ? form.video : null;
   const cover = form.cover.status === 'ready' ? form.cover : null;
@@ -65,6 +65,7 @@ export function ReviewList({ wizard, catalog }: { wizard: CampaignWizardState; c
           <p className="cmp-review__value">
             <strong>{t(`cabinet.tariffs.${tariff.code}.name`)}</strong>
             <span>{t('campaigns.wizard.budget.from', { amount: formatMoney(tariff.minimum, lang) })}</span>
+            <span>{t('cabinet.tariffs.perPlay', { amount: formatPrice(tariff.pricePerPlay, lang) })}</span>
           </p>
         ) : null}
       </Item>

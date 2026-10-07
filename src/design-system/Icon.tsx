@@ -146,6 +146,20 @@ const ICONS = {
       <path d="M15 8h5v5" />
     </>
   ),
+  'trending-down': (
+    <>
+      <path d="m4 8 6 6 4-4 6 6" />
+      <path d="M15 16h5v-5" />
+    </>
+  ),
+  pause: <path d="M9 5.5v13M15 5.5v13" />,
+  more: (
+    <>
+      <circle cx={5.5} cy={12} r={1.3} fill="currentColor" />
+      <circle cx={12} cy={12} r={1.3} fill="currentColor" />
+      <circle cx={18.5} cy={12} r={1.3} fill="currentColor" />
+    </>
+  ),
   wallet: (
     <>
       <path d="M4.5 7.5A2.5 2.5 0 0 1 7 5h10.5v3" />

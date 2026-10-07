@@ -1,13 +1,14 @@
 import { TARIFFS } from '../../tariffs';
-import type { CampaignForm, MediaState, WizardMode } from './types';
+import type { CampaignForm, MediaState } from './types';
 
 // The wizard keeps what was typed in the tab's sessionStorage, so going to the corporate page and back, or a reload,
 // loses nothing. Nothing is sent to the server until the campaign is submitted (there are no drafts).
 
 const PREFIX = 'apex-campaign-form';
 
-export function formStorageKey(userId: string, mode: WizardMode): string {
-  return `${PREFIX}:${userId}:${mode.kind === 'fix' ? mode.campaignId : 'new'}`;
+/** One draft for a new campaign and one per edited campaign. */
+export function formStorageKey(userId: string, campaignId: string | null): string {
+  return `${PREFIX}:${userId}:${campaignId ?? 'new'}`;
 }
 
 const isString = (value: unknown): value is string => typeof value === 'string';

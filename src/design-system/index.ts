@@ -26,3 +26,6 @@ export { ChoiceCard, type ChoiceCardProps } from './ChoiceCard';
 export { Chip, type ChipProps } from './Chip';
 export { FileDrop, type FileDropProps } from './FileDrop';
 export { TextAreaField, type TextAreaFieldProps } from './TextAreaField';
+export { Delta, type DeltaProps, type DeltaTone } from './Delta';
+export { ColumnsChart, type ColumnsChartProps, type ColumnsChartBar } from './ColumnsChart';
+export { Menu, type MenuProps, type MenuItem } from './Menu';

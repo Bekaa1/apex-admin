@@ -34,33 +34,37 @@ export function WizardScreen({ source }: { source: WizardSource }) {
   if (data.status === 'loading') return <WizardSkeleton />;
   if (data.status === 'error') {
     return (
-      <LoadError title={t('campaigns.wizard.loadError.title')} onRetry={data.retry}>
+      <LoadError title={t(source.kind === 'edit' ? 'campaigns.details.error.title' : 'campaigns.wizard.loadError.title')} onRetry={data.retry}>
         {t('campaigns.wizard.loadError.text')}
       </LoadError>
     );
   }
-  if (data.status === 'missing') {
+  if (data.status === 'missing' || data.status === 'locked') {
+    const editing = source.kind === 'edit';
+    const key = data.status === 'locked' ? 'campaigns.edit.locked' : 'campaigns.wizard.missing';
     return (
       <div className="cab-stack cab-stack--tight">
         <Alert
           tone="warning"
-          title={t('campaigns.wizard.missing.title')}
+          title={t(`${key}.title`)}
           action={
-            <ButtonLink to={CABINET_LINKS.campaigns} variant="secondary" size="md">
-              {t('campaigns.wizard.back')}
+            <ButtonLink to={editing && data.status === 'locked' ? CABINET_LINKS.campaign(source.campaignId) : CABINET_LINKS.campaigns} variant="secondary" size="md">
+              {t(editing && data.status === 'locked' ? 'campaigns.topUp.back' : 'campaigns.wizard.back')}
             </ButtonLink>
           }
         >
-          {t('campaigns.wizard.missing.text')}
+          {t(`${key}.text`)}
         </Alert>
       </div>
     );
   }
 
-  const mode: WizardMode = source.kind === 'fix' ? { kind: 'fix', campaignId: source.campaignId, moderation: data.moderation } : { kind: 'new' };
-  const storageKey = formStorageKey(data.userId, mode);
+  const mode: WizardMode =
+    data.edited && data.prefill ? { kind: 'edit', campaign: data.edited, original: data.prefill, moderation: data.moderation } : { kind: 'new' };
+  const storageKey = formStorageKey(data.userId, mode.kind === 'edit' ? mode.campaign.id : null);
   // A copy always starts from the source campaign; otherwise what was typed in this tab wins.
   let initial = (source.kind === 'copy' ? null : loadForm(storageKey)) ?? data.prefill ?? emptyForm();
+  // A plan or a store chosen in the public catalog before signing in starts the new campaign.
   if (source.kind === 'new') {
     const intent = campaignIntentFromParams(params);
     if (intent.tariff && intent.tariff !== initial.tariff) {
@@ -70,5 +74,16 @@ export function WizardScreen({ source }: { source: WizardSource }) {
       initial = { ...initial, storeIds: [intent.storeId], zoneIds: [], rulesAccepted: false };
     }
   }
-  return <CampaignWizard key={storageKey} userId={data.userId} initial={initial} catalog={data.catalog} mode={mode} storageKey={storageKey} api={data.api} />;
+  return (
+    <CampaignWizard
+      key={storageKey}
+      userId={data.userId}
+      initial={initial}
+      catalog={data.catalog}
+      mode={mode}
+      storageKey={storageKey}
+      api={data.api}
+      onTariffChanged={data.refreshTariffs}
+    />
+  );
 }

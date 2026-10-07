@@ -408,7 +408,7 @@ revoke execute on function public.get_store_catalog(), public.get_zone_catalog()
 grant execute on function public.get_store_catalog(), public.get_zone_catalog() to authenticated;
 ```
 - Не отдавать `zones.description`: там MAC маячков.
-- Решите, считать ли в «кампаниях сейчас» кампании со «Все магазины». Все 46 текущих тестовых кампаний такие.
+- Решите, считать ли в «кампаниях сейчас» кампании со «Все магазины» (сейчас таких 3 из 47).
 - `sync_with_admin` в «Cart» настроен на один магазин (Carefood). Если в `stores` появится магазин без планшетов, рекламодатель сможет его выбрать. Нужен признак «магазин подключён» (например, `stores.is_live`), и каталог должен отдавать только такие магазины.
 - Фильтр «Сеть» на шаге 3 строится по `stores.name`. Если у сети несколько адресов под разными названиями, нужно поле `stores.chain`.
 

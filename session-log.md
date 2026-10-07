@@ -17,7 +17,7 @@
 ---
 
 ## 2026-10-06 — Мои кампании: список
-Ветка: `feature/campaigns` · PR: —
+Ветка: `feature/campaigns` · PR: https://github.com/Bekaa1/apex-admin/pull/3
 Дизайн: «Apex — Мои кампании» https://claude.ai/artifact/RfDdgYYsieCJF2gF9xQp8H (версия 1791306169-f9ee)
 
 **Что сделано**

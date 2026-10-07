@@ -1,14 +1,14 @@
 import { useId, useState } from 'react';
 import { Alert, Button, Chip, Icon, TextField } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
-import { formatMoney, formatNumber, pluralKey } from '../../../lib/format';
+import { formatMoney, formatNumber, formatPrice, pluralKey } from '../../../lib/format';
 import { CABINET_LINKS } from '../../sections';
 import { ButtonLink } from '../../ui/ButtonLink';
 import { daysFor } from '../details/model';
 import { budgetPresets } from '../wizard/summary';
 import { CampaignStrip } from './CampaignStrip';
 import type { TopUpCampaign, TopUpTerms } from './model';
-import { TermsChanged } from './TermsChanged';
+import { TopUpTermsChanged } from './TopUpTermsChanged';
 import type { TopUpState } from './useTopUp';
 
 // Codes that get their own text; anything else reads as a lost connection with «Повторить».
@@ -44,7 +44,7 @@ export function TopUpForm({ campaign, terms, form, email }: { campaign: TopUpCam
           <p className="cab-lead">{t('campaigns.topUp.lead')}</p>
         </header>
         <CampaignStrip campaign={campaign} />
-        {terms.changed ? <TermsChanged terms={terms} tariffName={tariffName} agreed={form.agreed} onAgree={form.setAgreed} /> : null}
+        {terms.changed ? <TopUpTermsChanged terms={terms} tariffName={tariffName} agreed={form.agreed} onAgree={form.setAgreed} /> : null}
         {form.error ? (
           <Alert
             tone={form.error === 'tariff_changed' ? 'warning' : 'danger'}
@@ -102,6 +102,10 @@ export function TopUpForm({ campaign, terms, form, email }: { campaign: TopUpCam
             <div>
               <dt>{t('campaigns.topUp.receipt.tariff')}</dt>
               <dd>{tariffName || '—'}</dd>
+            </div>
+            <div>
+              <dt>{t('cabinet.tariffs.pricePerPlay')}</dt>
+              <dd>{formatPrice(terms.pricePerPlay, lang)}</dd>
             </div>
             <div>
               <dt>{t('campaigns.topUp.receipt.minimum')}</dt>

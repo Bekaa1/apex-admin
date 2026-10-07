@@ -1,9 +1,11 @@
 import { useId, type ReactNode } from 'react';
 import { Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
-import { formatMoney, formatNumber, pluralKey } from '../../../lib/format';
+import { formatMoney, formatNumber, formatPrice, pluralKey } from '../../../lib/format';
+import { termsOf } from '../../tariffs';
+import { aboutPlays } from '../playsText';
 import { summarize } from './summary';
-import type { CampaignForm, EditedCampaign, MediaState, StepId, WizardCatalog } from './types';
+import type { CampaignForm, EditedCampaign, MediaState, StepId, WizardContext } from './types';
 
 function Stack({ main, sub }: { main: ReactNode; sub?: ReactNode }) {
   return (
@@ -31,18 +33,19 @@ function MediaValue({ media, optional }: { media: MediaState; optional?: string 
 interface WizardSummaryProps {
   step: StepId;
   form: CampaignForm;
-  catalog: WizardCatalog;
+  ctx: WizardContext;
   /** An edit shows the campaign's budget, which the edit doesn't change. */
   edited: EditedCampaign | null;
 }
 
 /** «Ваша кампания»: what is chosen so far and the budget. */
-export function WizardSummary({ step, form, catalog, edited }: WizardSummaryProps) {
+export function WizardSummary({ step, form, ctx, edited }: WizardSummaryProps) {
   const { t, lang } = useI18n();
   const titleId = useId();
-  const summary = summarize(form, catalog);
+  const summary = summarize(form, ctx);
   const count = (key: string, n: number) => t(pluralKey(key, n, lang), { count: formatNumber(n, lang) });
   const onBudget = step === 'budget';
+  const plan = edited ? null : termsOf(ctx.catalog.tariffs, form.tariff);
 
   let zones: ReactNode = <Empty />;
   if (!summary.zones) zones = <Empty>{t('campaigns.wizard.summary.zonesNotNeeded')}</Empty>;
@@ -60,6 +63,8 @@ export function WizardSummary({ step, form, catalog, edited }: WizardSummaryProp
   let totalSub = onBudget
     ? summary.minimum !== null && t('campaigns.wizard.summary.minimumOf', { amount: formatMoney(summary.minimum, lang) })
     : summary.minimum === null && t('campaigns.wizard.summary.dependsOnTariff');
+  // What the budget buys at the plan's price of a play.
+  const plays = onBudget && plan && form.budget ? aboutPlays(t, lang, form.budget, plan.pricePerPlay) : null;
   if (edited) {
     totalLabel = t('campaigns.edit.summary.budget');
     total = edited.budget;
@@ -91,7 +96,14 @@ export function WizardSummary({ step, form, catalog, edited }: WizardSummaryProp
         <div>
           <dt>{t('campaigns.wizard.summary.tariff')}</dt>
           <dd>
-            {form.tariff ? <Stack main={t(`cabinet.tariffs.${form.tariff}.name`)} sub={edited ? t('campaigns.edit.tariffNote') : undefined} /> : <Empty />}
+            {form.tariff ? (
+              <Stack
+                main={t(`cabinet.tariffs.${form.tariff}.name`)}
+                sub={edited ? t('campaigns.edit.tariffNote') : plan ? t('cabinet.tariffs.perPlay', { amount: formatPrice(plan.pricePerPlay, lang) }) : undefined}
+              />
+            ) : (
+              <Empty />
+            )}
           </dd>
         </div>
         <div>
@@ -112,6 +124,7 @@ export function WizardSummary({ step, form, catalog, edited }: WizardSummaryProp
       <div className="cmp-summary__total">
         <span>{totalLabel}</span>
         <strong>{total === null ? '—' : formatMoney(total, lang)}</strong>
+        {plays ? <span className="cmp-summary__sub">{plays}</span> : null}
         {totalSub ? <span className="cmp-summary__sub">{totalSub}</span> : null}
       </div>
     </section>

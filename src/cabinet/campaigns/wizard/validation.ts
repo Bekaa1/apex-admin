@@ -1,7 +1,7 @@
 import { termsOf } from '../../tariffs';
 import { campaignChanges } from './changes';
 import { activeSteps } from './steps';
-import type { CampaignForm, MediaProblem, MediaState, StepId, WizardCatalog, WizardFlow } from './types';
+import type { CampaignForm, MediaProblem, MediaState, StepId, WizardCatalog, WizardContext } from './types';
 
 export const NAME_MAX = 80;
 export const DESCRIPTION_MAX = 300;
@@ -33,8 +33,9 @@ export function minimumBudget(form: CampaignForm, catalog: WizardCatalog): numbe
   return termsOf(catalog.tariffs, form.tariff)?.minimum ?? null;
 }
 
-/** `original` is the campaign as the edit opened it: an edit with no changes can't be sent. */
-export function validateStep(step: StepId, form: CampaignForm, catalog: WizardCatalog, original: CampaignForm | null = null): StepErrors {
+/** An edit with no changes compared with `ctx.original` can't be sent. */
+export function validateStep(step: StepId, form: CampaignForm, ctx: WizardContext): StepErrors {
+  const { catalog } = ctx;
   const errors: StepErrors = {};
   const set = (key: FieldKey, error: FieldError | undefined) => {
     if (error) errors[key] = error;
@@ -67,26 +68,26 @@ export function validateStep(step: StepId, form: CampaignForm, catalog: WizardCa
       break;
     }
     case 'review':
-      if (original && !campaignChanges(original, form, catalog).length) errors.changes = 'required';
+      if (ctx.original && !campaignChanges(ctx.original, form, ctx).length) errors.changes = 'required';
       if (!form.rulesAccepted) errors.rules = 'required';
       break;
   }
   return errors;
 }
 
-export function isStepValid(step: StepId, form: CampaignForm, catalog: WizardCatalog, original: CampaignForm | null = null): boolean {
-  return Object.keys(validateStep(step, form, catalog, original)).length === 0;
+export function isStepValid(step: StepId, form: CampaignForm, ctx: WizardContext): boolean {
+  return Object.keys(validateStep(step, form, ctx)).length === 0;
 }
 
 /** The first step with missing data: the wizard never opens a later step than this one. */
-export function firstInvalidStep(flow: WizardFlow, form: CampaignForm, catalog: WizardCatalog, original: CampaignForm | null = null): StepId | null {
-  return activeSteps(flow, form.tariff).find((step) => !isStepValid(step, form, catalog, original)) ?? null;
+export function firstInvalidStep(form: CampaignForm, ctx: WizardContext): StepId | null {
+  return activeSteps(ctx.flow, ctx.zones).find((step) => !isStepValid(step, form, ctx)) ?? null;
 }
 
 /** The step to show: the requested one, but never past the first step with missing data; a skipped step opens the last one. */
-export function reachableStep(flow: WizardFlow, requested: StepId, form: CampaignForm, catalog: WizardCatalog, original: CampaignForm | null = null): StepId {
-  const steps = activeSteps(flow, form.tariff);
+export function reachableStep(requested: StepId, form: CampaignForm, ctx: WizardContext): StepId {
+  const steps = activeSteps(ctx.flow, ctx.zones);
   const wanted = steps.includes(requested) ? requested : steps[steps.length - 1];
-  const invalid = firstInvalidStep(flow, form, catalog, original);
+  const invalid = firstInvalidStep(form, ctx);
   return invalid && steps.indexOf(wanted) > steps.indexOf(invalid) ? invalid : wanted;
 }

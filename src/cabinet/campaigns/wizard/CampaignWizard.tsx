@@ -41,7 +41,7 @@ export function CampaignWizard(options: WizardOptions) {
   const errorsRef = useRef<HTMLDivElement>(null);
   const shownStep = useRef(step);
   const [params, setParams] = useSearchParams();
-  const steps = activeSteps(flow, form.tariff);
+  const steps = activeSteps(flow, wizard.ctx.zones);
   const hasErrors = Object.keys(wizard.errors).length > 0;
   const backTo = mode.kind === 'edit' ? CABINET_LINKS.campaign(mode.campaign.id) : CABINET_LINKS.campaigns;
 
@@ -78,7 +78,7 @@ export function CampaignWizard(options: WizardOptions) {
         {t(mode.kind === 'edit' ? 'campaigns.topUp.back' : 'campaigns.wizard.back')}
       </Link>
       <div className="cab-card cmp-wizard__stepper">
-        <WizardStepper flow={flow} step={step} form={form} catalog={catalog} original={wizard.original} onStepClick={wizard.goTo} />
+        <WizardStepper step={step} form={form} ctx={wizard.ctx} onStepClick={wizard.goTo} />
       </div>
       <EditNotice mode={mode} />
       <div className="cmp-wizard__grid">
@@ -109,13 +109,20 @@ export function CampaignWizard(options: WizardOptions) {
             {step === 'stores' ? <StepStores wizard={wizard} catalog={catalog} /> : null}
             {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} /> : null}
             {step === 'budget' ? <StepBudget wizard={wizard} catalog={catalog} /> : null}
-            {step === 'review' && mode.kind === 'edit' ? <StepReview wizard={wizard} catalog={catalog} campaign={mode.campaign} /> : null}
+            {step === 'review' && mode.kind === 'edit' ? <StepReview wizard={wizard} campaign={mode.campaign} /> : null}
           </section>
           {wizard.submitError ? <SubmitError code={wizard.submitError} /> : null}
-          <WizardActions flow={flow} step={step} form={form} submitting={wizard.submitting} onBack={wizard.back} cancel={mode.kind === 'edit' ? { to: backTo, onClick: wizard.discard } : null} />
+          <WizardActions
+            flow={flow}
+            step={step}
+            zones={wizard.ctx.zones}
+            submitting={wizard.submitting}
+            onBack={wizard.back}
+            cancel={mode.kind === 'edit' ? { to: backTo, onClick: wizard.discard } : null}
+          />
         </form>
         <aside className="cmp-wizard__aside">
-          <WizardSummary step={step} form={form} catalog={catalog} edited={mode.kind === 'edit' ? mode.campaign : null} />
+          <WizardSummary step={step} form={form} ctx={wizard.ctx} edited={mode.kind === 'edit' ? mode.campaign : null} />
           <WizardHelp step={step} failedRules={mode.kind === 'edit' ? (mode.moderation?.rules ?? []) : []} />
         </aside>
       </div>

@@ -1,27 +1,26 @@
 import { Stepper, type StepperState } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { activeSteps, allSteps, isSkipped } from './steps';
-import type { CampaignForm, StepId, WizardCatalog, WizardFlow } from './types';
+import type { CampaignForm, StepId, WizardContext } from './types';
 import { firstInvalidStep } from './validation';
 
 interface WizardStepperProps {
-  flow: WizardFlow;
   step: StepId;
   form: CampaignForm;
-  catalog: WizardCatalog;
-  original: CampaignForm | null;
+  ctx: WizardContext;
   onStepClick: (step: StepId) => void;
 }
 
 /** A step is done when it and every step before it have what they need; done steps lead back to themselves. */
-export function WizardStepper({ flow, step, form, catalog, original, onStepClick }: WizardStepperProps) {
+export function WizardStepper({ step, form, ctx, onStepClick }: WizardStepperProps) {
   const { t } = useI18n();
-  const steps = activeSteps(flow, form.tariff);
-  const invalid = firstInvalidStep(flow, form, catalog, original);
+  const { flow } = ctx;
+  const steps = activeSteps(flow, ctx.zones);
+  const invalid = firstInvalidStep(form, ctx);
   const doneBefore = invalid ? steps.indexOf(invalid) : steps.length;
 
   const stateOf = (id: StepId): StepperState => {
-    if (isSkipped(flow, id, form.tariff)) return 'skipped';
+    if (isSkipped(flow, id, ctx.zones)) return 'skipped';
     if (id === step) return 'current';
     return steps.indexOf(id) < doneBefore ? 'done' : 'todo';
   };

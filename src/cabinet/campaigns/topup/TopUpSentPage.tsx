@@ -3,7 +3,7 @@ import { useId } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router';
 import { Icon, Timeline } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
-import { formatMoney } from '../../../lib/format';
+import { formatMoney, formatPrice } from '../../../lib/format';
 import { CABINET_LINKS } from '../../sections';
 import { ButtonLink } from '../../ui/ButtonLink';
 import { readTopUpReceipt } from './receipt';
@@ -40,6 +40,12 @@ export function TopUpSentPage() {
               <dd>{t(`cabinet.tariffs.${receipt.tariff}.name`)}</dd>
             </div>
           ) : null}
+          {receipt.pricePerPlay === null ? null : (
+            <div>
+              <dt>{t('cabinet.tariffs.pricePerPlay')}</dt>
+              <dd>{formatPrice(receipt.pricePerPlay, lang)}</dd>
+            </div>
+          )}
           <div>
             <dt>{t('campaigns.sent.toPay')}</dt>
             <dd>{amount}</dd>

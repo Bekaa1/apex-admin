@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { queryKeys } from '../../queryKeys';
 import { CABINET_LINKS } from '../../sections';
@@ -7,10 +7,10 @@ import { CampaignRpcError } from '../api';
 import { campaignChanges } from './changes';
 import { clearForm, saveForm } from './formStorage';
 import { wizardReducer } from './reducer';
-import { nextStep, prevStep, skipsZones, stepFromParam, stepParam } from './steps';
-import { termsOf } from '../../tariffs';
+import { termsOf, type TariffTerms } from '../../tariffs';
+import { nextStep, prevStep, stepFromParam, stepParam } from './steps';
 import { selectedZones } from './summary';
-import type { CampaignEdit, CampaignForm, CampaignSubmission, SentReceipt, StepId, WizardApi, WizardCatalog, WizardFlow, WizardMode } from './types';
+import type { CampaignEdit, CampaignForm, CampaignSubmission, SentReceipt, StepId, WizardApi, WizardCatalog, WizardContext, WizardMode } from './types';
 import { useMediaUpload } from './useMediaUpload';
 import { firstInvalidStep, isStepValid, reachableStep, validateStep } from './validation';
 
@@ -26,7 +26,7 @@ export interface WizardOptions {
 }
 
 /** The content an edit sends; null while the video isn't ready. The server needs the video's length and size too. */
-export function toEdit(form: CampaignForm, catalog: WizardCatalog): CampaignEdit | null {
+export function toEdit(form: CampaignForm, ctx: WizardContext): CampaignEdit | null {
   const { video, cover } = form;
   if (video.status !== 'ready' || !video.meta) return null;
   const { durationSec, width, height, sizeBytes } = video.meta;
@@ -37,14 +37,14 @@ export function toEdit(form: CampaignForm, catalog: WizardCatalog): CampaignEdit
     video: { url: video.url, fileName: video.fileName, durationSec, width, height, sizeBytes },
     cover: cover.status === 'ready' ? { url: cover.url, fileName: cover.fileName } : null,
     storeIds: form.storeIds,
-    zoneIds: skipsZones(form.tariff) ? [] : selectedZones(form, catalog).map((zone) => zone.id),
+    zoneIds: ctx.zones === false ? [] : selectedZones(form, ctx.catalog).map((zone) => zone.id),
   };
 }
 
-/** What a new campaign sends; null while something required is missing or the plan is no longer on sale. */
-export function toSubmission(form: CampaignForm, catalog: WizardCatalog): CampaignSubmission | null {
-  const content = toEdit(form, catalog);
-  const terms = termsOf(catalog.tariffs, form.tariff);
+/** What a new campaign sends with the plan's terms it shows; null while something is missing or the plan is off sale. */
+export function toSubmission(form: CampaignForm, ctx: WizardContext): CampaignSubmission | null {
+  const content = toEdit(form, ctx);
+  const terms = termsOf(ctx.catalog.tariffs, form.tariff);
   if (!content || !terms || form.budget === null) return null;
   return { ...content, tariffCode: terms.code, tariffVersion: terms.version, budget: form.budget, requestId: form.requestId };
 }
@@ -59,8 +59,20 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const media = useMediaUpload(api, dispatch);
-  const flow: WizardFlow = mode.kind === 'edit' ? 'edit' : 'new';
-  const original = mode.kind === 'edit' ? mode.original : null;
+  // The plan's terms the advertiser saw when the server answered `tariff_changed`, and the version they agreed to since.
+  const [staleTerms, setStaleTerms] = useState<TariffTerms | null>(null);
+  const [agreedVersion, setAgreedVersion] = useState<number | null>(null);
+  const [termsAttempted, setTermsAttempted] = useState(false);
+
+  const plan = termsOf(catalog.tariffs, form.tariff);
+  const ctx: WizardContext = {
+    flow: mode.kind === 'edit' ? 'edit' : 'new',
+    catalog,
+    zones: mode.kind === 'edit' ? mode.campaign.hasZones : (plan?.hasZones ?? null),
+    original: mode.kind === 'edit' ? mode.original : null,
+  };
+  const termsChange = staleTerms && plan && plan.code === staleTerms.code && plan.version !== staleTerms.version ? { was: staleTerms, now: plan } : null;
+  const termsAgreed = !termsChange || agreedVersion === termsChange.now.version;
 
   useEffect(() => saveForm(storageKey, form), [storageKey, form]);
 
@@ -72,29 +84,30 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
     return () => window.removeEventListener('beforeunload', keep);
   }, [uploading]);
 
-  const step = reachableStep(flow, stepFromParam(flow, params.get('step')), form, catalog, original);
+  const step = reachableStep(stepFromParam(ctx.flow, params.get('step')), form, ctx);
 
   const goTo = (target: StepId) =>
     setParams((prev) => {
       const next = new URLSearchParams(prev);
-      next.set('step', stepParam(flow, target));
+      next.set('step', stepParam(ctx.flow, target));
       next.delete('copy');
       return next;
     });
 
   const submission = useMutation({
-    mutationFn: async (): Promise<Sent> => {
+    // `shown` are the plan's terms the form showed; kept to tell what changed if the server refuses them.
+    mutationFn: async (shown: TariffTerms | null): Promise<Sent> => {
       if (mode.kind === 'edit') {
-        const content = toEdit(form, catalog);
+        const content = toEdit(form, ctx);
         if (!content) throw new Error('The edited campaign has no ready video.');
-        const changed = campaignChanges(mode.original, form, catalog).map((change) => change.field);
+        const changed = campaignChanges(mode.original, form, ctx).map((change) => change.field);
         const id = await api.edit(mode.campaign.id, content);
         return { id, receipt: { kind: 'edit', name: content.name, changed, paused: mode.campaign.running } };
       }
-      const payload = toSubmission(form, catalog);
-      if (!payload) throw new Error('The campaign is not complete.');
+      const payload = toSubmission(form, ctx);
+      if (!payload || !shown) throw new Error('The campaign is not complete.');
       const id = await api.submit(payload);
-      return { id, receipt: { kind: 'new', name: payload.name, tariff: payload.tariffCode, budget: payload.budget } };
+      return { id, receipt: { kind: 'new', name: payload.name, tariff: payload.tariffCode, budget: payload.budget, pricePerPlay: shown.pricePerPlay } };
     },
     onSuccess: ({ id, receipt }) => {
       clearForm(storageKey);
@@ -102,48 +115,62 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       void queryClient.invalidateQueries({ queryKey: queryKeys.home(userId) });
       navigate(CABINET_LINKS.campaignSent(id), { replace: true, state: receipt });
     },
-    onError: (error) => {
-      if (error instanceof CampaignRpcError && error.code === 'tariff_changed') onTariffChanged();
+    onError: (error, shown) => {
+      if (!(error instanceof CampaignRpcError) || error.code !== 'tariff_changed') return;
+      setStaleTerms(shown);
+      setTermsAttempted(false);
+      onTariffChanged();
     },
   });
 
   return {
-    flow,
+    flow: ctx.flow,
+    ctx,
     form,
-    original,
+    original: ctx.original,
     dispatch,
     media,
     step,
-    errors: state.attempted.includes(step) ? validateStep(step, form, catalog, original) : {},
+    errors: state.attempted.includes(step) ? validateStep(step, form, ctx) : {},
     attempts: state.attempts,
     submitting: submission.isPending,
     /** Code of the server check that failed (`invalid_video`, `missing_email`…), `network` for anything else. */
     submitError: submission.error ? (submission.error instanceof CampaignRpcError ? submission.error.code : 'network') : null,
+    /** The plan's terms changed after the advertiser saw them: what was and what is now. */
+    termsChange,
+    termsAgreed,
+    /** A submit was tried without agreeing to the new terms. */
+    termsError: Boolean(termsChange) && termsAttempted && !termsAgreed,
+    agreeToTerms: (value: boolean) => setAgreedVersion(value && termsChange ? termsChange.now.version : null),
     goTo,
     next: () => {
-      if (!isStepValid(step, form, catalog, original)) {
+      if (!isStepValid(step, form, ctx)) {
         dispatch({ type: 'attempt', steps: [step] });
         return;
       }
-      const target = nextStep(flow, step, form.tariff);
+      const target = nextStep(ctx.flow, step, ctx.zones);
       if (target) goTo(target);
     },
     back: () => {
-      const target = prevStep(flow, step, form.tariff);
+      const target = prevStep(ctx.flow, step, ctx.zones);
       if (target) goTo(target);
     },
     /** «Отменить изменения»: forget the draft of this tab. */
     discard: () => clearForm(storageKey),
     submit: () => {
-      const invalid = firstInvalidStep(flow, form, catalog, original);
-      const ready = flow === 'edit' ? toEdit(form, catalog) : toSubmission(form, catalog);
+      const invalid = firstInvalidStep(form, ctx);
+      const ready = ctx.flow === 'edit' ? toEdit(form, ctx) : toSubmission(form, ctx);
       if (invalid || !ready) {
         dispatch({ type: 'attempt', steps: [invalid ?? step] });
         // Navigating to the same step would let the router restore the old scroll over the focused error summary.
         if (invalid && invalid !== step) goTo(invalid);
         return;
       }
-      submission.mutate();
+      if (!termsAgreed) {
+        setTermsAttempted(true);
+        return;
+      }
+      submission.mutate(plan);
     },
   };
 }

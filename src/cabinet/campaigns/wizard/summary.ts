@@ -1,5 +1,4 @@
-import { skipsZones } from './steps';
-import type { CampaignForm, CampaignPrefill, CatalogStore, CatalogZone, StoreCatalog, WizardCatalog } from './types';
+import type { CampaignForm, CampaignPrefill, CatalogStore, CatalogZone, StoreCatalog, WizardContext } from './types';
 import { emptyForm } from './reducer';
 import { minimumBudget } from './validation';
 
@@ -29,16 +28,17 @@ export interface WizardSummary {
 }
 
 /** Cart counts and campaigns per store come with the backend's store catalog; until then these columns stay hidden. */
-export const knowsCarts = (catalog: WizardCatalog): boolean => catalog.stores.every((store) => store.carts !== null);
-export const knowsStoreLoad = (catalog: WizardCatalog): boolean => catalog.stores.every((store) => store.activeCampaigns !== null);
+export const knowsCarts = (catalog: StoreCatalog): boolean => catalog.stores.every((store) => store.carts !== null);
+export const knowsStoreLoad = (catalog: StoreCatalog): boolean => catalog.stores.every((store) => store.activeCampaigns !== null);
 
-export function summarize(form: CampaignForm, catalog: WizardCatalog): WizardSummary {
+export function summarize(form: CampaignForm, ctx: WizardContext): WizardSummary {
+  const { catalog } = ctx;
   const stores = selectedStores(form, catalog);
   const zones = selectedZones(form, catalog);
   return {
     stores: stores.length,
     carts: knowsCarts(catalog) ? stores.reduce((sum, store) => sum + (store.carts ?? 0), 0) : null,
-    zones: skipsZones(form.tariff) ? null : { count: zones.length, storesWithZones: new Set(zones.map((zone) => zone.storeId)).size },
+    zones: ctx.zones === false ? null : { count: zones.length, storesWithZones: new Set(zones.map((zone) => zone.storeId)).size },
     minimum: minimumBudget(form, catalog),
   };
 }

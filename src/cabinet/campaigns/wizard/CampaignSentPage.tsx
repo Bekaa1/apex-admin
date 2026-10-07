@@ -3,7 +3,7 @@ import { useId, type ReactNode } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router';
 import { Icon, Timeline, type TimelineItem } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
-import { formatMoney } from '../../../lib/format';
+import { formatMoney, formatPrice } from '../../../lib/format';
 import { CABINET_LINKS } from '../../sections';
 import { TARIFFS } from '../../tariffs';
 import { ButtonLink } from '../../ui/ButtonLink';
@@ -22,8 +22,9 @@ function readReceipt(state: unknown): SentReceipt | null {
     return { kind: 'edit', name, changed: fields, paused: Reflect.get(state, 'paused') === true };
   }
   const budget: unknown = Reflect.get(state, 'budget');
+  const price: unknown = Reflect.get(state, 'pricePerPlay');
   const tariff = TARIFFS.find((plan) => plan.code === Reflect.get(state, 'tariff'))?.code;
-  return typeof budget === 'number' && tariff ? { kind: 'new', name, budget, tariff } : null;
+  return typeof budget === 'number' && tariff ? { kind: 'new', name, budget, tariff, pricePerPlay: typeof price === 'number' ? price : null } : null;
 }
 
 interface DoneProps {
@@ -107,15 +108,17 @@ export function CampaignSentPage() {
   }
 
   const amount = formatMoney(receipt.budget, lang);
+  const rows: Array<[string, ReactNode]> = [
+    [t('campaigns.sent.name'), receipt.name],
+    [t('campaigns.sent.tariff'), t(`cabinet.tariffs.${receipt.tariff}.name`)],
+  ];
+  if (receipt.pricePerPlay !== null) rows.push([t('cabinet.tariffs.pricePerPlay'), formatPrice(receipt.pricePerPlay, lang)]);
+  rows.push([t('campaigns.sent.toPay'), amount]);
   return (
     <Done
       title={t('campaigns.sent.title')}
       lead={t('campaigns.sent.lead', { name: receipt.name, email })}
-      rows={[
-        [t('campaigns.sent.name'), receipt.name],
-        [t('campaigns.sent.tariff'), t(`cabinet.tariffs.${receipt.tariff}.name`)],
-        [t('campaigns.sent.toPay'), amount],
-      ]}
+      rows={rows}
       steps={[
         { key: 'review', title: t('campaigns.row.timeline.review'), text: t('campaigns.sent.timeline.reviewText'), state: 'current' },
         { key: 'payment', title: t('campaigns.row.timeline.payment'), text: t('campaigns.sent.timeline.paymentText', { amount, email }), state: 'todo' },

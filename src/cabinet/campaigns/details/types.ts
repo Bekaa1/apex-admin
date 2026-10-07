@@ -9,9 +9,12 @@ type StatsView = Database['public']['Views']['my_campaigns_stats']['Row'];
 
 /** `my_campaigns_stats`: the list row and what only the card needs. */
 export type CampaignDetailsRow = CampaignStatsRow &
-  Pick<StatsView, 'moderated_at' | 'description' | 'video_url' | 'video_duration_sec' | 'price_per_play' | 'plays_count' | 'tariff_version' | 'tariff_min_amount'>;
+  Pick<
+    StatsView,
+    'moderated_at' | 'description' | 'video_url' | 'video_duration_sec' | 'price_per_play' | 'plays_count' | 'tariff_version' | 'tariff_min_amount' | 'tariff_current_price'
+  >;
 
-export type InvoiceRow = Pick<Tables<'advertiser_invoices'>, 'id' | 'kind' | 'amount' | 'status' | 'issued_at' | 'paid_at' | 'sent_to' | 'tariff_version'>;
+export type InvoiceRow = Pick<Tables<'advertiser_invoices'>, 'id' | 'kind' | 'amount' | 'status' | 'issued_at' | 'paid_at' | 'sent_to' | 'tariff_version' | 'price_per_play'>;
 
 export type LocationRow = Pick<Database['public']['Views']['my_campaign_locations']['Row'], 'kind' | 'location_id' | 'location_name' | 'parent_store_id'>;
 
@@ -99,6 +102,8 @@ export interface CampaignDetails {
     /** Not launched yet: whether the budget is paid. */
     paid: boolean | null;
     minTopUp: number | null;
+    /** What a play costs the campaign now (the price of its current budget portion). */
+    pricePerPlay: number | null;
     daysLeft: number | null;
   };
   history: HistoryEvent[];

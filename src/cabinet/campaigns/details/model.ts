@@ -1,7 +1,6 @@
 import { shiftDate, todayInAlmaty } from '../../../lib/dates';
 import { budgetFigures } from '../../campaignBudget';
 import { storesOf } from '../../stores';
-import { TARIFFS } from '../../tariffs';
 import { campaignAbilities, coverTone, stageOf, tariffOf } from '../model';
 import type { StoreCatalog } from '../wizard/types';
 import type { CampaignDetails, CampaignDetailsSource, ChartBucket, DetailsStats, DetailsStore, HistoryEvent } from './types';
@@ -129,7 +128,8 @@ export function buildCampaignDetails(source: CampaignDetailsSource, catalog: Sto
   const tariff = tariffOf(row.tariff_code);
   const stats = statsOf(source);
   const stores = storesOfCampaign(source, catalog);
-  const hasZones = TARIFFS.find((plan) => plan.code === tariff)?.hasZones ?? source.locations.some((location) => location.kind === 'zone');
+  // `my_campaigns_stats` doesn't carry the plan's zone flag; a plan with zones always has a zone per store.
+  const hasZones = source.locations.some((location) => location.kind === 'zone');
   return {
     id: row.ad_id,
     name: row.title || row.name || '—',
@@ -157,6 +157,7 @@ export function buildCampaignDetails(source: CampaignDetailsSource, catalog: Sto
       ...money,
       paid: row.paid_amount == null || !row.budget ? null : row.paid_amount >= row.budget,
       minTopUp: row.tariff_min_amount,
+      pricePerPlay: row.price_per_play,
       daysLeft: row.status === 'active' ? daysFor(money.left, dailySpend(source)) : null,
     },
     history: historyOf(source, Boolean(row.start_date)),

@@ -16,10 +16,14 @@ export async function getAccountProfile(userId: string): Promise<AccountProfile>
 
 /** Terms of the plans on sale; archived ones and the corporate plan (sold by a manager) are left out. */
 export async function fetchTariffTerms(signal: AbortSignal): Promise<TariffTerms[]> {
-  const { data, error } = await requireSupabase().from('tariffs').select('code, min_amount, version, purchasable, is_archived').abortSignal(signal);
+  const { data, error } = await requireSupabase()
+    .from('tariffs')
+    .select('code, price_per_play, min_amount, can_select_zone, version, purchasable, is_archived')
+    .abortSignal(signal);
   if (error) throw error;
   return data.flatMap((row) => {
     const code = TARIFFS.find((plan) => plan.code === row.code)?.code;
-    return code && row.purchasable && !row.is_archived ? [{ code, minimum: row.min_amount, version: row.version }] : [];
+    if (!code || !row.purchasable || row.is_archived) return [];
+    return [{ code, pricePerPlay: row.price_per_play, minimum: row.min_amount, hasZones: row.can_select_zone, version: row.version }];
   });
 }

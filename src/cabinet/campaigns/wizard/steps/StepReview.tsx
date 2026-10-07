@@ -5,7 +5,7 @@ import { formatMoney, formatNumber, pluralKey } from '../../../../lib/format';
 import { CABINET_LINKS } from '../../../sections';
 import { ButtonLink } from '../../../ui/ButtonLink';
 import { campaignChanges, type CampaignChange, type MediaRef, type ZoneCount } from '../changes';
-import type { CatalogStore, EditedCampaign, StepId, WizardCatalog } from '../types';
+import type { CatalogStore, EditedCampaign, StepId } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 
 const FIELD_STEP: Record<CampaignChange['field'], StepId> = { name: 'media', description: 'media', video: 'media', cover: 'media', stores: 'stores', zones: 'zones' };
@@ -53,12 +53,12 @@ function ChangeItem({ change, onEdit }: { change: CampaignChange; onEdit: (step:
       </div>
       <div className="cmp-change__diff">
         <div className="cmp-change__was">
-          <span className="cmp-change__tag">{t('campaigns.topUp.terms.was')}</span>
+          <span className="cmp-change__tag">{t('campaigns.edit.was')}</span>
           <span>{was}</span>
         </div>
         <Icon name="arrow-right" size={18} className="cmp-change__arrow" />
         <div className="cmp-change__now">
-          <span className="cmp-change__tag">{t('campaigns.topUp.terms.now')}</span>
+          <span className="cmp-change__tag">{t('campaigns.edit.now')}</span>
           <span>{now}</span>
         </div>
       </div>
@@ -83,13 +83,13 @@ function ChangeItem({ change, onEdit }: { change: CampaignChange; onEdit: (step:
 }
 
 /** The last step of an edit: what changed, the budget (read-only), what happens next and the rules consent. */
-export function StepReview({ wizard, catalog, campaign }: { wizard: CampaignWizardState; catalog: WizardCatalog; campaign: EditedCampaign }) {
+export function StepReview({ wizard, campaign }: { wizard: CampaignWizardState; campaign: EditedCampaign }) {
   const { t, lang } = useI18n();
   const changesId = useId();
   const budgetId = useId();
   const afterId = useId();
   const { form, original, errors, dispatch, goTo } = wizard;
-  const changes = original ? campaignChanges(original, form, catalog) : [];
+  const changes = original ? campaignChanges(original, form, wizard.ctx) : [];
   const resumes = campaign.running || campaign.launched;
 
   return (

@@ -1,6 +1,5 @@
-import { skipsZones } from './steps';
 import { selectedStores, selectedZones } from './summary';
-import type { CampaignForm, CatalogStore, CatalogZone, MediaState, WizardCatalog } from './types';
+import type { CampaignForm, CatalogStore, CatalogZone, MediaState, WizardContext } from './types';
 
 export interface MediaRef {
   fileName: string;
@@ -32,7 +31,8 @@ function zoneCount(zones: CatalogZone[], stores: number): ZoneCount {
 }
 
 /** What the edit changes compared with the campaign as it was opened. The plan and the budget can't change here. */
-export function campaignChanges(original: CampaignForm, form: CampaignForm, catalog: WizardCatalog): CampaignChange[] {
+export function campaignChanges(original: CampaignForm, form: CampaignForm, ctx: WizardContext): CampaignChange[] {
+  const { catalog } = ctx;
   const changes: CampaignChange[] = [];
   const name = { was: original.name.trim(), now: form.name.trim() };
   if (name.was !== name.now) changes.push({ field: 'name', ...name });
@@ -49,7 +49,7 @@ export function campaignChanges(original: CampaignForm, form: CampaignForm, cata
   const removed = wasStores.filter((store) => !form.storeIds.includes(store.id));
   if (added.length || removed.length) changes.push({ field: 'stores', was: wasStores.length, now: nowStores.length, added, removed });
 
-  if (!skipsZones(form.tariff)) {
+  if (ctx.zones !== false) {
     const wasZones = selectedZones(original, catalog);
     const nowZones = selectedZones(form, catalog);
     const before = new Set(wasZones.map((zone) => zone.id));

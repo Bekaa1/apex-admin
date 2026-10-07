@@ -1,6 +1,6 @@
 import { Badge, ChoiceCard, Icon } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
-import { formatMoney } from '../../../../lib/format';
+import { formatMoney, formatPrice } from '../../../../lib/format';
 import { CABINET_LINKS } from '../../../sections';
 import { CORPORATE_LEVEL, TARIFF_FEATURES, TARIFF_LEVELS, TARIFFS, termsOf } from '../../../tariffs';
 import { ButtonLink } from '../../../ui/ButtonLink';
@@ -54,7 +54,7 @@ export function StepTariff({ wizard, catalog }: { wizard: CampaignWizardState; c
   const { form, errors, dispatch } = wizard;
   const plans = TARIFFS.flatMap((tariff) => {
     const terms = termsOf(catalog.tariffs, tariff.code);
-    return terms ? [{ ...tariff, minimum: terms.minimum }] : [];
+    return terms ? [{ ...tariff, minimum: terms.minimum, pricePerPlay: terms.pricePerPlay }] : [];
   });
   return (
     <div className="cmp-fields">
@@ -88,6 +88,10 @@ export function StepTariff({ wizard, catalog }: { wizard: CampaignWizardState; c
                 })}
               </ul>
               <div className="cab-tariff__min">
+                <p className="cab-tariff__price">
+                  <span>{t('cabinet.tariffs.pricePerPlay')}</span>
+                  <strong>{formatPrice(tariff.pricePerPlay, lang)}</strong>
+                </p>
                 <span>{t('cabinet.tariffs.minimum')}</span>
                 <strong>{t('cabinet.tariffs.from', { amount: formatMoney(tariff.minimum, lang) })}</strong>
               </div>

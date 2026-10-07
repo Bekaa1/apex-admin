@@ -387,7 +387,7 @@
       "title": "Budget and review",
       "lead": "Set the budget, check the campaign and send it to the moderator. Impressions start right after approval.",
       "section": "Budget",
-      "minimum": "Minimum for the “{tariff}” plan — {amount}",
+      "minimum": "Minimum for the “{tariff}” plan — {amount}, price per impression — {price}",
       "label": "Campaign budget",
       "hint": "Impressions are paid from the budget. When it runs out, impressions stop — top it up and they continue.",
       "presets": "Quick amount",
@@ -631,18 +631,6 @@
     "submit": "Get an invoice",
     "agreeHint": "To get an invoice, agree to the new terms",
     "ended": "The budget ran out",
-    "terms": {
-      "title": "The plan’s terms changed",
-      "minimumTitle": "The minimum top-up changed",
-      "textNow": "The minimum top-up for the “{tariff}” plan is now {amount}.",
-      "textNowSince": "Since {date}, the minimum top-up for the “{tariff}” plan is {amount}.",
-      "textWas": "The minimum top-up for the “{tariff}” plan is {amount} instead of {was}.",
-      "textWasSince": "Since {date}, the minimum top-up for the “{tariff}” plan is {amount} instead of {was}.",
-      "was": "Was",
-      "now": "Now",
-      "paidStays": "The budget you already paid stays as it is — the new terms apply only to new top-ups.",
-      "agree": "I agree to the new terms"
-    },
     "amount": {
       "title": "Top-up amount",
       "minimum": "The minimum top-up for the “{tariff}” plan is {amount}",
@@ -758,6 +746,29 @@
       "changed": "What changed",
       "plays": "Impressions",
       "paused": "Paused until approval"
-    }
+    },
+    "was": "Was",
+    "now": "Now"
+  },
+  "terms": {
+    "title": "The plan’s terms changed",
+    "text": "The terms of the “{tariff}” plan changed.",
+    "textSince": "Since {date}, the terms of the “{tariff}” plan have changed.",
+    "was": "{label}: was",
+    "now": "now",
+    "price": "Price per impression",
+    "minimum": "Minimum budget",
+    "minimumTopUp": "Minimum top-up",
+    "agree": "I agree to the new terms",
+    "error": "Agree to the new terms",
+    "noteTopUp": "The budget you already paid is spent at the old price — the new terms apply only to new top-ups.",
+    "noteNew": "The invoice will use the new terms. Check the budget and send the campaign again."
+  },
+  "plays": {
+    "count": {
+      "one": "{count} impression",
+      "other": "{count} impressions"
+    },
+    "about": "≈ {plays} at {price}"
   }
 }

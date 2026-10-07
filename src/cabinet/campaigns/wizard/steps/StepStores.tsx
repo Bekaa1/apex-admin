@@ -30,7 +30,7 @@ export function StepStores({ wizard, catalog }: { wizard: CampaignWizardState; c
   );
   const allVisibleChosen = visible.length > 0 && visible.every((store) => form.storeIds.includes(store.id));
   const visibleIds = new Set(visible.map((store) => store.id));
-  const summary = summarize(form, catalog);
+  const summary = summarize(form, wizard.ctx);
   const showCarts = knowsCarts(catalog);
   const tableClass = ['cmp-stores', showCarts ? '' : 'cmp-stores--no-carts', errors.stores ? 'is-invalid' : ''].filter(Boolean).join(' ');
 

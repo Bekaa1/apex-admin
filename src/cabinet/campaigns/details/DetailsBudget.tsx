@@ -1,7 +1,7 @@
 import { useId } from 'react';
 import { Meter } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
-import { formatMoney, formatNumber, pluralKey } from '../../../lib/format';
+import { formatMoney, formatNumber, formatPrice, pluralKey } from '../../../lib/format';
 import { CABINET_LINKS } from '../../sections';
 import { ButtonLink } from '../../ui/ButtonLink';
 import type { CampaignDetails } from './types';
@@ -51,6 +51,12 @@ export function DetailsBudget({ details }: { details: CampaignDetails }) {
           <div>
             <dt>{t('campaigns.details.budget.spent')}</dt>
             <dd>{formatMoney(budget.spent, lang)}</dd>
+          </div>
+        ) : null}
+        {budget.pricePerPlay !== null && !finished ? (
+          <div>
+            <dt>{t('cabinet.tariffs.pricePerPlay')}</dt>
+            <dd>{formatPrice(budget.pricePerPlay, lang)}</dd>
           </div>
         ) : null}
         {budget.minTopUp !== null ? (

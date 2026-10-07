@@ -9,13 +9,17 @@ import type { CampaignStage } from '../types';
 export type TopUpBlock = 'status' | 'tariff';
 
 export interface TopUpTerms {
+  /** The plan's price of a play now: the new invoice and its budget portion get it. */
+  pricePerPlay: number;
   /** The plan's minimum top-up now. */
   minimum: number;
   /** Sent with `extend_campaign`: the server refuses if the terms changed after the screen was opened. */
   version: number;
-  /** The terms changed since the advertiser's last invoice: they must agree before a new one. */
+  /** The terms version changed since the advertiser's last invoice: they must agree before a new one. */
   changed: boolean;
-  /** The minimum of the last invoice; null while invoices don't keep it. */
+  /** The price of a play in the last invoice, when it differs from today's. */
+  previousPrice: number | null;
+  /** The minimum of the last invoice; null while invoices don't keep it (asked the backend). */
   previousMinimum: number | null;
   changedAt: string | null;
 }
@@ -36,14 +40,15 @@ export interface TopUpCampaign {
 
 export type TopUpModel = { status: 'blocked'; reason: TopUpBlock; campaign: TopUpCampaign } | { status: 'ready'; campaign: TopUpCampaign; terms: TopUpTerms };
 
-// The terms the advertiser agreed to are those of their last invoice that wasn't cancelled. Invoices keep the terms
-// version but not the minimum yet (asked the backend), so any change of the plan's terms counts until then.
-function termsOf(source: CampaignDetailsSource, minimum: number, version: number): TopUpTerms {
+// The terms the advertiser agreed to are those of their last invoice that wasn't cancelled: it keeps the version and the
+// price of a play. The backend bumps the version on any change of the plan, so that is what decides «changed».
+function termsOf(source: CampaignDetailsSource, current: { pricePerPlay: number; minimum: number; version: number }): TopUpTerms {
   const agreed = source.invoices.filter((invoice) => invoice.status !== 'cancelled').at(-1);
+  const changed = agreed?.tariff_version != null && agreed.tariff_version !== current.version;
   return {
-    minimum,
-    version,
-    changed: agreed?.tariff_version != null && agreed.tariff_version !== version,
+    ...current,
+    changed,
+    previousPrice: changed && agreed.price_per_play !== null && agreed.price_per_play !== current.pricePerPlay ? agreed.price_per_play : null,
     previousMinimum: null,
     changedAt: source.tariffChangedAt,
   };
@@ -66,8 +71,9 @@ export function buildTopUp(source: CampaignDetailsSource): TopUpModel | null {
     spendPerDay: dailySpend(source),
     email: row.invoice_sent_to,
   };
-  if (!campaignAbilities(row).canTopUp || row.tariff_min_amount === null || row.tariff_version === null) {
+  const { tariff_min_amount: minimum, tariff_version: version, tariff_current_price: pricePerPlay } = row;
+  if (!campaignAbilities(row).canTopUp || minimum === null || version === null || pricePerPlay === null) {
     return { status: 'blocked', reason: isExtendableStatus(row.status) ? 'tariff' : 'status', campaign };
   }
-  return { status: 'ready', campaign, terms: termsOf(source, row.tariff_min_amount, row.tariff_version) };
+  return { status: 'ready', campaign, terms: termsOf(source, { pricePerPlay, minimum, version }) };
 }

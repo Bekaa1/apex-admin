@@ -67,7 +67,7 @@ export async function fetchCampaignDetails(campaignId: string, signal: AbortSign
     sb
       .from('my_campaigns_stats')
       .select(
-        'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend, moderated_at, description, video_url, video_duration_sec, price_per_play, plays_count, tariff_version, tariff_min_amount',
+        'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend, moderated_at, description, video_url, video_duration_sec, price_per_play, plays_count, tariff_version, tariff_min_amount, tariff_current_price',
       )
       .eq('ad_id', campaignId)
       .abortSignal(signal)
@@ -81,7 +81,12 @@ export async function fetchCampaignDetails(campaignId: string, signal: AbortSign
       .order('play_date')
       .range(from, to)
       .abortSignal(signal)),
-    sb.from('advertiser_invoices').select('id, kind, amount, status, issued_at, paid_at, sent_to, tariff_version').eq('ad_id', campaignId).order('issued_at').abortSignal(signal),
+    sb
+      .from('advertiser_invoices')
+      .select('id, kind, amount, status, issued_at, paid_at, sent_to, tariff_version, price_per_play')
+      .eq('ad_id', campaignId)
+      .order('issued_at')
+      .abortSignal(signal),
     sb.from('tariffs').select('code, updated_at').abortSignal(signal),
   ]);
   for (const result of [campaign, ad, locations, invoices, tariffs]) if (result.error) throw result.error;
@@ -149,7 +154,7 @@ export async function fetchCampaignPrefill(userId: string, campaignId: string, s
     sb
       .from('ads')
       .select(
-        'status, title, name, description, budget, spent_budget, start_date, rejection_reasons, moderator_comment, video_url, video_original_filename, video_duration_sec, video_width, video_height, video_size_bytes, content_url, cover_original_filename, tariff:tariffs(code, purchasable, is_archived)',
+        'status, title, name, description, budget, spent_budget, start_date, rejection_reasons, moderator_comment, video_url, video_original_filename, video_duration_sec, video_width, video_height, video_size_bytes, content_url, cover_original_filename, tariff:tariffs(code, purchasable, is_archived, can_select_zone)',
       )
       .eq('id', campaignId)
       .eq('user_id', userId)
@@ -170,6 +175,7 @@ export async function fetchCampaignPrefill(userId: string, campaignId: string, s
     spent: row.spent_budget,
     launched: row.start_date !== null,
     tariffSold: row.tariff ? row.tariff.purchasable && !row.tariff.is_archived : false,
+    tariffZones: row.tariff?.can_select_zone ?? true,
     name: row.title || row.name || '',
     description: row.description ?? '',
     tariff: tariffCode(row.tariff?.code),
@@ -230,6 +236,8 @@ export async function editCampaign(campaignId: string, content: CampaignEdit): P
 
 export interface TopUpInvoice {
   amount: number;
+  /** The price of a play fixed in the invoice. */
+  pricePerPlay: number | null;
   /** null when the backend didn't record the address. */
   sentTo: string | null;
 }
@@ -239,9 +247,9 @@ export async function extendCampaign(campaignId: string, amount: number, tariffV
   const sb = requireSupabase();
   const { data: invoiceId, error } = await sb.rpc('extend_campaign', { p_id: campaignId, p_amount: amount, p_tariff_version: tariffVersion });
   if (error) throw rpcError(error);
-  const invoice = await sb.from('advertiser_invoices').select('amount, sent_to').eq('id', invoiceId).maybeSingle();
+  const invoice = await sb.from('advertiser_invoices').select('amount, sent_to, price_per_play').eq('id', invoiceId).maybeSingle();
   // The invoice exists either way; without the read-back the screen shows the amount that was asked for.
-  return { amount: invoice.data?.amount ?? amount, sentTo: invoice.data?.sent_to ?? null };
+  return { amount: invoice.data?.amount ?? amount, sentTo: invoice.data?.sent_to ?? null, pricePerPlay: invoice.data?.price_per_play ?? null };
 }
 
 export interface CorporateRequest {

@@ -44,6 +44,7 @@ function editedCampaign(id: string, row: CampaignPrefill): EditedCampaign {
     budget,
     left: Math.max(budget - (row.spent ?? 0), 0),
     canTopUp: campaignAbilities({ status: row.status, tariff_can_extend: row.tariffSold }).canTopUp,
+    hasZones: row.tariffZones,
   };
 }
 
@@ -60,7 +61,16 @@ function demoData(variant: DemoVariant, source: WizardSource): WizardData {
     prefill,
     edited:
       source.kind === 'edit'
-        ? { id: source.campaignId, running: !returned, rejected: returned, launched: !returned, budget: 3_000_000, left: returned ? 3_000_000 : 1_250_000, canTopUp: !returned }
+        ? {
+            id: source.campaignId,
+            running: !returned,
+            rejected: returned,
+            launched: !returned,
+            budget: 3_000_000,
+            left: returned ? 3_000_000 : 1_250_000,
+            canTopUp: !returned,
+            hasZones: true,
+          }
         : null,
     moderation: returned ? DEMO_MODERATION : null,
     api: demoWizardApi(),

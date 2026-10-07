@@ -37,7 +37,7 @@ function TopUpScreen({ userId, campaign, terms, refetch }: TopUpScreenProps) {
         <TopUpForm campaign={campaign} terms={terms} form={form} email={email} />
       </form>
       <aside className="cmp-wizard__aside">
-        <TopUpSummary amount={form.amount} days={daysFor(campaign.money.left + (form.amount ?? 0), campaign.spendPerDay)} email={email} />
+        <TopUpSummary amount={form.amount} pricePerPlay={terms.pricePerPlay} days={daysFor(campaign.money.left + (form.amount ?? 0), campaign.spendPerDay)} email={email} />
       </aside>
     </div>
   );

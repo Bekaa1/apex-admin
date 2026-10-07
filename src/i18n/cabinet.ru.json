@@ -57,6 +57,8 @@
     "minimum": "Минимальный бюджет",
     "from": "от {amount}",
     "budget": "Бюджет",
-    "byAgreement": "По договорённости"
+    "byAgreement": "По договорённости",
+    "pricePerPlay": "Цена показа",
+    "perPlay": "{amount} за показ"
   }
 }

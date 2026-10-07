@@ -1,10 +1,19 @@
 import type { ReactNode } from 'react';
 import { Icon } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatMoney } from '../../lib/format';
+import { formatMoney, formatPrice } from '../../lib/format';
 import { CORPORATE_LEVEL, TARIFFS, TARIFF_FEATURES, TARIFF_LEVELS, termsOf, type TariffTerms } from '../tariffs';
 
-function TariffCard({ code, level, minLabel, min }: { code: string; level: number; minLabel: string; min: ReactNode }) {
+interface TariffCardProps {
+  code: string;
+  level: number;
+  /** null for the corporate plan: its price is agreed with a manager. */
+  price: ReactNode | null;
+  minLabel: string;
+  min: ReactNode;
+}
+
+function TariffCard({ code, level, price, minLabel, min }: TariffCardProps) {
   const { t } = useI18n();
   return (
     <li className="cab-card cab-tariff">
@@ -30,6 +39,12 @@ function TariffCard({ code, level, minLabel, min }: { code: string; level: numbe
         })}
       </ul>
       <div className="cab-tariff__min">
+        {price === null ? null : (
+          <p className="cab-tariff__price">
+            <span>{t('cabinet.tariffs.pricePerPlay')}</span>
+            <strong>{price}</strong>
+          </p>
+        )}
         <span>{minLabel}</span>
         <strong>{min}</strong>
       </div>
@@ -60,12 +75,13 @@ export function GuideTariffs({ terms }: { terms: TariffTerms[] | null }) {
               key={tariff.code}
               code={tariff.code}
               level={tariff.level}
+              price={plan ? formatPrice(plan.pricePerPlay, lang) : '—'}
               minLabel={t('cabinet.tariffs.minimum')}
               min={plan ? t('cabinet.tariffs.from', { amount: formatMoney(plan.minimum, lang) }) : '—'}
             />
           );
         })}
-        <TariffCard code="corporate" level={CORPORATE_LEVEL} minLabel={t('cabinet.tariffs.budget')} min={t('cabinet.tariffs.byAgreement')} />
+        <TariffCard code="corporate" level={CORPORATE_LEVEL} price={null} minLabel={t('cabinet.tariffs.budget')} min={t('cabinet.tariffs.byAgreement')} />
       </ul>
       <p className="cab-note">
         <Icon name="info" size={18} />

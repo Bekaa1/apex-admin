@@ -17,8 +17,8 @@ interface TopUpOptions {
   refetch: () => Promise<unknown>;
 }
 
-function demoExtend(amount: number): Promise<TopUpInvoice> {
-  return new Promise((resolve) => window.setTimeout(() => resolve({ amount, sentTo: 'marketing@company.kz' }), 600));
+function demoExtend(amount: number, pricePerPlay: number): Promise<TopUpInvoice> {
+  return new Promise((resolve) => window.setTimeout(() => resolve({ amount, sentTo: 'marketing@company.kz', pricePerPlay }), 600));
 }
 
 /** The top-up form: amount, consent to changed terms, and the `extend_campaign` call. */
@@ -31,11 +31,17 @@ export function useTopUp({ userId, campaign, terms, email, refetch }: TopUpOptio
   const navigate = useNavigate();
 
   const invoice = useMutation({
-    mutationFn: (value: number) => (userId === 'demo' ? demoExtend(value) : extendCampaign(campaign.id, value, terms.version)),
+    mutationFn: (value: number) => (userId === 'demo' ? demoExtend(value, terms.pricePerPlay) : extendCampaign(campaign.id, value, terms.version)),
     onSuccess: (result) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.campaigns(userId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.home(userId) });
-      const receipt: TopUpReceipt = { name: campaign.name, tariff: campaign.tariff, amount: result.amount, email: result.sentTo ?? email };
+      const receipt: TopUpReceipt = {
+        name: campaign.name,
+        tariff: campaign.tariff,
+        amount: result.amount,
+        pricePerPlay: result.pricePerPlay ?? terms.pricePerPlay,
+        email: result.sentTo ?? email,
+      };
       navigate(CABINET_LINKS.campaignTopUpSent(campaign.id), { replace: true, state: receipt });
     },
     onError: (error) => {

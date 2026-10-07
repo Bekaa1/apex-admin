@@ -100,6 +100,18 @@ export interface EditedCampaign {
   budget: number;
   left: number;
   canTopUp: boolean;
+  /** The campaign's plan has shelf zones; the plan may be off sale, so it comes with the campaign, not the catalog. */
+  hasZones: boolean;
+}
+
+/** What the steps and checks need besides the form. */
+export interface WizardContext {
+  flow: WizardFlow;
+  catalog: WizardCatalog;
+  /** The plan has shelf zones (`tariffs.can_select_zone`); null before a plan is chosen, and the zones step is shown. */
+  zones: boolean | null;
+  /** An edit: the campaign as it was opened, to compare with. */
+  original: CampaignForm | null;
 }
 
 export type WizardMode =
@@ -119,7 +131,7 @@ export type ChangeField = 'name' | 'description' | 'video' | 'cover' | 'stores' 
 
 /** What the success screen shows; passed in the navigation state. */
 export type SentReceipt =
-  | { kind: 'new'; name: string; tariff: TariffCode; budget: number }
+  | { kind: 'new'; name: string; tariff: TariffCode; budget: number; pricePerPlay: number | null }
   | { kind: 'edit'; name: string; changed: ChangeField[]; paused: boolean };
 
 /** A campaign read back for «Редактировать», «Исправить» and «Повторить». */
@@ -129,6 +141,8 @@ export interface CampaignPrefill {
   launched: boolean;
   /** The plan is still sold, so the campaign can be topped up. */
   tariffSold: boolean;
+  /** The campaign's plan has shelf zones (`can_select_zone`). */
+  tariffZones: boolean;
   name: string;
   description: string;
   tariff: TariffCode | null;

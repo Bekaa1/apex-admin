@@ -1,0 +1,125 @@
+{
+  "eyebrow": "Places for your advertising",
+  "title": "Find the right store for your campaign",
+  "description": "Compare screen availability and ad playback activity. Explore each store before choosing where to advertise.",
+  "period": {
+    "label": "Statistics period",
+    "today": "Today",
+    "7d": "Week",
+    "30d": "Month",
+    "custom": "Custom range",
+    "from": "From",
+    "to": "To",
+    "unavailable": {
+      "title": "No statistics for this period",
+      "text": "Try selecting different dates."
+    }
+  },
+  "metrics": {
+    "stores": "Stores",
+    "carts": "Carts with screens",
+    "cartsHint": "Total at these locations",
+    "online": "Reported online",
+    "plays": "Plays in period",
+    "average": "Daily average"
+  },
+  "coverage": "Data from {count} of {total} stores",
+  "filteredSummary": "Matching your search and filters",
+  "catalog": "Stores",
+  "catalogHint": "Open a store to explore playback trends and available advertising zones.",
+  "search": {
+    "label": "Find a store",
+    "placeholder": "Name, city or address"
+  },
+  "city": "City",
+  "allCities": "All cities",
+  "sort": {
+    "label": "Sort by",
+    "plays": "Most ad plays",
+    "online": "Most carts online",
+    "carts": "Most carts",
+    "name": "Store name"
+  },
+  "results": "Stores found: {count}",
+  "reset": "Reset filters",
+  "columns": {
+    "store": "Store",
+    "carts": "Online / total"
+  },
+  "details": "View details",
+  "openStore": "View details for {name}",
+  "fleetMeter": "{online} of {total} carts online",
+  "noData": "No data",
+  "status": {
+    "online": "Online status reported",
+    "offline": "No online status reported",
+    "unknown": "Status unavailable",
+    "noCarts": "No carts yet"
+  },
+  "empty": {
+    "title": "No stores found",
+    "description": "Try another name or address, change the city, or reset the filters."
+  },
+  "back": "Back to stores",
+  "overview": "Store overview",
+  "overviewHint": "All ad plays at this store during the selected period.",
+  "ofCarts": "out of {total} carts",
+  "incompleteDay": "Today is still in progress",
+  "notFound": {
+    "title": "Store not found",
+    "description": "Return to the list and choose an available store."
+  },
+  "chart": {
+    "title": "Ad playback trends",
+    "unit": "Available history",
+    "empty": "No statistics yet",
+    "emptyHint": "A chart will appear when playback data is available for this store.",
+    "plays": "plays",
+    "selectDay": "Plays by day. Select a day",
+    "dayValue": "{date}: {count} plays",
+    "hint": "Select a bar to see the exact value.",
+    "table": "View daily data",
+    "date": "Date"
+  },
+  "fleet": {
+    "title": "Screens at this store",
+    "description": "Stored cart statuses for this location.",
+    "connected": "of carts reported online",
+    "online": "Online",
+    "offline": "Other statuses",
+    "noData": "Cart status data is currently unavailable.",
+    "totalHint": "Total at this store"
+  },
+  "zones": {
+    "title": "Advertising zones",
+    "count": "Zones: {count}",
+    "description": "Departments where your ad can play next to the product shelf.",
+    "loading": "Loading advertising zones…",
+    "error": "Could not load zones",
+    "errorHint": "Other store figures are available. You can retry loading the zones.",
+    "empty": "No advertising zones have been added to this store yet."
+  },
+  "launch": {
+    "button": "Choose this location",
+    "title": "Your campaign location",
+    "description": "You selected this store for your advertising.",
+    "done": "Continue exploring",
+    "close": "Close",
+    "unavailable": "Campaign creation for the selected store is not available yet."
+  },
+  "loading": "Loading stores and statistics…",
+  "unknownCity": "City not specified",
+  "noAddress": "Address not specified",
+  "availableDays": "Available full days: {count}",
+  "error": {
+    "title": "Could not load analytics",
+    "text": "Check your internet connection and try again.",
+    "retry": "Retry",
+    "staleTitle": "Could not refresh data",
+    "staleText": "Previously loaded figures are shown. Try refreshing again."
+  },
+  "emptyCatalog": {
+    "title": "No stores yet",
+    "description": "Available locations will appear here once they have been added to the system."
+  }
+}

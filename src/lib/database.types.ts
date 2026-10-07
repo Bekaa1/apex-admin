@@ -14,6 +14,131 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_budget_portions: {
+        Row: {
+          ad_id: string
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string | null
+          position: number
+          price_per_play: number
+          spent: number
+        }
+        Insert: {
+          ad_id: string
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          position?: never
+          price_per_play: number
+          spent?: number
+        }
+        Update: {
+          ad_id?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          position?: never
+          price_per_play?: number
+          spent?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_budget_portions_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_stores: {
         Row: {
           actually_paid: number | null
@@ -572,6 +697,7 @@ export type Database = {
           content_url: string | null
           cover_original_filename: string | null
           created_at: string | null
+          description: string | null
           display_id: number
           earned_points: number | null
           end_date: string | null
@@ -579,9 +705,17 @@ export type Database = {
           hours_used_pct: number | null
           id: string
           is_active: boolean | null
+          moderated_at: string | null
+          moderated_by: string | null
+          moderator_comment: string | null
           name: string | null
+          paid_amount: number
+          plays_count: number
+          price_per_play: number | null
+          rejection_reasons: string[] | null
           remaining_budget_pct: number | null
           remaining_impressions: number | null
+          request_id: string | null
           spent_budget: number
           start_date: string | null
           status: Database["public"]["Enums"]["ad_status"] | null
@@ -589,12 +723,18 @@ export type Database = {
           status_label_ru: string | null
           store_id: string | null
           store_name: string | null
+          submitted_at: string | null
+          tariff_id: string | null
           title: string | null
           total_hours: number | null
           used_hours: number | null
           user_id: string | null
+          video_duration_sec: number | null
+          video_height: number | null
           video_original_filename: string | null
+          video_size_bytes: number | null
           video_url: string | null
+          video_width: number | null
           zone_id: string | null
         }
         Insert: {
@@ -603,6 +743,7 @@ export type Database = {
           content_url?: string | null
           cover_original_filename?: string | null
           created_at?: string | null
+          description?: string | null
           display_id?: number
           earned_points?: number | null
           end_date?: string | null
@@ -610,9 +751,17 @@ export type Database = {
           hours_used_pct?: number | null
           id?: string
           is_active?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderator_comment?: string | null
           name?: string | null
+          paid_amount?: number
+          plays_count?: number
+          price_per_play?: number | null
+          rejection_reasons?: string[] | null
           remaining_budget_pct?: number | null
           remaining_impressions?: number | null
+          request_id?: string | null
           spent_budget?: number
           start_date?: string | null
           status?: Database["public"]["Enums"]["ad_status"] | null
@@ -620,12 +769,18 @@ export type Database = {
           status_label_ru?: string | null
           store_id?: string | null
           store_name?: string | null
+          submitted_at?: string | null
+          tariff_id?: string | null
           title?: string | null
           total_hours?: number | null
           used_hours?: number | null
           user_id?: string | null
+          video_duration_sec?: number | null
+          video_height?: number | null
           video_original_filename?: string | null
+          video_size_bytes?: number | null
           video_url?: string | null
+          video_width?: number | null
           zone_id?: string | null
         }
         Update: {
@@ -634,6 +789,7 @@ export type Database = {
           content_url?: string | null
           cover_original_filename?: string | null
           created_at?: string | null
+          description?: string | null
           display_id?: number
           earned_points?: number | null
           end_date?: string | null
@@ -641,9 +797,17 @@ export type Database = {
           hours_used_pct?: number | null
           id?: string
           is_active?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderator_comment?: string | null
           name?: string | null
+          paid_amount?: number
+          plays_count?: number
+          price_per_play?: number | null
+          rejection_reasons?: string[] | null
           remaining_budget_pct?: number | null
           remaining_impressions?: number | null
+          request_id?: string | null
           spent_budget?: number
           start_date?: string | null
           status?: Database["public"]["Enums"]["ad_status"] | null
@@ -651,12 +815,18 @@ export type Database = {
           status_label_ru?: string | null
           store_id?: string | null
           store_name?: string | null
+          submitted_at?: string | null
+          tariff_id?: string | null
           title?: string | null
           total_hours?: number | null
           used_hours?: number | null
           user_id?: string | null
+          video_duration_sec?: number | null
+          video_height?: number | null
           video_original_filename?: string | null
+          video_size_bytes?: number | null
           video_url?: string | null
+          video_width?: number | null
           zone_id?: string | null
         }
         Relationships: [
@@ -724,6 +894,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ads_tariff_id_fkey"
+            columns: ["tariff_id"]
+            isOneToOne: false
+            referencedRelation: "tariffs"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ads_zone_id_fkey"
             columns: ["zone_id"]
             isOneToOne: false
@@ -779,6 +956,142 @@ export type Database = {
           total_hours?: number | null
         }
         Relationships: []
+      }
+      advertiser_invoices: {
+        Row: {
+          ad_id: string
+          amount: number
+          file_url: string | null
+          id: string
+          issued_at: string
+          kind: string
+          number: number
+          paid_at: string | null
+          paid_by: string | null
+          price_per_play: number | null
+          sent_to: string | null
+          status: string
+          tariff_version: number | null
+          user_id: string
+        }
+        Insert: {
+          ad_id: string
+          amount: number
+          file_url?: string | null
+          id?: string
+          issued_at?: string
+          kind?: string
+          number?: never
+          paid_at?: string | null
+          paid_by?: string | null
+          price_per_play?: number | null
+          sent_to?: string | null
+          status?: string
+          tariff_version?: number | null
+          user_id: string
+        }
+        Update: {
+          ad_id?: string
+          amount?: number
+          file_url?: string | null
+          id?: string
+          issued_at?: string
+          kind?: string
+          number?: never
+          paid_at?: string | null
+          paid_by?: string | null
+          price_per_play?: number | null
+          sent_to?: string | null
+          status?: string
+          tariff_version?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "advertiser_invoices_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       auction_bids: {
         Row: {
@@ -1314,6 +1627,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      corporate_requests: {
+        Row: {
+          company: string
+          contact_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          manager_comment: string | null
+          message: string | null
+          phone: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          company: string
+          contact_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          manager_comment?: string | null
+          message?: string | null
+          phone: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          company?: string
+          contact_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          manager_comment?: string | null
+          message?: string | null
+          phone?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       creative_comments: {
         Row: {
@@ -2438,40 +2793,58 @@ export type Database = {
           badge: string | null
           can_select_store: boolean
           can_select_zone: boolean
+          code: string | null
           created_at: string
           exclusive_zone: boolean
           has_sound: boolean
           id: string
+          is_archived: boolean
           min_amount: number
+          more_plays: boolean
           name: string
           price_per_play: number
+          purchasable: boolean
           sort_order: number
+          updated_at: string
+          version: number
         }
         Insert: {
           badge?: string | null
           can_select_store?: boolean
           can_select_zone?: boolean
+          code?: string | null
           created_at?: string
           exclusive_zone?: boolean
           has_sound?: boolean
           id?: string
+          is_archived?: boolean
           min_amount: number
+          more_plays?: boolean
           name: string
           price_per_play: number
+          purchasable?: boolean
           sort_order: number
+          updated_at?: string
+          version?: number
         }
         Update: {
           badge?: string | null
           can_select_store?: boolean
           can_select_zone?: boolean
+          code?: string | null
           created_at?: string
           exclusive_zone?: boolean
           has_sound?: boolean
           id?: string
+          is_archived?: boolean
           min_amount?: number
+          more_plays?: boolean
           name?: string
           price_per_play?: number
+          purchasable?: boolean
           sort_order?: number
+          updated_at?: string
+          version?: number
         }
         Relationships: []
       }
@@ -3035,11 +3408,22 @@ export type Database = {
           budget: number | null
           budget_used_fraction: number | null
           budget_used_pct: number | null
+          cart_count: number | null
+          content_url: string | null
           created_at: string | null
+          description: string | null
           end_date: string | null
           hours_used_fraction: number | null
           hours_used_pct: number | null
+          invoice_amount: number | null
+          invoice_sent_to: string | null
+          moderated_at: string | null
+          moderator_comment: string | null
           name: string | null
+          paid_amount: number | null
+          plays_count: number | null
+          price_per_play: number | null
+          rejection_reasons: string[] | null
           remaining_budget: number | null
           remaining_budget_pct: number | null
           spent_budget: number | null
@@ -3047,11 +3431,22 @@ export type Database = {
           status: Database["public"]["Enums"]["ad_status"] | null
           status_color: string | null
           status_label_ru: string | null
+          store_count: number | null
           store_name: string | null
+          submitted_at: string | null
+          tariff_can_extend: boolean | null
+          tariff_code: string | null
+          tariff_current_price: number | null
+          tariff_min_amount: number | null
+          tariff_name: string | null
+          tariff_version: number | null
           title: string | null
           total_hours: number | null
           total_plays: number | null
+          unpaid_amount: number | null
           used_hours: number | null
+          video_duration_sec: number | null
+          video_url: string | null
         }
         Relationships: []
       }
@@ -3580,6 +3975,27 @@ export type Database = {
       }
     }
     Functions: {
+      _campaign_err: {
+        Args: { p_code: string; p_detail: string; p_field: string }
+        Returns: undefined
+      }
+      _campaign_insert_links: {
+        Args: { n: Json; p_ad: string }
+        Returns: undefined
+      }
+      _campaign_media_path: {
+        Args: { p_uid: string; p_url: string }
+        Returns: string
+      }
+      _campaign_replace_links: {
+        Args: { n: Json; p_ad: string }
+        Returns: undefined
+      }
+      _campaign_user_email: { Args: { p_uid: string }; Returns: string }
+      _campaign_validate: {
+        Args: { p: Json; p_require_request?: boolean; p_uid: string }
+        Returns: Json
+      }
       _postgis_deprecate: {
         Args: { newname: string; oldname: string; version: string }
         Returns: undefined
@@ -3707,6 +4123,50 @@ export type Database = {
             }
             Returns: string
           }
+      admin_campaign_media_orphans: {
+        Args: never
+        Returns: {
+          created_at: string
+          name: string
+          size_bytes: number
+        }[]
+      }
+      admin_mark_invoice_paid: {
+        Args: { p_invoice_id: string }
+        Returns: string
+      }
+      admin_moderate_campaign: {
+        Args: {
+          p_approve: boolean
+          p_comment?: string
+          p_id: string
+          p_reasons?: string[]
+        }
+        Returns: string
+      }
+      catalog_stores: {
+        Args: never
+        Returns: {
+          active_campaigns: number
+          address: string
+          cart_count: number
+          city: string
+          id: string
+          name: string
+          zone_count: number
+        }[]
+      }
+      catalog_zones: {
+        Args: { p_store_ids: string[] }
+        Returns: {
+          description: string
+          icon_emoji: string
+          id: string
+          name: string
+          other_brands: number
+          store_id: string
+        }[]
+      }
       check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
       complete_ad_playback: {
         Args: { p_duration_seconds: number; p_session_id: string }
@@ -3758,8 +4218,16 @@ export type Database = {
           }
         | { Args: { schema_name: string; table_name: string }; Returns: string }
         | { Args: { table_name: string }; Returns: string }
+      edit_campaign: {
+        Args: { p: Json; p_id: string; p_tariff_version?: number }
+        Returns: string
+      }
       enablelongtransactions: { Args: never; Returns: string }
       equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      extend_campaign: {
+        Args: { p_amount: number; p_id: string; p_tariff_version: number }
+        Returns: string
+      }
       geometry: { Args: { "": string }; Returns: unknown }
       geometry_above: {
         Args: { geom1: unknown; geom2: unknown }
@@ -3870,6 +4338,8 @@ export type Database = {
       }
       is_apex_admin: { Args: never; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      owns_ad: { Args: { p_ad_id: string }; Returns: boolean }
+      partner_store_ids: { Args: never; Returns: string[] }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -3914,6 +4384,11 @@ export type Database = {
         Args: { p_cart_id: string; p_device_identifier: string }
         Returns: Json
       }
+      request_campaign_topup: {
+        Args: { p_amount: number; p_id: string }
+        Returns: string
+      }
+      resubmit_campaign: { Args: { p: Json; p_id: string }; Returns: string }
       select_ad_for_zone: {
         Args: { p_store_id: string; p_zone_id: string }
         Returns: string
@@ -4499,6 +4974,8 @@ export type Database = {
         Args: { geom: unknown; move: number; wrap: number }
         Returns: unknown
       }
+      submit_campaign: { Args: { p: Json }; Returns: string }
+      submit_corporate_request: { Args: { p: Json }; Returns: string }
       unlockrows: { Args: { "": string }; Returns: number }
       updategeometrysrid: {
         Args: {
@@ -4514,6 +4991,7 @@ export type Database = {
     Enums: {
       ad_status:
         | "pending"
+        | "awaiting_payment"
         | "active"
         | "rejected"
         | "draft"
@@ -4661,6 +5139,7 @@ export const Constants = {
     Enums: {
       ad_status: [
         "pending",
+        "awaiting_payment",
         "active",
         "rejected",
         "draft",

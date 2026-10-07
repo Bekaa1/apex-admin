@@ -2,8 +2,9 @@ import { Badge, ChoiceCard, Icon } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatMoney } from '../../../../lib/format';
 import { CABINET_LINKS } from '../../../sections';
-import { CORPORATE_LEVEL, TARIFF_FEATURES, TARIFF_LEVELS, TARIFFS } from '../../../tariffs';
+import { CORPORATE_LEVEL, TARIFF_FEATURES, TARIFF_LEVELS, TARIFFS, termsOf } from '../../../tariffs';
 import { ButtonLink } from '../../../ui/ButtonLink';
+import type { WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 
 const CORPORATE_FEATURES = ['reach', 'zonePriority', 'moreShows', 'brandOnly', 'manager'];
@@ -47,16 +48,20 @@ function CorporateCard() {
   );
 }
 
-/** Step 2: three plans to pick from; the corporate plan leads to a request instead. An edit skips this step. */
-export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
+/** Step 2: the plans on sale with their current minimum; the corporate plan leads to a request instead. An edit skips this step. */
+export function StepTariff({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
   const { t, lang } = useI18n();
   const { form, errors, dispatch } = wizard;
+  const plans = TARIFFS.flatMap((tariff) => {
+    const terms = termsOf(catalog.tariffs, tariff.code);
+    return terms ? [{ ...tariff, minimum: terms.minimum }] : [];
+  });
   return (
     <div className="cmp-fields">
       <fieldset className="cmp-fieldset">
         <legend className="ax-sr">{t('campaigns.wizard.tariff.legend')}</legend>
         <div className="cmp-tariff-grid">
-          {TARIFFS.map((tariff) => (
+          {plans.map((tariff) => (
             <ChoiceCard
               key={tariff.code}
               className="cmp-tariff-choice"
@@ -94,7 +99,7 @@ export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
       {errors.tariff ? (
         <p className="ax-error" role="alert">
           <Icon name="alert-circle" size={18} />
-          <span>{t('campaigns.wizard.tariff.error')}</span>
+          <span>{t(errors.tariff === 'unavailable' ? 'campaigns.wizard.tariff.errorUnavailable' : 'campaigns.wizard.tariff.error')}</span>
         </p>
       ) : null}
       <p className="cab-note">

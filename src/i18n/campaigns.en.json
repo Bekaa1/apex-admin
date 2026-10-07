@@ -146,9 +146,11 @@
       },
       "budget": {
         "title": "Budget",
-        "text": "The minimum depends on the plan: from {amount}. Payment by invoice."
+        "text": "The minimum depends on the plan: from {amount}. Payment by invoice.",
+        "textNoAmount": "The minimum depends on the plan. Payment by invoice."
       }
-    }
+    },
+    "leadNoAmount": "Create the first one — it takes about 10 minutes. You’ll need a 7-second video and a budget of at least the plan minimum."
   },
   "notFound": {
     "titleQuery": "Nothing found for “{query}”",
@@ -196,7 +198,8 @@
         "not_found": "Campaign not found. Go back to your campaigns.",
         "invalid_status": "This campaign can’t be changed right now — it may have been sent already. Go back to the campaign.",
         "tariff_change_not_allowed": "The plan can’t be changed in a fix. For another plan, create a new campaign.",
-        "not_authenticated": "Your session has ended. Sign in again and send the campaign."
+        "not_authenticated": "Your session has ended. Sign in again and send the campaign.",
+        "tariff_changed": "The plan’s terms have just changed. Check the minimum budget and send the campaign again."
       },
       "toProfile": "Open profile"
     },
@@ -322,7 +325,8 @@
           "manager": "B2B contract and a personal manager"
         },
         "discuss": "Discuss terms"
-      }
+      },
+      "errorUnavailable": "This plan is no longer sold. Pick another one."
     },
     "stores": {
       "title": "Choose stores",

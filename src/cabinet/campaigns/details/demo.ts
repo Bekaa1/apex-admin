@@ -1,5 +1,6 @@
 import { shiftDate } from '../../../lib/dates';
-import { TARIFFS } from '../../tariffs';
+import { demoTariffTerms } from '../../demo';
+import { TARIFFS, termsOf } from '../../tariffs';
 import { demoCampaignRow } from '../demo';
 import { demoCatalog } from '../wizard/demo';
 import type { CampaignDetailsSource, InvoiceRow, LocationRow } from './types';
@@ -62,7 +63,7 @@ export function demoDetailsSource(id: string): CampaignDetailsSource | null {
       price_per_play: tariff?.code === 'standard' ? 10 : 12,
       plays_count: row.total_plays,
       tariff_version: extra.changedTerms ? 2 : 1,
-      tariff_min_amount: tariff?.minimum ?? null,
+      tariff_min_amount: termsOf(demoTariffTerms(), tariff?.code ?? null)?.minimum ?? null,
     },
     files: { video: extra.file, width: 1920, height: 1080, cover: null },
     locations: locations(row.store_count ?? 0, tariff?.hasZones ?? false),

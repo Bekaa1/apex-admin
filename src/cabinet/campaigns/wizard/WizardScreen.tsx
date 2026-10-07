@@ -61,5 +61,16 @@ export function WizardScreen({ source }: { source: WizardSource }) {
   const storageKey = formStorageKey(data.userId, mode.kind === 'edit' ? mode.campaign.id : null);
   // A copy always starts from the source campaign; otherwise what was typed in this tab wins.
   const initial = (source.kind === 'copy' ? null : loadForm(storageKey)) ?? data.prefill ?? emptyForm();
-  return <CampaignWizard key={storageKey} userId={data.userId} initial={initial} catalog={data.catalog} mode={mode} storageKey={storageKey} api={data.api} />;
+  return (
+    <CampaignWizard
+      key={storageKey}
+      userId={data.userId}
+      initial={initial}
+      catalog={data.catalog}
+      mode={mode}
+      storageKey={storageKey}
+      api={data.api}
+      onTariffChanged={data.refreshTariffs}
+    />
+  );
 }

@@ -6,7 +6,7 @@ import { monthStart } from './model';
 import type { CampaignDetailsSource } from './details/types';
 import type { CampaignsSource } from './types';
 import { extensionOf } from './wizard/media';
-import type { CampaignEdit, CampaignPrefill, CampaignSubmission, MediaMeta, MediaState, UploadedMedia, WizardCatalog } from './wizard/types';
+import type { CampaignEdit, CampaignPrefill, CampaignSubmission, MediaMeta, MediaState, StoreCatalog, UploadedMedia } from './wizard/types';
 
 const MEDIA_BUCKET = 'campaign-media';
 const MEDIA_EXTENSIONS = ['mp4', 'mov', 'jpg', 'jpeg', 'png'];
@@ -104,7 +104,7 @@ export async function fetchCampaignDetails(campaignId: string, signal: AbortSign
 }
 
 /** Stores with carts and their shelf zones with a working beacon, as the backend offers them for sale. */
-export async function fetchWizardCatalog(signal: AbortSignal): Promise<WizardCatalog> {
+export async function fetchStoreCatalog(signal: AbortSignal): Promise<StoreCatalog> {
   const sb = requireSupabase();
   const stores = await sb.rpc('catalog_stores').order('name').abortSignal(signal);
   if (stores.error) throw stores.error;
@@ -207,9 +207,15 @@ function contentPayload(content: CampaignEdit) {
   };
 }
 
-/** Creates the campaign (status «На проверке») and its invoice; resending the same request returns the same id. */
+/** Creates the campaign (status «На проверке») and its invoice at the plan's terms of `tariff_version`; resending the same request returns the same id. */
 export async function submitCampaign(submission: CampaignSubmission): Promise<string> {
-  const p = { ...contentPayload(submission), tariff_code: submission.tariffCode, budget: submission.budget, request_id: submission.requestId };
+  const p = {
+    ...contentPayload(submission),
+    tariff_code: submission.tariffCode,
+    tariff_version: submission.tariffVersion,
+    budget: submission.budget,
+    request_id: submission.requestId,
+  };
   const { data, error } = await requireSupabase().rpc('submit_campaign', { p });
   if (error) throw rpcError(error);
   return data;

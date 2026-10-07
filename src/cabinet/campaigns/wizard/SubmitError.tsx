@@ -18,6 +18,7 @@ const KNOWN_CODES = [
   'not_found',
   'invalid_status',
   'tariff_change_not_allowed',
+  'tariff_changed',
   'not_authenticated',
 ];
 

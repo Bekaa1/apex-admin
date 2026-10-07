@@ -8,6 +8,7 @@ import { campaignChanges } from './changes';
 import { clearForm, saveForm } from './formStorage';
 import { wizardReducer } from './reducer';
 import { nextStep, prevStep, skipsZones, stepFromParam, stepParam } from './steps';
+import { termsOf } from '../../tariffs';
 import { selectedZones } from './summary';
 import type { CampaignEdit, CampaignForm, CampaignSubmission, SentReceipt, StepId, WizardApi, WizardCatalog, WizardFlow, WizardMode } from './types';
 import { useMediaUpload } from './useMediaUpload';
@@ -20,6 +21,8 @@ export interface WizardOptions {
   mode: WizardMode;
   storageKey: string;
   api: WizardApi;
+  /** The server said the plan's terms changed: reload them so the minimum and the version are current. */
+  onTariffChanged: () => void;
 }
 
 /** The content an edit sends; null while the video isn't ready. The server needs the video's length and size too. */
@@ -38,17 +41,18 @@ export function toEdit(form: CampaignForm, catalog: WizardCatalog): CampaignEdit
   };
 }
 
-/** What a new campaign sends; null while something required is missing. */
+/** What a new campaign sends; null while something required is missing or the plan is no longer on sale. */
 export function toSubmission(form: CampaignForm, catalog: WizardCatalog): CampaignSubmission | null {
   const content = toEdit(form, catalog);
-  if (!content || !form.tariff || form.budget === null) return null;
-  return { ...content, tariffCode: form.tariff, budget: form.budget, requestId: form.requestId };
+  const terms = termsOf(catalog.tariffs, form.tariff);
+  if (!content || !terms || form.budget === null) return null;
+  return { ...content, tariffCode: terms.code, tariffVersion: terms.version, budget: form.budget, requestId: form.requestId };
 }
 
 type Sent = { id: string; receipt: SentReceipt };
 
 /** State and actions of the wizard. The step lives in the URL (?step=), the form in the reducer and the tab's sessionStorage. */
-export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, api }: WizardOptions) {
+export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, api, onTariffChanged }: WizardOptions) {
   const [state, dispatch] = useReducer(wizardReducer, initial, (form) => ({ form, attempted: [], attempts: 0 }));
   const { form } = state;
   const [params, setParams] = useSearchParams();
@@ -97,6 +101,9 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       void queryClient.invalidateQueries({ queryKey: queryKeys.campaigns(userId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.home(userId) });
       navigate(CABINET_LINKS.campaignSent(id), { replace: true, state: receipt });
+    },
+    onError: (error) => {
+      if (error instanceof CampaignRpcError && error.code === 'tariff_changed') onTariffChanged();
     },
   });
 

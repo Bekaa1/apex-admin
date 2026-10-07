@@ -105,7 +105,7 @@ export function CampaignWizard(options: WizardOptions) {
               </div>
             ) : null}
             {step === 'media' ? <StepMedia wizard={wizard} /> : null}
-            {step === 'tariff' ? <StepTariff wizard={wizard} /> : null}
+            {step === 'tariff' ? <StepTariff wizard={wizard} catalog={catalog} /> : null}
             {step === 'stores' ? <StepStores wizard={wizard} catalog={catalog} /> : null}
             {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} /> : null}
             {step === 'budget' ? <StepBudget wizard={wizard} catalog={catalog} /> : null}

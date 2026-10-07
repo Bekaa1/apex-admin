@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Button, Icon } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatMoney, formatNumber, pluralKey } from '../../../../lib/format';
-import { TARIFFS } from '../../../tariffs';
+import { termsOf } from '../../../tariffs';
 import { formatClock } from '../media';
 import { selectedStores, selectedZones, summarize } from '../summary';
 import type { StepId, WizardCatalog } from '../types';
@@ -30,7 +30,7 @@ export function ReviewList({ wizard, catalog }: { wizard: CampaignWizardState; c
   const { t, lang } = useI18n();
   const { form, goTo } = wizard;
   const summary = summarize(form, catalog);
-  const tariff = TARIFFS.find((plan) => plan.code === form.tariff);
+  const tariff = termsOf(catalog.tariffs, form.tariff);
   const count = (key: string, n: number) => t(pluralKey(key, n, lang), { count: formatNumber(n, lang) });
   const video = form.video.status === 'ready' ? form.video : null;
   const cover = form.cover.status === 'ready' ? form.cover : null;

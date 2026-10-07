@@ -1,4 +1,4 @@
-import { TARIFFS } from '../../tariffs';
+import { termsOf } from '../../tariffs';
 import { campaignChanges } from './changes';
 import { activeSteps } from './steps';
 import type { CampaignForm, MediaProblem, MediaState, StepId, WizardCatalog, WizardFlow } from './types';
@@ -7,7 +7,7 @@ export const NAME_MAX = 80;
 export const DESCRIPTION_MAX = 300;
 
 export type FieldKey = 'name' | 'video' | 'cover' | 'tariff' | 'stores' | 'zones' | 'budget' | 'changes' | 'rules';
-export type FieldError = 'required' | 'tooLong' | 'uploading' | 'min' | MediaProblem;
+export type FieldError = 'required' | 'tooLong' | 'uploading' | 'min' | 'unavailable' | MediaProblem;
 export type StepErrors = Partial<Record<FieldKey, FieldError>>;
 
 function mediaError(media: MediaState, required: boolean): FieldError | undefined {
@@ -29,8 +29,8 @@ export function storesWithoutZones(form: CampaignForm, catalog: WizardCatalog): 
   return form.storeIds.filter((storeId) => !catalog.zones.some((zone) => zone.storeId === storeId && chosen.has(zone.id)));
 }
 
-export function minimumBudget(form: CampaignForm): number | null {
-  return TARIFFS.find((tariff) => tariff.code === form.tariff)?.minimum ?? null;
+export function minimumBudget(form: CampaignForm, catalog: WizardCatalog): number | null {
+  return termsOf(catalog.tariffs, form.tariff)?.minimum ?? null;
 }
 
 /** `original` is the campaign as the edit opened it: an edit with no changes can't be sent. */
@@ -50,6 +50,8 @@ export function validateStep(step: StepId, form: CampaignForm, catalog: WizardCa
     }
     case 'tariff':
       if (!form.tariff) errors.tariff = 'required';
+      // A plan taken off sale while the form waited in the tab.
+      else if (!termsOf(catalog.tariffs, form.tariff)) errors.tariff = 'unavailable';
       break;
     case 'stores':
       if (!form.storeIds.length) errors.stores = 'required';
@@ -58,7 +60,7 @@ export function validateStep(step: StepId, form: CampaignForm, catalog: WizardCa
       if (storesWithoutZones(form, catalog).length) errors.zones = 'required';
       break;
     case 'budget': {
-      const minimum = minimumBudget(form);
+      const minimum = minimumBudget(form, catalog);
       if (form.budget === null) errors.budget = 'required';
       else if (minimum !== null && form.budget < minimum) errors.budget = 'min';
       if (!form.rulesAccepted) errors.rules = 'required';

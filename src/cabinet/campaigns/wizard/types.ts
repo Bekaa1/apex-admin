@@ -1,4 +1,4 @@
-import type { TariffCode } from '../../tariffs';
+import type { TariffCode, TariffTerms } from '../../tariffs';
 import type { Moderation } from '../types';
 
 export type StepId = 'media' | 'tariff' | 'stores' | 'zones' | 'budget' | 'review';
@@ -55,9 +55,15 @@ export interface CatalogZone {
   otherBrands: number | null;
 }
 
-export interface WizardCatalog {
+/** Stores with carts and their shelf zones, as `catalog_stores` and `catalog_zones` offer them. */
+export interface StoreCatalog {
   stores: CatalogStore[];
   zones: CatalogZone[];
+}
+
+export interface WizardCatalog extends StoreCatalog {
+  /** Plans on sale with their current minimum and terms version. */
+  tariffs: TariffTerms[];
 }
 
 export interface UploadedMedia {
@@ -70,6 +76,8 @@ export interface CampaignSubmission {
   name: string;
   description: string;
   tariffCode: TariffCode;
+  /** The terms version the wizard showed: the server refuses with `tariff_changed` if the plan changed meanwhile. */
+  tariffVersion: number;
   video: UploadedMedia & { durationSec: number; width: number; height: number; sizeBytes: number };
   cover: UploadedMedia | null;
   storeIds: string[];
@@ -79,7 +87,7 @@ export interface CampaignSubmission {
 }
 
 /** What an edit sends to `edit_campaign`: the plan and the budget stay with the campaign. */
-export type CampaignEdit = Omit<CampaignSubmission, 'tariffCode' | 'budget' | 'requestId'>;
+export type CampaignEdit = Omit<CampaignSubmission, 'tariffCode' | 'tariffVersion' | 'budget' | 'requestId'>;
 
 /** The campaign being edited, as far as the wizard needs it. */
 export interface EditedCampaign {

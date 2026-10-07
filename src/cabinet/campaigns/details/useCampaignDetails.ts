@@ -3,9 +3,9 @@ import { useSearchParams } from 'react-router';
 import { useAuthSession } from '../../../auth/useAuthSession';
 import { parseDemoVariant } from '../../demo';
 import { queryKeys } from '../../queryKeys';
-import { fetchCampaignDetails, fetchWizardCatalog } from '../api';
+import { fetchCampaignDetails, fetchStoreCatalog } from '../api';
 import { demoCatalog } from '../wizard/demo';
-import type { WizardCatalog } from '../wizard/types';
+import type { StoreCatalog } from '../wizard/types';
 import { demoDetailsSource } from './demo';
 import type { CampaignDetailsSource } from './types';
 
@@ -13,7 +13,7 @@ export type CampaignDetailsState =
   | { status: 'loading' }
   | { status: 'error'; retry: () => void }
   | { status: 'missing' }
-  | { status: 'ready'; userId: string; source: CampaignDetailsSource; catalog: WizardCatalog; refetch: () => Promise<unknown> };
+  | { status: 'ready'; userId: string; source: CampaignDetailsSource; catalog: StoreCatalog; refetch: () => Promise<unknown> };
 
 const CATALOG_STALE_MS = 5 * 60_000;
 
@@ -30,7 +30,7 @@ export function useCampaignDetails(campaignId: string): CampaignDetailsState {
   });
   const catalog = useQuery({
     queryKey: queryKeys.storeCatalog(userId),
-    queryFn: userId && !demo ? ({ signal }) => fetchWizardCatalog(signal) : skipToken,
+    queryFn: userId && !demo ? ({ signal }) => fetchStoreCatalog(signal) : skipToken,
     staleTime: CATALOG_STALE_MS,
   });
 

@@ -3,7 +3,7 @@ import { budgetFigures } from '../../campaignBudget';
 import { storesOf } from '../../stores';
 import { TARIFFS } from '../../tariffs';
 import { campaignAbilities, coverTone, stageOf, tariffOf } from '../model';
-import type { WizardCatalog } from '../wizard/types';
+import type { StoreCatalog } from '../wizard/types';
 import type { CampaignDetails, CampaignDetailsSource, ChartBucket, DetailsStats, DetailsStore, HistoryEvent } from './types';
 
 const STATS_DAYS = 30;
@@ -53,7 +53,7 @@ function statsOf(source: CampaignDetailsSource): DetailsStats | null {
 }
 
 /** Stores of the campaign with their address, carts and the chosen shelf zones. «Все магазины» stands for every store. */
-function storesOfCampaign(source: CampaignDetailsSource, catalog: WizardCatalog): DetailsStore[] {
+function storesOfCampaign(source: CampaignDetailsSource, catalog: StoreCatalog): DetailsStore[] {
   const linked = source.locations.filter((location) => location.kind === 'store' && location.location_id);
   // Stores that left the catalog are still shown, by the name the campaign keeps.
   const known = [
@@ -121,7 +121,7 @@ function historyOf(source: CampaignDetailsSource, launched: boolean): HistoryEve
   return events.sort((a, b) => Date.parse(a.at) - Date.parse(b.at)).map(({ event }) => event);
 }
 
-export function buildCampaignDetails(source: CampaignDetailsSource, catalog: WizardCatalog): CampaignDetails | null {
+export function buildCampaignDetails(source: CampaignDetailsSource, catalog: StoreCatalog): CampaignDetails | null {
   const row = source.campaign;
   const money = budgetFigures(row);
   const stage = stageOf(row, money);

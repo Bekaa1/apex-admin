@@ -53,7 +53,30 @@
 5. Позже: `online_cart_count` в `my_campaigns_stats` для «Тележки онлайн».
 6. Позже: пауза рекламодателем — `pause_campaign`/`resume_campaign`, `paused_at`; `edit_campaign` и `extend_campaign` должны принимать `paused`.
 
-**Файлы:** `src/design-system/{Delta,ColumnsChart,Menu,Icon,index}.ts(x)`, `components.css`; `src/cabinet/campaigns/{details,topup}/**`, `wizard/**`, `list/**`, `api.ts`, `model.ts`, `types.ts`, `demo.ts`, `campaigns.css`; `src/cabinet/{sections,queryKeys}.ts`, `home/{CampaignRow,LowBudgetAlert}.tsx`; `src/lib/format.ts`; `src/i18n/campaigns.*.json`; `CLAUDE.md`.
+**Доработки по техдокументации бэкенда** (документ «Apex: как всё устроено» от 07.10 и ревью к нему)
+- Мастер берёт минимумы и версию условий тарифов из `tariffs` (`useTariffTerms`), а не из констант:
+  - отправляет `tariff_version` в `submit_campaign`;
+  - на `tariff_changed` перечитывает условия и показывает понятную ошибку;
+  - снятый с продажи тариф не показывается.
+  Главная (карточки тарифов) и пустой список кампаний тоже берут минимумы из базы.
+- Почта для счёта: блок аккаунта читает `public.users.email`, как и бэкенд (`_campaign_user_email`), а не только почту входа.
+- Тексты главной из дизайна противоречили бэкенду, исправлены:
+  - «Оплата картой, Kaspi QR» → «по счёту»;
+  - «с даты старта, которую вы выберете» → «когда ролик одобрен и счёт оплачен».
+- Сверено с базой: `_campaign_replace_links` применена (пункт документа устарел). В `ads` нет колонки `spent`, есть `spent_budget`. `used_hours` триггер считает в часах.
+
+**Запрос бэкендщику по документу**
+1. Исправить SQL-примеры: `ads.spent` → `ads.spent_budget` в двух запросах.
+2. Убрать из «Открытых вопросов» пункт про `_campaign_replace_links` — функция уже в базе.
+3. Уточнить формулировку: в `used_hours` идут секунды показа, делённые на 3600.
+4. Ручную «оплату» SQL-ом заменить вызовом самой процедуры от имени админа. В одной транзакции: `set_config('request.jwt.claims', '{"sub":"<id админа>","role":"authenticated"}', true)`, затем `admin_mark_invoice_paid(<id счёта>)`; так же для `admin_moderate_campaign`. Почему важно:
+   - текущий пример не увеличивает `budget` у счёта на пополнение — клиент не получит показы за оплаченное продление;
+   - пример включает кампанию в обход проверки и не обновляет `ad_stores.actually_paid`.
+5. Удалить тестовую кампанию «Тест — не показывать» (#1410).
+6. Решить с эксклюзивом «тест1» на всех зонах Carefood: пока он активен, другие кампании не показываются.
+7. Админки и кабинета партнёра во фронтенде нет. Документ описывает возможности базы, а не сайта — стоит это разделить.
+
+**Файлы:** `src/design-system/{Delta,ColumnsChart,Menu,Icon,index}.ts(x)`, `components.css`; `src/cabinet/campaigns/{details,topup}/**`, `wizard/**`, `list/**`, `api.ts`, `model.ts`, `types.ts`, `demo.ts`, `campaigns.css`, `CampaignsPage.tsx`; `src/cabinet/{api,demo,sections,queryKeys,tariffs,useAccount,useTariffTerms}.ts`, `home/{HomePage,HomeGuide,HomeDashboard,GuideTariffs,CampaignRow,LowBudgetAlert}.tsx`; `src/lib/format.ts`; `src/i18n/{campaigns,home}.*.json`; `CLAUDE.md`.
 
 **Проверки**
 - tsc ✓, lint ✓ (только старые предупреждения), build ✓.

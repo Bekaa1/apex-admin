@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Icon } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
 import { formatMoney } from '../../lib/format';
-import { CORPORATE_LEVEL, TARIFFS, TARIFF_FEATURES, TARIFF_LEVELS } from '../tariffs';
+import { CORPORATE_LEVEL, TARIFFS, TARIFF_FEATURES, TARIFF_LEVELS, termsOf, type TariffTerms } from '../tariffs';
 
 function TariffCard({ code, level, minLabel, min }: { code: string; level: number; minLabel: string; min: ReactNode }) {
   const { t } = useI18n();
@@ -37,7 +37,8 @@ function TariffCard({ code, level, minLabel, min }: { code: string; level: numbe
   );
 }
 
-export function GuideTariffs() {
+/** `terms` is null while the plans' terms load; plans off sale are not shown. */
+export function GuideTariffs({ terms }: { terms: TariffTerms[] | null }) {
   const { t, lang } = useI18n();
   return (
     <section className="cab-section" aria-labelledby="tariffs-title" id="tariffs">
@@ -51,15 +52,19 @@ export function GuideTariffs() {
       </div>
       {/* Scrolls sideways on phones, so it must be reachable from the keyboard. */}
       <ul className="cab-tariffs" tabIndex={0} aria-labelledby="tariffs-title">
-        {TARIFFS.map((tariff) => (
-          <TariffCard
-            key={tariff.code}
-            code={tariff.code}
-            level={tariff.level}
-            minLabel={t('cabinet.tariffs.minimum')}
-            min={t('cabinet.tariffs.from', { amount: formatMoney(tariff.minimum, lang) })}
-          />
-        ))}
+        {TARIFFS.map((tariff) => {
+          const plan = terms ? termsOf(terms, tariff.code) : null;
+          if (terms && !plan) return null;
+          return (
+            <TariffCard
+              key={tariff.code}
+              code={tariff.code}
+              level={tariff.level}
+              minLabel={t('cabinet.tariffs.minimum')}
+              min={plan ? t('cabinet.tariffs.from', { amount: formatMoney(plan.minimum, lang) }) : '—'}
+            />
+          );
+        })}
         <TariffCard code="corporate" level={CORPORATE_LEVEL} minLabel={t('cabinet.tariffs.budget')} min={t('cabinet.tariffs.byAgreement')} />
       </ul>
       <p className="cab-note">

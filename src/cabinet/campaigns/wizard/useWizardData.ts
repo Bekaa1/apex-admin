@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router';
 import { useAuthSession } from '../../../auth/useAuthSession';
 import { parseDemoVariant, type DemoVariant } from '../../demo';
 import { queryKeys } from '../../queryKeys';
-import { editCampaign, fetchCampaignPrefill, fetchWizardCatalog, submitCampaign, uploadCampaignMedia } from '../api';
+import { useTariffTerms } from '../../useTariffTerms';
+import { editCampaign, fetchCampaignPrefill, fetchStoreCatalog, submitCampaign, uploadCampaignMedia } from '../api';
 import { campaignAbilities } from '../model';
 import type { Moderation } from '../types';
 import { DEMO_MODERATION, demoCatalog, demoReturnedForm, demoWizardApi } from './demo';
@@ -19,7 +20,17 @@ export type WizardData =
   | { status: 'missing' }
   /** The campaign exists but `edit_campaign` doesn't accept its status. */
   | { status: 'locked' }
-  | { status: 'ready'; userId: string; catalog: WizardCatalog; prefill: CampaignForm | null; edited: EditedCampaign | null; moderation: Moderation | null; api: WizardApi };
+  | {
+      status: 'ready';
+      userId: string;
+      catalog: WizardCatalog;
+      prefill: CampaignForm | null;
+      edited: EditedCampaign | null;
+      moderation: Moderation | null;
+      api: WizardApi;
+      /** Reloads the plans' terms after the server answered `tariff_changed`. */
+      refreshTariffs: () => void;
+    };
 
 const CATALOG_STALE_MS = 5 * 60_000;
 
@@ -53,6 +64,7 @@ function demoData(variant: DemoVariant, source: WizardSource): WizardData {
         : null,
     moderation: returned ? DEMO_MODERATION : null,
     api: demoWizardApi(),
+    refreshTariffs: () => undefined,
   };
 }
 
@@ -63,9 +75,10 @@ export function useWizardData(source: WizardSource): WizardData {
   const demo = import.meta.env.DEV ? parseDemoVariant(params.get('demo')) : null;
   const sourceId = source.kind === 'new' ? null : source.campaignId;
 
+  const tariffs = useTariffTerms();
   const catalog = useQuery({
     queryKey: queryKeys.storeCatalog(userId),
-    queryFn: userId && !demo ? ({ signal }) => fetchWizardCatalog(signal) : skipToken,
+    queryFn: userId && !demo ? ({ signal }) => fetchStoreCatalog(signal) : skipToken,
     staleTime: CATALOG_STALE_MS,
   });
   const prefill = useQuery({
@@ -76,15 +89,16 @@ export function useWizardData(source: WizardSource): WizardData {
   });
 
   if (demo) return demoData(demo, source);
-  const failed = catalog.isError || (sourceId !== null && prefill.isError);
+  const failed = catalog.isError || (sourceId !== null && prefill.isError) || tariffs.status === 'error';
   const busy = catalog.isFetching || prefill.isFetching;
-  if (!userId || catalog.isPending || (sourceId !== null && prefill.isPending) || (failed && busy)) return { status: 'loading' };
-  if (failed) {
+  if (!userId || catalog.isPending || (sourceId !== null && prefill.isPending) || tariffs.status === 'loading' || (failed && busy)) return { status: 'loading' };
+  if (failed || tariffs.status !== 'ready') {
     return {
       status: 'error',
       retry: () => {
         void catalog.refetch();
         if (sourceId !== null) void prefill.refetch();
+        if (tariffs.status === 'error') tariffs.retry();
       },
     };
   }
@@ -94,7 +108,7 @@ export function useWizardData(source: WizardSource): WizardData {
   return {
     status: 'ready',
     userId,
-    catalog: catalog.data,
+    catalog: { ...catalog.data, tariffs: tariffs.terms },
     prefill: row ? formFromPrefill(row, catalog.data) : null,
     edited: source.kind === 'edit' && row ? editedCampaign(source.campaignId, row) : null,
     moderation: source.kind === 'edit' && row?.status === 'rejected' ? row.moderation : null,
@@ -103,5 +117,6 @@ export function useWizardData(source: WizardSource): WizardData {
       submit: submitCampaign,
       edit: editCampaign,
     },
+    refreshTariffs: () => void tariffs.refetch(),
   };
 }

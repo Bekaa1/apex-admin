@@ -7,4 +7,6 @@ export const queryKeys = {
   campaignDetails: (userId: string | undefined, campaignId: string) => ['campaigns', userId, 'details', campaignId] as const,
   campaignPrefill: (userId: string | undefined, campaignId: string | null) => ['campaigns', userId, 'prefill', campaignId] as const,
   storeCatalog: (userId: string | undefined) => ['catalog', userId] as const,
+  /** Plans are public, the same for every user. */
+  tariffTerms: () => ['tariffs'] as const,
 };

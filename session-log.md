@@ -196,414 +196,135 @@
   - карточка кампании.
 
 ## 2026-10-06 — Запрос бэкенд-разработчику: кампании, модерация, оплата
-Ветка: `feature/campaigns`, обновлено в `feature/campaign-wizard` · Пользователь пересылает текст ниже как есть. Проверено только чтением 06.10 и 07.10, в том числе синхронизация в «Cart». В базе ничего не менялось.
+Ветка: `feature/campaigns`, обновлено в `feature/campaign-wizard` · Короткое ТЗ от 07.10, пользователь пересылает его как есть. Подробная версия с SQL и разбором синхронизации «Cart» — в истории git (коммит 56add3f).
 
-Что изменилось 07.10:
-- `ads.store_id` — первый выбранный магазин вместо NULL: иначе триггер ставит «Все магазины», и «Cart» показывает ролик во всех магазинах.
-- Тарифы: существующие колонки переиспользуются, добавляются только `code`, `more_rotation`, `self_serve`.
-- `request_id` против двойной отправки; ролик и обложка должны лежать в папке пользователя.
-- Точные имена полей для списка; `start_date` и `end_date` ставятся при запуске и завершении.
-- Счета: существующие `invoices` и `payments` — партнёрские; новые вопросы про пользователей без почты и `users.balance`.
-- Расход: `select_ad_for_zone` и `remaining_impressions`, перерасход до часа. Плюс приоритет зон и «больше показов», письма, признак подключённого магазина.
+Проверено по базе 07.10, только чтение. Если нужно, пришлём дизайн экранов.
 
-### Контекст
-Фронт готов:
-- «Мои кампании» — список кампаний (PR #3);
-- «Новая кампания» — мастер из 5 шагов: ролик и описание → тариф → магазины → зоны у полок → бюджет и проверка (PR #6);
+### Что сделано на фронте и что нужно
+В кабинете рекламодателя готовы:
+- список «Мои кампании»;
+- мастер «Новая кампания»: ролик на 7 секунд и описание → тариф → магазины → зоны у полок → бюджет → «Отправить на проверку»;
 - экран «Отправлено на проверку» и страница корпоративного тарифа.
 
-Сейчас мастер в базу ничего не пишет: кнопка «Отправить на проверку» выключена, пока нет RPC `submit_campaign`. Ролик и обложка уже загружаются в Storage: `documents/campaigns/<uid>/<uuid>.<ext>`.
+Отправка пока выключена: на бэкенде нет функций, полей и статусов для этого сценария. Нужно их сделать.
 
-Схема запуска из дизайна: **кампания запускается, когда ролик одобрен модератором И бюджет оплачен, в любом порядке.** Оплатить можно, пока идёт проверка.
+Сейчас фронт только читает данные (вью `my_*`, свои `ads`, `stores`, `zones`) и загружает ролики в Storage. В базу он ничего не пишет.
 
-**Что есть сейчас** (проверено чтением 07.10, новых миграций после 05.10 нет):
-- `ads`: нет тарифа, описания, модерации и оплаты. Рекламодатель меняет свои строки напрямую (политика FOR ALL).
-- `ad_stores`, `ad_zones`: пишет только админ. Свои `ad_stores` рекламодатель не читает.
-- `tariffs`: 5 тарифов (Стандарт 100 000, Оптимальный 400 000, Классический 500 000, Бизнес 1 500 000, Корпоративный 20 000 000). В дизайне другие 4.
-- `carts`: рекламодатель не читает, `stores.cart_ids` пустые.
-- Storage: только публичный бакет `documents` без лимитов, разрешён только INSERT.
-- Статусы `ad_status`: pending, active, rejected, draft, archived, deleted, paused, hours_ended, budget_ended, completed.
-- Расход: `process_playback_log` списывает `zones.price_per_hour × секунды`.
-- Синхронизация `sync_with_admin` в «Cart» (раз в час) берёт кампании `status = 'active'` с видео и в сроках.
-  - Кампания подходит магазину, если `ads.store_id` — этот магазин или «Все магазины», либо магазин есть в `ad_stores` со `status = 'active'`.
-  - Зоны: `ads.zone_id` или `ad_zones`; «Все зоны» означает все зоны магазина.
-  - Поэтому новые статусы до `active` на показы не влияют.
-- Писем нет: Edge Functions только `send-sms` и `phone-auth-test`.
+### Бизнес-логика
+1. **Запуск.** Показы начинаются (`status = active`), только когда модератор одобрил ролик И бюджет оплачен. Порядок любой: оплатить можно, пока идёт проверка.
+2. **Статусы:**
+   - `pending` — на проверке;
+   - `rejected` — модератор вернул кампанию с причинами; рекламодатель исправляет и отправляет снова → `pending`;
+   - `awaiting_payment` (новый) — одобрена, ждёт оплаты;
+   - `active` — идут показы;
+   - `budget_ended` — бюджет закончился; после пополнения → `active`;
+   - `completed` — завершена.
+3. **Тарифы** (в скобках — минимальный бюджет):
+   - **Стандарт** (500 000 ₸) — ролик в общей ротации на всех тележках выбранных магазинов;
+   - **Стандарт + Зоны** (1 000 000 ₸) — то же плюс приоритет у выбранных полок (зон);
+   - **Премиум** (2 000 000 ₸) — плюс больше показов в ротации;
+   - **Корпоративный** — по договорённости, только через заявку менеджеру; эксклюзив бренда в зоне.
+4. **Деньги.**
+   - Бюджет кампании оплачивается по счёту, счёт приходит на почту при отправке.
+   - Показы списываются из бюджета по цене показа тарифа.
+   - Когда бюджет закончился, показы останавливаются; пополнение — это новый счёт.
+5. **Модерация.**
+   - 6 правил с кодами: `duration_7s`, `languages_kk_ru`, `prohibited`, `claims`, `flashing`, `metadata`.
+   - При отклонении сохраняются коды нарушенных правил и комментарий.
+   - Срок — до 24 часов в рабочие дни, результат приходит письмом.
+6. **Черновиков нет.** Кампания появляется в базе только при отправке.
 
-**Приоритеты**
-- P1 (п. 1–7) — чтобы включить отправку из мастера. Желательно к 08.10.
-- P2 (п. 8–12) — модерация, оплата, запуск, расход бюджета.
-- P3 (п. 13–15) — корпоративный тариф, письма, безопасность.
+### Что сделать
 
-После каждой части коротко напишите, что сделано: имена функций, полей и коды ошибок. Фронт перегенерирует типы и подключит.
+#### P1 — включить отправку из мастера (желательно к 08.10)
+1. **Тарифы.** Привести `tariffs` к 4 тарифам выше.
+   - Добавить `code` (`standard`, `zones`, `premium`, `corporate`), признак «можно купить в мастере» (у корпоративного его нет) и признак «больше показов».
+   - Существующие `can_select_zone`, `exclusive_zone`, `min_amount`, `price_per_play` использовать как есть.
+   - Зачем: фронт находит тариф по `code` и берёт минимальный бюджет из базы.
+2. **Поля кампании в `ads`:**
+   - тариф;
+   - описание до 300 символов;
+   - метаданные ролика: длительность, ширина, высота, размер;
+   - время отправки.
 
----
+   Название — до 80 символов.
+3. **Отправка — RPC `submit_campaign(p jsonb) → id`.** Это единственный способ создать кампанию, всё одной транзакцией.
+   - Проверить данные по тем же правилам, что на фронте:
+     - название;
+     - ролик 7 ± 0,3 с, 16:9, от 1280×720;
+     - тариф можно купить в мастере;
+     - выбран хотя бы один магазин;
+     - для зонных тарифов — зона в каждом магазине;
+     - бюджет не меньше минимума тарифа.
+   - Создать `ads` со статусом `pending`, `ad_stores` и `ad_zones`, выставить счёт, вернуть `id`.
+   - Ошибки возвращать кодами, чтобы фронт показал их у нужного поля: `invalid_name`, `invalid_video`, `invalid_tariff`, `invalid_stores`, `invalid_zones`, `invalid_budget`.
+   - Защита от двойной отправки: `request_id` от фронта.
+   - Ролик и обложка должны лежать в папке пользователя в нашем бакете, чтобы нельзя было подставить чужой файл.
+   - **Важно:** `ads.store_id` не оставлять NULL.
+     - Иначе триггер подставит «Все магазины», и синхронизация «Cart» покажет ролик во всех магазинах.
+     - Ставить первый выбранный магазин, полный список хранить в `ad_stores`.
+   - Вход: `name`, `description`, `tariff_code`, `video {url, file_name, duration_sec, width, height, size_bytes}`, `cover {url, file_name} | null`, `store_ids[]`, `zone_ids[]`, `budget`, `request_id`.
 
-### P1. Включить отправку из мастера
+   **`resubmit_campaign(id, p)`** — для кнопки «Исправить».
+   - Только своя кампания в статусе `rejected`.
+   - Те же проверки; обновить данные, очистить причины отклонения, вернуть в `pending`.
+4. **Хранилище роликов — бакет `campaign-media`.**
+   - Публичный: «Cart» скачивает ролик по ссылке.
+   - До 50 МБ, только mp4, mov, jpg, png.
+   - Загрузка и удаление — только в своей папке `<uid>/`.
+   - Чистить файлы, которые не попали ни в одну кампанию.
+5. **Каталог для шагов «Магазины» и «Зоны»** — функции для вошедших пользователей.
+   - Магазины: число тележек, зон и активных кампаний.
+   - Зоны: сколько других брендов там показывается.
+   - Без служебных «Все магазины» и «Все зоны», без MAC маячков.
+   - Только магазины, где реально стоят планшеты. Сейчас «Cart» настроен на один магазин, Carefood.
+6. **Данные для списка «Мои кампании».**
+   - В `my_campaigns_stats` добавить `tariff_code`, `store_count`, `cart_count`, `paid_amount`, `invoice_amount`, `invoice_sent_to`, `rejection_reasons`, `moderator_comment` и статус `awaiting_payment`. Фронт уже ждёт эти имена.
+   - `start_date` — дата запуска, `end_date` — дата завершения.
+   - Дать рекламодателю читать свои `ad_stores`: нужно для «Исправить» и «Повторить».
+7. **Права на `ads` (критично).**
+   - Сейчас любой вошедший читает все кампании, а рекламодатель может сам поставить своей кампании `active` и поменять бюджет и расход.
+   - Нужно: рекламодатель только читает свои кампании, все изменения идут через RPC, админ может всё.
 
-#### 1. Тарифы как в дизайне
-Используются в шаге 2 мастера, в гиде на главной и в строке списка.
+#### P2 — модерация, оплата, запуск
+8. **Модерация.**
+   - Поля: причины, комментарий, кто и когда проверил.
+   - Функция для админки: одобрить → `active`, если бюджет оплачен, иначе `awaiting_payment`; отклонить → `rejected` с причинами.
+   - Письмо рекламодателю с результатом.
+9. **Статус `awaiting_payment`** в `ad_status` и подпись «Ждёт оплаты» в триггере статусов. При первом запуске ставить `start_date`.
+10. **Счета.**
+    - Счёт на бюджет при отправке; счёт на пополнение по кнопке «Пополнить».
+    - Админ отмечает оплату → растёт `paid_amount` → кампания запускается или возобновляется после `budget_ended` (бюджет увеличивается).
+    - Существующие `invoices` и `payments` — партнёрские. Для счетов рекламодателю лучше отдельная таблица.
+11. **Расход.**
+    - Списывать `price_per_play` тарифа за показ. Сейчас списывается `zones.price_per_hour × секунды`.
+    - Кампании без часов не должны отсекаться: сейчас у них `remaining_impressions` = 0, и `select_ad_for_zone` их не выбирает.
+12. **Ротация по тарифам.**
+    - В выбранных зонах приоритет у зонных тарифов.
+    - Премиум показывается чаще.
+    - Корпоративный получает эксклюзив в зоне.
 
-| code | Название | Минимум | Выбор магазинов | Зоны у полок (шаг 4) | Больше показов в ротации | Только ваш бренд в зоне | Покупка в мастере |
-|---|---|---|---|---|---|---|---|
-| `standard` | Стандарт | 500 000 ₸ | да | нет | нет | нет | да |
-| `zones` | Стандарт + Зоны | 1 000 000 ₸ | да | да | нет | нет | да |
-| `premium` | Премиум | 2 000 000 ₸ | да | да | да | нет | да |
-| `corporate` | Корпоративный | по договорённости | да | да | да | да | нет, только заявка |
+#### P3
+13. **Заявки на корпоративный тариф.**
+    - Таблица заявок: компания, контакт, телефон, сообщение.
+    - Уведомление менеджерам и копия заявки на почту.
+14. **Письма:** счёт, результат модерации, копия заявки. Сейчас писем нет.
+15. **Безопасность.**
+    - У `anon` лишние права на таблицы.
+    - RLS выключен на `zones`, `playback_logs`, `store_daily_stats`, `documents`, `auctions`, `auction_bids`, `filtr`.
+    - Бакет `documents` без лимитов.
 
-Существующие колонки подходят: `can_select_store`, `can_select_zone`, `exclusive_zone`, `min_amount`, `price_per_play`, `sort_order`. Не хватает трёх:
-```sql
-alter table public.tariffs
-  add column code text unique,                              -- standard | zones | premium | corporate
-  add column more_rotation boolean not null default false,  -- «Больше показов в ротации»
-  add column self_serve boolean not null default true;      -- можно купить в мастере
--- затем привести строки к таблице выше
-```
-- `price_per_play` в дизайне не показывается — задайте сами (нужен для расхода, п. 11).
-- `has_sound` в дизайне нет — решение бизнеса.
-- Оптимальный, Классический и Бизнес убрать или скрыть — тоже решение бизнеса. К кампаниям тарифы сейчас не привязаны.
-- Фронт берёт названия и тексты карточек из своих переводов по `code`, минимум — из `min_amount`.
+### Вопросы бизнесу
+- Когда кампания «Завершена»: вручную, по дате или после того, как кончился бюджет?
+- Куда слать счёт, если пользователь вошёл по телефону и почты нет?
+- Кто формирует счёт: PDF, реквизиты, 1С?
+- Во сколько раз Премиум показывается чаще?
+- Нужен ли `users.balance`, или оплата идёт только по счетам кампаний?
+- Допустим ли перерасход, если статистика приходит раз в час?
 
-#### 2. Новые поля кампании (`ads`)
-```sql
-alter table public.ads
-  add column tariff_id uuid references public.tariffs(id),
-  add column description text check (char_length(description) <= 300),
-  add column video_duration_sec numeric(5,2),
-  add column video_width int,
-  add column video_height int,
-  add column video_size_bytes bigint,
-  add column submitted_at timestamptz,
-  add column request_id uuid unique;  -- защита от двойной отправки, п. 3
--- название до 80 символов; not valid — если в старых строках есть длиннее
-alter table public.ads add constraint ads_title_len check (char_length(title) <= 80) not valid;
-```
-Существующие поля: `video_url` — ролик, `content_url` — обложка, `video_original_filename` и `cover_original_filename` — исходные имена файлов. `title` и `name` заполняются одним названием.
-
-#### 3. RPC отправки: `submit_campaign(p jsonb) returns uuid`
-`security definer`, `set search_path = public`, работает от `auth.uid()`. `grant execute` для `authenticated`, у `anon` и `public` — `revoke`.
-
-Фронт вызывает так: `supabase.rpc('submit_campaign', { p })`. Вход:
-```json
-{
-  "request_id": "0d7c3c1e-…",
-  "name": "Осенняя распродажа",
-  "description": "Скидки до 30 % на молочную продукцию до 31 октября",
-  "tariff_code": "premium",
-  "video": {
-    "url": "https://<project>.supabase.co/storage/v1/object/public/campaign-media/<uid>/<uuid>.mp4",
-    "file_name": "autumn.mp4",
-    "duration_sec": 7.0,
-    "width": 1920,
-    "height": 1080,
-    "size_bytes": 18000000
-  },
-  "cover": { "url": "https://…/campaign-media/<uid>/<uuid>.jpg", "file_name": "cover.jpg" },
-  "store_ids": ["<uuid>", "<uuid>"],
-  "zone_ids": ["<uuid>", "<uuid>"],
-  "budget": 2500000
-}
-```
-- `request_id` — uuid попытки отправки, фронт создаёт один на форму.
-- `description` может быть пустой строкой → хранить NULL.
-- `cover` может быть `null`.
-- `zone_ids` пустой для тарифа без зон.
-- `budget` — целые тенге.
-
-**Проверки.** Они повторяют проверки фронта. Ошибку возвращать через `raise exception '<код>'`: код придёт фронту в `error.message`, уточнение — в `detail`. Фронт покажет ошибку у нужного поля.
-
-| Код | Когда |
-|---|---|
-| `not_authenticated` | нет `auth.uid()` |
-| `invalid_name` | после trim пусто или длиннее 80 |
-| `invalid_description` | длиннее 300 |
-| `invalid_video` | нет `url`; файл не в бакете `campaign-media` в папке `<auth.uid()>/` или его нет в `storage.objects`; длительность вне 6,7–7,3 с; не горизонтальный 16:9 (допуск 2 %); меньше 1280×720 |
-| `invalid_cover` | `cover` передан, но файл не в папке пользователя или его нет |
-| `invalid_tariff` | нет тарифа с таким `code` или `self_serve = false` |
-| `invalid_stores` | список пуст; магазина нет; передан «Все магазины» |
-| `invalid_zones` | тариф с зонами: в выбранном магазине нет ни одной выбранной зоны (`detail` = id магазина), зона не из выбранных магазинов или это «Все зоны». Тариф без зон: `zone_ids` не пустой |
-| `invalid_budget` | не целое число или меньше `tariffs.min_amount` |
-
-Длительность и размеры ролика присылает браузер. Модератор всё равно смотрит ролик (правило `duration_7s`, п. 8).
-
-**Действия — одной транзакцией:**
-1. Если у пользователя уже есть кампания с таким `request_id`, вернуть её `id` и ничего не создавать.
-2. Insert `ads`:
-   - `user_id = auth.uid()`, `status = 'pending'`, `submitted_at = now()`;
-   - `title = name = p.name`, `description`, `tariff_id`;
-   - `video_url`, `video_original_filename`, метаданные ролика, `content_url`, `cover_original_filename`;
-   - `budget`, `spent_budget = 0`, `request_id`;
-   - `total_hours`, `hours_per_day`, `start_date`, `end_date` — NULL: часов в новой модели нет, дата старта ставится при запуске (п. 9).
-3. **`ads.store_id` — первый выбранный магазин, не NULL.**
-   - При NULL триггер `set_magnum_ads_defaults` ставит «Все магазины», а синхронизация «Cart» считает такую кампанию подходящей любому магазину. Ролик пошёл бы во всех магазинах, а не в выбранных.
-   - Полный список магазинов — в `ad_stores`.
-4. **`ads.zone_id` — NULL**, триггер поставит «Все зоны». Так и задумано:
-   - все тарифы идут в общей ротации на всех тележках выбранных магазинов;
-   - выбранные зоны через `ad_zones` дают приоритет (синхронизация ставит им `specific = true`).
-5. Insert `ad_stores` (`ad_id`, `store_id`, `status = 'active'`) — по строке на магазин.
-6. Insert `ad_zones` (`ad_id`, `zone_id`) — по строке на зону.
-7. Выставить счёт на бюджет (п. 10), когда появятся счета.
-8. Вернуть `ads.id`. Фронт откроет экран «Отправлено на проверку».
-
-**`resubmit_campaign(p_ad_id uuid, p jsonb) returns uuid`** — для кнопки «Исправить».
-- Только своя кампания со статусом `rejected`, иначе `not_found` или `invalid_status`.
-- Проверки те же.
-- Обновляет поля, заменяет `ad_stores` и `ad_zones`, очищает поля модерации (п. 8), ставит `status = 'pending'` и `submitted_at = now()`.
-- Вопрос: что делать со счётом, если бюджет изменился, а счёт уже выставлен или оплачен?
-
-Бакет `campaign-media` (п. 4) нужен вместе с RPC: до него фронт грузит в `documents/campaigns/<uid>/`. Либо на переходный период принимайте оба пути.
-
-#### 4. Storage: бакет `campaign-media`
-```sql
-insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('campaign-media', 'campaign-media', true, 52428800,
-        array['video/mp4', 'video/quicktime', 'image/jpeg', 'image/png']);
-
-create policy "campaign media: insert own" on storage.objects for insert to authenticated
-  with check (bucket_id = 'campaign-media' and (storage.foldername(name))[1] = auth.uid()::text);
-create policy "campaign media: delete own" on storage.objects for delete to authenticated
-  using (bucket_id = 'campaign-media' and (storage.foldername(name))[1] = auth.uid()::text);
-```
-- Бакет публичный, потому что `video_ok()` в «Cart» проверяет ролик HEAD-запросом по ссылке, а плеер скачивает ролик по ней же. Для приватного бакета понадобятся подписанные ссылки и правки в «Cart».
-- Требования из дизайна: ролик MP4 или MOV, ровно 7 секунд, горизонтальный 16:9, от 1280×720, до 50 МБ; обложка JPG или PNG.
-- Фронт переключится на путь `campaign-media/<uid>/<uuid>.<ext>`. Удаление своих файлов нужно для «Заменить» и «Удалить» в мастере.
-- Чистка: раз в сутки удалять файлы старше 24 часов, на которые нет ссылок из `ads.video_url` и `ads.content_url` (ролик загрузили, а кампанию не отправили).
-- В `documents/campaigns/<uid>/` остались 3 тестовых файла с проверки 07.10: 2 ролика и обложка, загружены около 10:14–10:16 по Алматы. Их можно удалить.
-
-#### 5. Каталог для шагов 3 и 4
-Где нужен:
-- шаг 3: «Выбрано 6 из 10 · 330 тележек»; в строке магазина — «N тележек», «N кампаний сейчас», «N зон у полок»;
-- шаг 4: у зоны — «ещё N брендов» или «пока только вы».
-
-Рекламодатель не читает `carts`, а `stores.cart_ids` пустые, поэтому фронт эти цифры пока прячет. Нужны функции для `authenticated`. Именно функции: на SECURITY DEFINER-вью advisors уже ругаются (их 22).
-```sql
-create or replace function public.get_store_catalog()
-returns table (id uuid, name text, address text, city text,
-               cart_count int, zone_count int, active_campaigns_count int)
-language sql stable security definer set search_path = public as $$
-  select s.id, s.name, s.address, s.city,
-    (select count(*)::int from carts c where c.store_id = s.id),
-    (select count(*)::int from zones z where z.store_id = s.id and z.name <> 'Все зоны'),
-    (select count(distinct a.id)::int from ads a
-      where a.status = 'active'
-        and (a.store_id = s.id or exists (select 1 from ad_stores x
-              where x.ad_id = a.id and x.store_id = s.id and x.status = 'active')))
-  from stores s
-  where s.name <> 'Все магазины'
-  order by s.name;
-$$;
-
-create or replace function public.get_zone_catalog()
-returns table (id uuid, store_id uuid, name text, other_brands_count int)
-language sql stable security definer set search_path = public as $$
-  select z.id, z.store_id, z.name,
-    (select count(distinct a.user_id)::int from ad_zones x join ads a on a.id = x.ad_id
-      where x.zone_id = z.id and a.status = 'active' and a.user_id is distinct from auth.uid())
-  from zones z
-  where z.name <> 'Все зоны' and z.store_id is not null
-  order by z.name;
-$$;
-
-revoke execute on function public.get_store_catalog(), public.get_zone_catalog() from public, anon;
-grant execute on function public.get_store_catalog(), public.get_zone_catalog() to authenticated;
-```
-- Не отдавать `zones.description`: там MAC маячков.
-- Решите, считать ли в «кампаниях сейчас» кампании со «Все магазины» (сейчас таких 3 из 47).
-- `sync_with_admin` в «Cart» настроен на один магазин (Carefood). Если в `stores` появится магазин без планшетов, рекламодатель сможет его выбрать. Нужен признак «магазин подключён» (например, `stores.is_live`), и каталог должен отдавать только такие магазины.
-- Фильтр «Сеть» на шаге 3 строится по `stores.name`. Если у сети несколько адресов под разными названиями, нужно поле `stores.chain`.
-
-#### 6. Данные для списка «Мои кампании»
-Фронт уже ждёт эти поля в `my_campaigns_stats` и покажет их, как только они появятся. Имена важны.
-
-| Поле | Тип | Что показывает фронт |
-|---|---|---|
-| `status` | + `awaiting_payment` | «Ждёт оплаты» (п. 9) |
-| `tariff_code` | text | «Премиум · 6 магазинов · 330 тележек» |
-| `store_count` | int | число магазинов кампании (по `ad_stores`) |
-| `cart_count` | int | сумма тележек в этих магазинах |
-| `paid_amount` | numeric | оплачено, если `paid_amount ≥ budget` (п. 10) |
-| `invoice_amount` | numeric | сумма последнего неоплаченного счёта: «Счёт на 1 200 000 ₸ …» |
-| `invoice_sent_to` | text | «… отправили на marketing@company.kz» |
-| `rejection_reasons` | text[] | коды нарушенных правил (п. 8) |
-| `moderator_comment` | text | комментарий модератора |
-| `start_date` | timestamptz | дата запуска: «Идут показы с 4 окт.» (ставить при первом `active`, п. 9) |
-| `end_date` | timestamptz | период завершённой кампании: «1 июн. — 31 июл.» |
-
-Вью оставить `security_invoker = true` с фильтром по `auth.uid()`.
-
-Для «Исправить» и «Повторить» фронт читает свою кампанию: строку `ads` с новыми полями из п. 2 и п. 8 и её `ad_zones` (они уже читаются). Ещё нужен SELECT своих `ad_stores`:
-```sql
-create policy advertiser_reads_own_ad_stores on public.ad_stores for select to authenticated
-  using (exists (select 1 from public.ads a where a.id = ad_stores.ad_id and a.user_id = auth.uid()));
-```
-
-#### 7. RLS на `ads` — критично, особенно с оплатой
-Сейчас:
-- `authenticated_can_read_ads_for_playback` (SELECT, `USING true`): любой вошедший читает все кампании, бюджеты и ролики.
-- `advertiser_manages_own_ads` (ALL): рекламодатель меняет у своих кампаний `status` (может сам поставить `active` без модерации и оплаты), `budget`, `spent_budget`, а после п. 10 — и `paid_amount`. Может их удалить.
-
-Нужно: рекламодателю — только SELECT своих, все изменения — через RPC (security definer); админу — всё.
-```sql
-drop policy authenticated_can_read_ads_for_playback on public.ads;
-drop policy advertiser_manages_own_ads on public.ads;
-create policy advertiser_reads_own_ads on public.ads for select to authenticated
-  using (user_id = auth.uid());
-create policy admin_manages_ads on public.ads for all to authenticated
-  using (is_apex_admin()) with check (is_apex_admin());
--- partner_reads_campaigns_on_own_stores оставить
-```
-Перед этим проверьте, кто ещё читает `ads` под `authenticated`:
-- кабинет рекламодателя уже фильтрует по `user_id`, у него ничего не сломается;
-- `sync_with_admin` ходит с секретом `receiver_service_key`; если это service_role, RLS его не касается;
-- `prepare_ad_playback` — security definer, ему политика не нужна;
-- админка.
-
----
-
-### P2. Модерация, оплата и запуск
-
-#### 8. Модерация
-```sql
-alter table public.ads
-  add column rejection_reasons text[] not null default '{}',
-  add column moderator_comment text,
-  add column moderated_at timestamptz,
-  add column moderated_by uuid references auth.users(id);
-```
-Коды правил. Фронт показывает их текстом; это 6 правил из карточки «Что проверит модератор»:
-
-| Код | Правило |
-|---|---|
-| `duration_7s` | Ролик ровно 7 секунд, горизонтальный 16:9 |
-| `languages_kk_ru` | Текст в ролике — на казахском и русском языках |
-| `prohibited` | Без запрещённой рекламы: алкоголь, табак и вейпы, азартные игры и ставки |
-| `claims` | «Лучший», «№ 1» и подобное — только с подтверждением |
-| `flashing` | Без резких вспышек и быстрого мигания |
-| `metadata` | Название, описание и обложка соответствуют ролику |
-
-RPC для админки: `moderate_campaign(p_ad_id uuid, p_decision text, p_reasons text[], p_comment text)`. Вызывать может только `is_apex_admin()`, кампания должна быть в статусе `pending`.
-- `approve`: если бюджет оплачен (`paid_amount ≥ budget`) — `active` (п. 9), иначе `awaiting_payment`.
-- `reject`: `rejected` с причинами и комментарием; нужна хотя бы одна причина или комментарий.
-- Заполнять `moderated_at` и `moderated_by`.
-
-Рекламодателю — письмо с результатом (п. 14). Обещания в интерфейсе: «Модератор проверит ролик — обычно до 24 часов в рабочие дни. Результат придёт на почту.»
-
-#### 9. Статус «Ждёт оплаты» и переходы
-```sql
-alter type public.ad_status add value 'awaiting_payment';
--- в set_magnum_ads_defaults добавить: 'awaiting_payment' → 'Ждёт оплаты', свой цвет
-```
-
-| Из | Событие | Кто | В |
-|---|---|---|---|
-| — | `submit_campaign` | рекламодатель | `pending` |
-| `pending` | одобрение, бюджет оплачен | модератор | `active` |
-| `pending` | одобрение, не оплачен | модератор | `awaiting_payment` |
-| `pending` | отклонение | модератор | `rejected` |
-| `rejected` | `resubmit_campaign` | рекламодатель | `pending` |
-| `awaiting_payment` | счёт оплачен | админ (оплата) | `active` |
-| `active` | `spent_budget ≥ budget` | триггер | `budget_ended` (уже есть в `process_playback_log`) |
-| `budget_ended` | пополнение оплачено | админ (оплата) | `active` |
-| `active`, `budget_ended` | завершение | ? | `completed` |
-
-- **Главное правило:** `active` — только когда ролик одобрен И бюджет оплачен. Синхронизацию с планшетами трогать не нужно: она берёт только `active`.
-- При первом переходе в `active` ставить `start_date = now()`, при `completed` — `end_date = now()`. Синхронизация берёт кампании с `start_date ≤ now()`, так что ей это не мешает.
-- Черновиков в мастере нет, статус `draft` фронт не использует.
-- **Вопрос:** когда кампания становится «Завершена»? В мастере нет дат, показы идут, пока есть бюджет. Варианты: вручную, по дате окончания или через N дней после исчерпания бюджета без пополнения. Решение бизнеса.
-
-#### 10. Счета и оплата
-Существующие `invoices` и `payments` — для кабинета партнёра: `store_id` в них обязателен, политики партнёрские. Для счетов рекламодателю предлагаем отдельную таблицу. Если хотите переиспользовать `invoices`, понадобятся `user_id`, `kind`, номер и почта, а `store_id` станет необязательным.
-```sql
-create table public.campaign_invoices (
-  id uuid primary key default gen_random_uuid(),
-  ad_id uuid not null references public.ads(id) on delete cascade,
-  user_id uuid not null references auth.users(id),
-  number text not null unique,
-  kind text not null check (kind in ('initial', 'top_up')),
-  amount numeric(14,2) not null check (amount > 0),
-  status text not null default 'issued' check (status in ('issued', 'paid', 'cancelled')),
-  sent_to text,
-  pdf_url text,
-  issued_at timestamptz not null default now(),
-  paid_at timestamptz
-);
-alter table public.campaign_invoices enable row level security;
-create policy own_invoices_select on public.campaign_invoices for select to authenticated
-  using (user_id = auth.uid());
-alter table public.ads add column paid_amount numeric(14,2) not null default 0;
-```
-- **Счёт при отправке.** `submit_campaign` выставляет счёт `initial` на бюджет и отправляет его письмом (п. 14). В интерфейсе: «Счёт на 2 500 000 ₸ придёт на marketing@company.kz. Оплатить можно уже сейчас.»
-- **Оплата.** Админ отмечает её через `mark_invoice_paid(p_invoice_id uuid)`:
-  - `status = 'paid'`, `paid_at = now()`, `ads.paid_amount += amount`;
-  - кампания в `awaiting_payment` → `active`;
-  - кампания в `budget_ended` и счёт `top_up` → `budget += amount`, затем `active`.
-- **Пополнение.** Кнопки «Пополнить» и «Как оплатить» в списке: `request_top_up(p_ad_id uuid, p_amount numeric)` выставляет счёт `top_up`. Экран оплаты ещё не нарисован.
-- **Вопросы:**
-  - Куда слать счёт пользователю, который зарегистрировался по телефону и почты не указал?
-  - Нужны ли в счёте реквизиты компании (БИН из профиля) и PDF? Кто его формирует: база, 1С или бухгалтерия вручную?
-  - `users.balance` (по умолчанию 1000) в дизайне не используется: оплата идёт счётом на бюджет кампании. Баланс больше не нужен или он как-то связан с бюджетами?
-
-#### 11. Расход бюджета и выбор ролика
-Дизайн: «Показы списываются из бюджета. Когда он закончится, показы остановятся — пополните, и они продолжатся.»
-- `process_playback_log` списывает `zones.price_per_hour × секунды`. Нужно списывать `tariffs.price_per_play` за засчитанный показ. Перевод в `budget_ended` при `spent_budget ≥ budget` уже есть.
-- Логи приходят из «Cart» раз в час, поэтому кампания может перерасходовать бюджет примерно на час показов. Это допустимо, или «Cart» должен сам проверять остаток?
-- `select_ad_for_zone` в «Apex» новые кампании не выберет:
-  - у кампании без `total_hours` генерируемая колонка `remaining_impressions` равна 0, а функция требует `> 0`;
-  - магазин она ищет только по `ads.store_id`, `ad_stores` не смотрит.
-  Если эта функция и `prepare_ad_playback` ещё используются, их нужно поправить; если нет — удалить, чтобы не путали.
-
-#### 12. Приоритет зон и «больше показов»
-Обещания тарифов в интерфейсе:
-- «Стандарт + Зоны»: «приоритет у выбранных полок: в зоне идут только ролики с зонным тарифом»;
-- «Премиум»: «ролик выходит чаще и в общей ротации, и у полок»;
-- «Корпоративный»: «только ваш бренд в зоне».
-
-`sync_with_admin` строит по одной кампании на зону на часовой слот; кампании с конкретной зоной (`specific`) идут первыми.
-- Проверьте, что правило «в зоне только зонный тариф» так и работает.
-- «Больше показов» для Премиум (`tariffs.more_rotation`) и эксклюзивность корпоративного тарифа (`exclusive_zone`) нужно добавить в ротацию.
-- Вопрос бизнесу: во сколько раз Премиум должен выходить чаще?
-
----
-
-### P3. Корпоративный тариф, письма, безопасность
-
-#### 13. Заявка на корпоративный тариф
-Форма на странице «Корпоративный тариф» уже сверстана, отправка выключена до этой таблицы.
-```sql
-create table public.corporate_requests (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null default auth.uid() references auth.users(id),
-  company text not null check (char_length(company) between 1 and 200),
-  contact_name text not null check (char_length(contact_name) between 1 and 120),
-  phone text not null,
-  message text check (char_length(message) <= 1000),
-  source text not null check (source in ('wizard', 'list')),
-  status text not null default 'new' check (status in ('new', 'in_progress', 'done')),
-  created_at timestamptz not null default now()
-);
-alter table public.corporate_requests enable row level security;
-create policy corp_requests_insert_own on public.corporate_requests for insert to authenticated
-  with check (user_id = auth.uid());
-create policy corp_requests_select_own on public.corporate_requests for select to authenticated
-  using (user_id = auth.uid());
-```
-- Нужно уведомление менеджерам (почта или Telegram) и копия заявки на почту аккаунта. В интерфейсе: «Менеджер перезвонит в течение рабочего дня. Копию заявки отправили на …»
-- Нужны реальные контакты менеджеров: имена, должности, телефоны, почты, адрес офиса, часы работы. В дизайне заглушки, поэтому на сайте карточки скрыты. Звонок и WhatsApp сейчас ведут на общий номер поддержки.
-
-#### 14. Письма
-Нужна отправка писем:
-- счёт (п. 10);
-- результат модерации (п. 8);
-- копия заявки на корпоративный тариф (п. 13).
-
-Сейчас писем нет: Edge Functions только `send-sms` и `phone-auth-test`. Нужна функция отправки (Resend, SMTP или другой сервис) и шаблоны на ru и kk.
-
-#### 15. Безопасность (открыто с прошлых запросов)
-- **Права anon.** У anon полные права (INSERT/UPDATE/DELETE/TRUNCATE) на `ads`, `ad_stores`, `ad_zones`, `carts`, `stores`, `tariffs`, `zones`, `invoices`, `payments` и другие таблицы. Нужно `revoke all … from anon` везде, где он не нужен.
-- **RLS выключен** на `zones`, `documents` и остальных таблицах из прошлого списка (`playback_logs`, `store_daily_stats`, `auctions`, `auction_bids`, `filtr`).
-- **Бакет `documents`** публичный и без лимитов.
-
-Полный список — в тексте, переданном бэкенд-разработчику 07.10.
+### Как фронт подключит
+- Вызовы: `supabase.rpc('submit_campaign', { p })`, `resubmit_campaign` и функции каталога.
+- После изменений напишите имена функций, полей и коды ошибок: мы перегенерируем типы и включим отправку.
 
 ## 2026-10-06 — Ревью PR #2 перед объединением
 Ветка проверки: `review/pr-2-home-data` · PR: https://github.com/Bekaa1/apex-admin/pull/2

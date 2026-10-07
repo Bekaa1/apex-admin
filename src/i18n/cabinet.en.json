@@ -40,7 +40,7 @@
     },
     "premium": {
       "name": "Premium",
-      "text": "Zones and more impressions: the video plays more often both in rotation and at the shelves."
+      "text": "Zones and sound: the video plays with sound both in rotation and at the shelves."
     },
     "corporate": {
       "name": "Corporate",
@@ -49,7 +49,7 @@
     "feature": {
       "allCarts": "All carts of the selected stores",
       "zonePriority": "Priority in shelf zones",
-      "moreShows": "More impressions in rotation",
+      "sound": "Video with sound",
       "brandOnly": "Only your brand in the zone"
     },
     "has": "Included:",

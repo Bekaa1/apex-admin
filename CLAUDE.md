@@ -116,10 +116,10 @@ src/
 - Проекты в организации Apex:
   - «Apex» (`eveylcsziemhqouazebu`) — основной бэкенд;
   - «Cart» (`yasoadhyjmstegjhcdzi`) — бэкенд планшетов, раз в час синхронизируется в «Apex».
-- Что важно фронту (снимок на 06.10, подробности в session-log):
+- Что важно фронту (снимок на 07.10, подробности в session-log):
   - Данные кабинета берём только из `my_*` вью: `my_ad_stats_summary`, `my_campaigns_stats`, `my_daily_plays*`, `my_campaign_store_shares`, `my_campaign_zone_shares`. Они фильтруют по `auth.uid()`.
   - Вью `advertiser_*`, `ad_campaign_stats`, `user_ad_stats`, `all_*`, `partner_*` и похожие не используем: они отдают данные всех пользователей.
-  - По RLS сейчас видны все строки `ads`, поэтому запросы к `ads` всегда фильтруем по `user_id` текущего пользователя.
+  - Свои строки `ads` и `ad_stores` рекламодатель только читает; кампании создаются и меняются через RPC (`submit_campaign`, `resubmit_campaign`). Ошибка RPC приходит кодом в `message` (`invalid_video`, `missing_email`…), поле — в `hint`.
   - Профиль — `public.users` (1:1 к `auth.users`). Текущая регистрация сохраняет его через RPC `complete_signup_profile(p_full_name, p_bin, p_company_name)`.
   - Статистика приходит из «Cart» раз в час, поэтому возможна задержка до часа.
 - Если фронту нужна правка бэкенда, пишу запрос для бэкенд-разработчика: что нужно, для какого экрана, предлагаемый SQL/RLS, насколько срочно.
@@ -130,7 +130,7 @@ src/
   - После изменений бэкенда генерируем заново.
 - Ключи храним только в `.env.local` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`). В git лежит `.env.example` с шаблонными значениями. Во фронте используем только anon (publishable) ключ; service_role и secret сюда не попадают никогда.
 - Данные защищает RLS, а не фронт. Фильтр по `user_id` на клиенте нужен только для отображения, безопасности он не даёт. Компоненты не обращаются к Supabase напрямую, только через `api.ts`.
-- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свой `public.users.company_name` через `cabinet/api.ts`. Главная читает данные через `cabinet/home/api.ts`: `my_campaigns_stats`, `my_daily_plays_by_campaign` (14 дней), свои строки `ads` (обложка, магазин) и `stores`. Список кампаний — через `cabinet/campaigns/api.ts`: то же, показы за 30 дней. Все списки читаются через `allRows`. Мастер кампании читает `stores` и `zones`, для «Повторить» и «Исправить» — свою строку `ads` и её `ad_zones`; ролики и обложки грузит в бакет `documents` (`campaigns/<uid>/…`). В `ads` мастер ничего не пишет: отправка включится с RPC `submit_campaign`. `?demo=` доступен только в dev после входа.
+- Данные пользователя читаем только при активной сессии: хуки запросов включаются, когда сессия есть. `/cabinet/*` защищён `RequireSession`; выход завершает текущую сессию Supabase и очищает кэш react-query. Блок аккаунта читает только свой `public.users.company_name` через `cabinet/api.ts`. Главная читает данные через `cabinet/home/api.ts`: `my_campaigns_stats`, `my_daily_plays_by_campaign` (14 дней), свои строки `ads` (обложка, магазин) и `stores`. Список кампаний — через `cabinet/campaigns/api.ts`: только `my_campaigns_stats` (обложка, тариф, магазины, тележки, оплата, модерация) и показы за 30 дней. Все списки читаются через `allRows`. Мастер кампании берёт каталог из `catalog_stores` и `catalog_zones`, для «Повторить» и «Исправить» — свою строку `ads`, её `ad_stores` и `ad_zones`; ролики и обложки грузит в бакет `campaign-media/<uid>/` (имена файлов латиницей, исходное имя уходит в `file_name`); отправляет через `submit_campaign`, «Исправить» — через `resubmit_campaign`. Корпоративная заявка — `submit_corporate_request`. `?demo=` доступен только в dev после входа.
 
 ## Процесс (git)
 - Одна фича — одна ветка от свежего `main`: `feature/<коротко>`, для исправлений `fix/…`, для служебных задач `chore/…`. Отдельной ветки «claude» нет. В `main` напрямую не коммитим. Ветки `agent/*` и worktree второго разработчика не трогаем.

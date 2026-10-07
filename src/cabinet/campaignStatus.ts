@@ -10,6 +10,7 @@ export type VisibleStatus = Exclude<CampaignStatus, 'deleted'>;
 export const STATUS_TONE: Record<VisibleStatus, BadgeTone> = {
   active: 'success',
   pending: 'brand',
+  awaiting_payment: 'warning',
   draft: 'neutral',
   paused: 'warning',
   rejected: 'danger',

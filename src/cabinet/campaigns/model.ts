@@ -1,16 +1,15 @@
 import { shiftDate } from '../../lib/dates';
 import { budgetFigures, type BudgetFigures } from '../campaignBudget';
 import { playsByCampaign } from '../plays';
-import { storesOf } from '../stores';
 import { TARIFFS, type TariffCode } from '../tariffs';
-import type { CampaignAdRow, CampaignCard, CampaignStage, CampaignStatsRow, CampaignTab, CampaignsSource, StageKind, StoreRow } from './types';
+import type { CampaignCard, CampaignStage, CampaignStatsRow, CampaignTab, CampaignsSource, StageKind } from './types';
 
 /** First day of the 30-day play window; the API reads daily plays since this day. */
 export function monthStart(today: string): string {
   return shiftDate(today, -29);
 }
 
-/** `null` while the backend doesn't report payments. */
+/** `null` when the view has no amounts for the campaign. */
 function paidState(row: CampaignStatsRow): boolean | null {
   if (row.paid_amount == null || !row.budget) return null;
   return row.paid_amount >= row.budget;
@@ -23,7 +22,7 @@ function stageOf(row: CampaignStatsRow, money: BudgetFigures): CampaignStage | n
     case 'awaiting_payment':
       return {
         kind: 'awaitingPayment',
-        invoice: row.invoice_amount != null && row.invoice_sent_to ? { amount: row.invoice_amount, sentTo: row.invoice_sent_to } : null,
+        invoice: row.unpaid_amount && row.invoice_sent_to ? { amount: row.unpaid_amount, sentTo: row.invoice_sent_to } : null,
       };
     case 'rejected':
       return {
@@ -80,11 +79,6 @@ function tariffOf(code: string | null | undefined): TariffCode | 'corporate' | n
   return TARIFFS.find((tariff) => tariff.code === code)?.code ?? null;
 }
 
-function storesCount(row: CampaignStatsRow, ad: CampaignAdRow | undefined, stores: StoreRow[]): number | null {
-  if (row.store_count != null) return row.store_count;
-  return ad?.store_id ? storesOf([ad.store_id], stores).length : null;
-}
-
 export function buildCampaignCards(source: CampaignsSource): CampaignCard[] {
   const week = playsByCampaign(source.dailyPlays, shiftDate(source.today, -6), source.today);
   const month = playsByCampaign(source.dailyPlays, monthStart(source.today), source.today);
@@ -95,16 +89,15 @@ export function buildCampaignCards(source: CampaignsSource): CampaignCard[] {
     const stage = stageOf(row, money);
     if (!stage) continue;
     const id = row.ad_id;
-    const ad = source.ads.find((a) => a.id === id);
     const played = LAUNCHED.includes(stage.kind) && (row.total_plays ?? 0) > 0;
     cards.push({
       id,
       name: row.title || row.name || '—',
-      coverUrl: ad?.content_url || null,
+      coverUrl: row.content_url || null,
       coverTone: coverTone(id),
       tariff: tariffOf(row.tariff_code),
-      storesCount: storesCount(row, ad, source.stores),
-      cartsCount: row.cart_count ?? null,
+      storesCount: row.store_count,
+      cartsCount: row.cart_count,
       createdAt: row.created_at ?? '',
       stage,
       budget: money,

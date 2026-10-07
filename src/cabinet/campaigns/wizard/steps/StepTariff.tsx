@@ -1,4 +1,4 @@
-import { Badge, ChoiceCard, Icon } from '../../../../design-system';
+import { Alert, Badge, ChoiceCard, Icon } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatMoney } from '../../../../lib/format';
 import { CABINET_LINKS } from '../../../sections';
@@ -47,12 +47,13 @@ function CorporateCard() {
   );
 }
 
-/** Step 2: three plans to pick from; the corporate plan leads to a request instead. */
+/** Step 2: three plans to pick from; the corporate plan leads to a request instead. A fix keeps the campaign's plan. */
 export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
   const { t, lang } = useI18n();
-  const { form, errors, dispatch } = wizard;
+  const { form, errors, dispatch, fixing } = wizard;
   return (
     <div className="cmp-fields">
+      {fixing ? <Alert tone="info" title={t('campaigns.wizard.fix.tariffLocked')} /> : null}
       <fieldset className="cmp-fieldset">
         <legend className="ax-sr">{t('campaigns.wizard.tariff.legend')}</legend>
         <div className="cmp-tariff-grid">
@@ -63,6 +64,7 @@ export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
               name="tariff"
               value={tariff.code}
               checked={form.tariff === tariff.code}
+              disabled={fixing && form.tariff !== tariff.code}
               onChange={() => dispatch({ type: 'tariff', value: tariff.code })}
               top={<Level level={tariff.level} />}
               title={t(`cabinet.tariffs.${tariff.code}.name`)}
@@ -88,7 +90,7 @@ export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
               </div>
             </ChoiceCard>
           ))}
-          <CorporateCard />
+          {fixing ? null : <CorporateCard />}
         </div>
       </fieldset>
       {errors.tariff ? (

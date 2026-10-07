@@ -31,6 +31,8 @@ export interface CampaignForm {
   zoneIds: string[];
   budget: number | null;
   rulesAccepted: boolean;
+  /** One id per form: resending after a lost answer returns the same campaign instead of creating a second one. */
+  requestId: string;
 }
 
 export interface CatalogStore {
@@ -38,7 +40,7 @@ export interface CatalogStore {
   name: string;
   address: string | null;
   city: string | null;
-  /** null until the backend shares cart counts. */
+  /** null when the catalog doesn't report it (the cards and summary then skip carts). */
   carts: number | null;
   activeCampaigns: number | null;
 }
@@ -47,7 +49,7 @@ export interface CatalogZone {
   id: string;
   storeId: string;
   name: string;
-  /** Other brands showing in the zone; null until the backend shares it. */
+  /** Other advertisers showing in the zone now. */
   otherBrands: number | null;
 }
 
@@ -61,24 +63,25 @@ export interface UploadedMedia {
   fileName: string;
 }
 
-/** Payload of the `submit_campaign` RPC requested from the backend (session-log). */
+/** What the wizard sends; the API turns it into the `submit_campaign` payload. */
 export interface CampaignSubmission {
   name: string;
   description: string;
   tariffCode: TariffCode;
-  video: UploadedMedia & MediaMeta;
+  video: UploadedMedia & { durationSec: number; width: number; height: number; sizeBytes: number };
   cover: UploadedMedia | null;
   storeIds: string[];
   zoneIds: string[];
   budget: number;
+  requestId: string;
 }
 
 export type WizardMode = { kind: 'new' } | { kind: 'fix'; campaignId: string; moderation: Moderation | null };
 
 export interface WizardApi {
   uploadMedia: (file: Blob, fileName: string, onProgress: (pct: number) => void, signal: AbortSignal) => Promise<UploadedMedia>;
-  /** Absent until the backend adds `submit_campaign`: the button stays off. Resolves with the campaign id. */
-  submit?: (submission: CampaignSubmission, mode: WizardMode) => Promise<string>;
+  /** Resolves with the campaign id; a fix resends the returned campaign. */
+  submit: (submission: CampaignSubmission, mode: WizardMode) => Promise<string>;
 }
 
 /** What the success screen shows; passed in the navigation state. */
@@ -88,14 +91,16 @@ export interface SentReceipt {
   budget: number;
 }
 
-/** A campaign read back for «Исправить» and «Повторить»; the plan, description and stores are not stored yet. */
+/** A campaign read back for «Исправить» and «Повторить». */
 export interface CampaignPrefill {
   status: string | null;
   name: string;
+  description: string;
+  tariff: TariffCode | null;
   video: MediaState;
   cover: MediaState;
   budget: number | null;
-  storeId: string | null;
+  storeIds: string[];
   zoneIds: string[];
   moderation: Moderation | null;
 }

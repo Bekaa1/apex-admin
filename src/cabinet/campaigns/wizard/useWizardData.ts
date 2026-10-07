@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router';
 import { useAuthSession } from '../../../auth/useAuthSession';
 import { parseDemoVariant, type DemoVariant } from '../../demo';
 import { queryKeys } from '../../queryKeys';
-import { fetchCampaignPrefill, fetchWizardCatalog, uploadCampaignMedia } from '../api';
+import { fetchCampaignPrefill, fetchWizardCatalog, resubmitCampaign, submitCampaign, uploadCampaignMedia } from '../api';
 import type { Moderation } from '../types';
 import { DEMO_MODERATION, demoCatalog, demoReturnedForm, demoWizardApi } from './demo';
 import { formFromPrefill } from './summary';
@@ -74,7 +74,9 @@ export function useWizardData(source: WizardSource): WizardData {
     catalog: catalog.data,
     prefill: row ? formFromPrefill(row, catalog.data) : null,
     moderation: row?.moderation ?? null,
-    // No `submit` until the backend adds `submit_campaign`: the wizard keeps the button off.
-    api: { uploadMedia: (file, fileName, onProgress, signal) => uploadCampaignMedia(userId, file, fileName, onProgress, signal) },
+    api: {
+      uploadMedia: (file, fileName, onProgress, signal) => uploadCampaignMedia(userId, file, fileName, onProgress, signal),
+      submit: (submission, mode) => (mode.kind === 'fix' ? resubmitCampaign(mode.campaignId, submission) : submitCampaign(submission)),
+    },
   };
 }

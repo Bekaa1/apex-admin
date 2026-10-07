@@ -6,13 +6,12 @@ import type { CampaignForm, StepId } from './types';
 interface WizardActionsProps {
   step: StepId;
   form: CampaignForm;
-  canSubmit: boolean;
   submitting: boolean;
   onBack: () => void;
 }
 
 /** «Назад» and «Далее: <step>» / «Отправить на проверку»; sticks to the bottom of the screen. The form's submit runs «Далее». */
-export function WizardActions({ step, form, canSubmit, submitting, onBack }: WizardActionsProps) {
+export function WizardActions({ step, form, submitting, onBack }: WizardActionsProps) {
   const { t } = useI18n();
   const next = nextStep(step, form.tariff);
   return (
@@ -28,7 +27,7 @@ export function WizardActions({ step, form, canSubmit, submitting, onBack }: Wiz
           <span className="cmp-next__short">{t('campaigns.wizard.nextShort')}</span>
         </Button>
       ) : (
-        <Button type="submit" variant="primary" size="lg" iconLeft="send" className="cmp-actions__next" disabled={!canSubmit} loading={submitting}>
+        <Button type="submit" variant="primary" size="lg" iconLeft="send" className="cmp-actions__next" loading={submitting}>
           {t('campaigns.wizard.submit')}
         </Button>
       )}

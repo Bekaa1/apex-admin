@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { Link, useLocation, useSearchParams } from 'react-router';
+import { listReturnTo } from '../../../navigation/returnTo';
 import { Alert, Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { clearCampaignIntent } from '../../../lib/campaignIntent';
@@ -20,6 +21,7 @@ import { WizardSummary } from './WizardSummary';
 
 export function CampaignWizard(options: WizardOptions) {
   const { t } = useI18n();
+  const location = useLocation();
   const { catalog, mode } = options;
   const wizard = useCampaignWizard(options);
   const { step, form } = wizard;
@@ -45,9 +47,9 @@ export function CampaignWizard(options: WizardOptions) {
         next.delete('store');
         return next;
       },
-      { replace: true },
+      { replace: true, state: location.state },
     );
-  }, [hasPrefill, mode.kind, setParams]);
+  }, [hasPrefill, mode.kind, setParams, location.state]);
 
   // A new step starts at the top, and screen readers land on its title.
   useEffect(() => {
@@ -63,7 +65,7 @@ export function CampaignWizard(options: WizardOptions) {
 
   return (
     <div className="cmp-wizard">
-      <Link className="cab-link cmp-back" to={CABINET_LINKS.campaigns}>
+      <Link className="cab-link cmp-back" to={listReturnTo(location.state, CABINET_LINKS.campaigns)}>
         <Icon name="arrow-left" size={18} />
         {t('campaigns.wizard.back')}
       </Link>

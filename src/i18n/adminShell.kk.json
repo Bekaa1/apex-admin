@@ -1,0 +1,13 @@
+{
+  "sections": { "overview": "Шолу", "campaigns": "Науқандар", "moderation": "Модерация", "invoices": "Шоттар", "clients": "Клиенттер", "stores": "Дүкендер", "equipment": "Жабдықтар", "tariffs": "Тарифтер", "corporate": "Корпоративтік өтінімдер" },
+  "menu": "ApexAdmin мәзірі",
+  "mobileMenu": "ApexAdmin жылдам навигациясы",
+  "more": "Тағы",
+  "closeMenu": "Мәзірді жабу",
+  "skip": "Мазмұнға өту",
+  "inDevelopment": "Бөлім әзірленуде",
+  "accessNotConfigured": "Панельге қолжетімділік әлі бапталмаған",
+  "preview": "Қаңқаны алдын ала қарау · дерекқорға қосылмайды",
+  "backOverview": "Шолуға оралу",
+  "notFound": { "title": "Бет табылмады · 404", "body": "ApexAdmin жүйесінде мұндай бет жоқ. Мәзірден бөлімді таңдаңыз немесе шолуға оралыңыз." }
+}

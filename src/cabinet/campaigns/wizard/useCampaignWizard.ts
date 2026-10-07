@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useReducer } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
+import { listReturnTo } from '../../../navigation/returnTo';
 import { queryKeys } from '../../queryKeys';
 import { CABINET_LINKS } from '../../sections';
 import { CampaignRpcError } from '../api';
@@ -46,6 +47,7 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
   const { form } = state;
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const media = useMediaUpload(api, dispatch);
 
@@ -67,7 +69,7 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       next.set('step', stepParam(target));
       next.delete('copy');
       return next;
-    });
+    }, { state: location.state });
 
   const submission = useMutation({
     mutationFn: (payload: CampaignSubmission) => api.submit(payload, mode),
@@ -76,7 +78,7 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       void queryClient.invalidateQueries({ queryKey: queryKeys.campaigns(userId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.home(userId) });
       const receipt: SentReceipt = { name: payload.name, tariff: payload.tariffCode, budget: payload.budget };
-      navigate(CABINET_LINKS.campaignSent(campaignId), { replace: true, state: receipt });
+      navigate(CABINET_LINKS.campaignSent(campaignId), { replace: true, state: { ...receipt, returnTo: listReturnTo(location.state, CABINET_LINKS.campaigns) } });
     },
   });
 

@@ -5,7 +5,6 @@ import { CABINET_LINKS } from '../sections';
 
 const LINKS: Array<{ id: 'campaigns' | 'stats' | 'analytics' | 'profile'; to: string; icon: IconName; tile: string }> = [
   { id: 'campaigns', to: CABINET_LINKS.campaigns, icon: 'megaphone', tile: 'cab-tile--brand' },
-  { id: 'stats', to: CABINET_LINKS.stats, icon: 'chart', tile: 'cab-tile--success' },
   { id: 'analytics', to: CABINET_LINKS.analytics, icon: 'pie-chart', tile: 'cab-tile--accent' },
   { id: 'profile', to: CABINET_LINKS.profile, icon: 'user', tile: 'cab-tile--warning' },
 ];

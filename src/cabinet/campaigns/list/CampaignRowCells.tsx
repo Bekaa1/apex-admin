@@ -1,4 +1,5 @@
 import { Meter } from '../../../design-system';
+import { useLocation } from 'react-router';
 import { useI18n } from '../../../i18n/i18n';
 import { formatCompactNumber, formatMoney } from '../../../lib/format';
 import { ButtonLink } from '../../ui/ButtonLink';
@@ -73,10 +74,11 @@ export function PlaysCell({ plays, period }: { plays: CampaignCard['plays']; per
 
 export function ActionCell({ card }: { card: CampaignCard }) {
   const { t } = useI18n();
+  const location = useLocation();
   const action = rowAction(card);
   return (
     <div className="cmp-row__action">
-      <ButtonLink to={action.to} variant={action.variant} size="md" iconLeft={action.iconLeft} iconRight={action.iconRight}>
+      <ButtonLink to={action.to} state={{ returnTo: location.pathname + location.search }} variant={action.variant} size="md" iconLeft={action.iconLeft} iconRight={action.iconRight}>
         {t(action.labelKey)}
       </ButtonLink>
     </div>

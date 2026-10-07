@@ -1,5 +1,6 @@
 import { Alert, Skeleton } from '../../../design-system';
-import { useSearchParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
+import { listReturnTo } from '../../../navigation/returnTo';
 import { campaignIntentFromParams } from '../../../lib/campaignIntent';
 import { useI18n } from '../../../i18n/i18n';
 import { CABINET_LINKS } from '../../sections';
@@ -28,6 +29,7 @@ function WizardSkeleton() {
 /** Loads stores, zones and the source campaign, then opens the wizard with the saved form, the campaign or an empty form. */
 export function WizardScreen({ source }: { source: WizardSource }) {
   const { t } = useI18n();
+  const location = useLocation();
   const data = useWizardData(source);
   const [params] = useSearchParams();
 
@@ -46,7 +48,7 @@ export function WizardScreen({ source }: { source: WizardSource }) {
           tone="warning"
           title={t('campaigns.wizard.missing.title')}
           action={
-            <ButtonLink to={CABINET_LINKS.campaigns} variant="secondary" size="md">
+            <ButtonLink to={listReturnTo(location.state, CABINET_LINKS.campaigns)} variant="secondary" size="md">
               {t('campaigns.wizard.back')}
             </ButtonLink>
           }

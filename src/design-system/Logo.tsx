@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { cx } from './cx';
+import { AppLink } from './AppLink';
 
 const FACETS = [
   { points: '743,328 1208,1055 962,1055 829,847 621,508', g: 'b', whiteOpacity: 1 },
@@ -68,9 +69,9 @@ export function Logo({ size = 28, variant = 'color', wordmark = true, href, labe
     </>
   );
   return href ? (
-    <a className={cls} href={href} aria-label={label}>
+    <AppLink className={cls} href={href} aria-label={label}>
       {content}
-    </a>
+    </AppLink>
   ) : (
     <span className={cls} role="img" aria-label={label}>
       {content}

@@ -18,7 +18,7 @@ export interface CabinetSection {
   /** Shorter label for the phone tab bar. */
   shortLabelKey?: string;
   icon: IconName;
-  /** Page component; a section without one renders an empty stub until its owner builds it. */
+  /** Missing pages get an unavailable state and are excluded from the working menu. */
   page?: () => Promise<ComponentType>;
   /** Nested pages of the section (relative to /cabinet), so owners never edit routes.tsx. */
   subpages?: CabinetSubpage[];

@@ -6,7 +6,7 @@ export interface ButtonLinkProps extends Omit<LinkProps, 'className'>, Omit<Butt
   iconRight?: IconName;
 }
 
-/** In-app navigation that looks like `Button` (the kit's Button with href reloads the page). */
+/** In-app navigation with Router state and the design system's button appearance. */
 export function ButtonLink({ variant, size, fullWidth, className, iconLeft, iconRight, children, ...link }: ButtonLinkProps) {
   return (
     <Link {...link} className={buttonClassName({ variant, size, fullWidth, className })}>

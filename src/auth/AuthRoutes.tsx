@@ -2,6 +2,14 @@ import { Navigate, useLocation } from 'react-router';
 import { ResetPasswordFlow, VerificationFlow, type ResetPasswordStep } from './AuthFlows';
 import { DEFAULT_AUTH_LINKS } from './links';
 import { readResetPasswordState, readVerificationState } from './routeState';
+import { adminReturnTo } from '../navigation/returnTo';
+import { supabase } from '../lib/supabase';
+import { AuthLayout } from './AuthLayout';
+import { Alert } from '../design-system';
+import { useI18n } from '../i18n/i18n';
+import { useAuthSession } from './useAuthSession';
+import { SessionLoading } from './RequireSession';
+import { validateEmail } from './validation';
 
 export function VerificationRoute() {
   const location = useLocation();
@@ -15,8 +23,18 @@ export function VerificationRoute() {
 
 export function ResetPasswordRoute({ step }: { step: ResetPasswordStep }) {
   const location = useLocation();
+  const { session, status } = useAuthSession();
+  const { t } = useI18n();
   const legacyState: unknown = typeof window === 'undefined' ? null : window.history.state;
-  const reset = readResetPasswordState(location.state ?? legacyState, location.search);
-  const actualStep = !reset && (step === 'code' || step === 'new') ? 'email' : step;
-  return <ResetPasswordFlow key={actualStep} step={actualStep} contact={reset?.contact} channel={reset?.channel} />;
+  const resetState = readResetPasswordState(location.state ?? legacyState, location.search);
+  const reset = resetState?.channel === 'email' && !validateEmail(resetState.contact) ? resetState : null;
+  const state: unknown = location.state;
+  const completed = state !== null && typeof state === 'object' && 'completed' in state && state.completed === true;
+  if (!supabase) return <AuthLayout admin><Alert title={t('adminAuth.notConfigured')} /></AuthLayout>;
+  if (step === 'new' && status === 'loading') return <SessionLoading admin />;
+  if ((!reset && (step === 'code' || step === 'new')) || (step === 'new' && !session) || (step === 'done' && !completed)) {
+    const next = adminReturnTo(location.search);
+    return <Navigate to={DEFAULT_AUTH_LINKS.resetEmail + (next ? '?next=' + encodeURIComponent(next) : '')} replace />;
+  }
+  return <ResetPasswordFlow admin key={step} step={step} contact={reset?.contact} channel={reset?.channel} />;
 }

@@ -1,0 +1,10 @@
+{
+  "notFound": { "title": "Page not found", "body": "Check the address or use the navigation." },
+  "unavailable": { "title": "Section unavailable", "body": "This page has not been connected yet. Data is not displayed here yet." },
+  "denied": { "title": "Access denied", "body": "Administrator access has not been confirmed for this account. Contact your administrator or sign out and use another account." },
+  "accessError": { "title": "Could not verify access", "body": "The administrator check is unavailable. Access is closed. Please try again." },
+  "checking": "Checking administrator access…",
+  "home": "Home",
+  "admin": "Check access again",
+  "list": "Back to list"
+}

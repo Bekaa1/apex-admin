@@ -1,6 +1,7 @@
 import '../campaigns.css';
 import { useId } from 'react';
 import { Navigate, useLocation } from 'react-router';
+import { listReturnTo } from '../../../navigation/returnTo';
 import { Icon, Timeline } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatMoney } from '../../../lib/format';
@@ -25,7 +26,8 @@ export function CampaignSentPage() {
   const location = useLocation();
   const { contact } = useAccount();
   const receipt = readReceipt(location.state);
-  if (!receipt) return <Navigate to={CABINET_LINKS.campaigns} replace />;
+  const back = listReturnTo(location.state, CABINET_LINKS.campaigns);
+  if (!receipt) return <Navigate to={back} replace />;
   const amount = formatMoney(receipt.budget, lang);
   const email = contact ?? '';
 
@@ -63,7 +65,7 @@ export function CampaignSentPage() {
           ]}
         />
         <div className="cmp-done__ctas">
-          <ButtonLink to={CABINET_LINKS.campaigns} variant="primary" size="lg">
+          <ButtonLink to={back} variant="primary" size="lg">
             {t('campaigns.sent.toList')}
           </ButtonLink>
           <ButtonLink to={CABINET_LINKS.newCampaign} variant="ghost" size="lg" iconLeft="plus">

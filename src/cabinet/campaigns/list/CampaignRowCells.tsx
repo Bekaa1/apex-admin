@@ -1,6 +1,6 @@
 import { Meter } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
-import { formatMoney, formatNumber } from '../../../lib/format';
+import { formatCompactNumber, formatMoney } from '../../../lib/format';
 import { ButtonLink } from '../../ui/ButtonLink';
 import type { CampaignCard, PlaysPeriod } from '../types';
 import { rowAction } from './rowView';
@@ -65,7 +65,7 @@ export function PlaysCell({ plays, period }: { plays: CampaignCard['plays']; per
   }
   return (
     <div className="cmp-row__shows">
-      <span className="cmp-row__shows-num">{formatNumber(plays[period], lang)}</span>
+      <span className="cmp-row__shows-num">{formatCompactNumber(plays[period], lang)}</span>
       <span className="cmp-row__shows-label">{t(`campaigns.row.playsLabel.${period}`)}</span>
     </div>
   );

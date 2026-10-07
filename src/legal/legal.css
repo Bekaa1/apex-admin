@@ -152,6 +152,26 @@
   border-top: 1px solid var(--border);
 }
 
+.legal-document__consent {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+}
+
+.legal-document__consent .ax-check {
+  min-height: var(--control-md);
+  align-items: flex-start;
+}
+
+.legal-document__consent .ax-check > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 760px) {
   .legal-page__header-inner {
     padding: var(--space-3) var(--space-4);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Disclosure, Icon } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatNumber } from '../../lib/format';
+import { formatCompactNumber, formatNumber } from '../../lib/format';
 import { formatDay } from './model';
 import type { DailyPlays } from './types';
 import styles from './Analytics.module.css';
@@ -18,13 +18,13 @@ export function PlaysChart({ days }: { days: DailyPlays[] | null }) {
     <div className={styles.chart}>
       <div className={styles.chartReadout} aria-live="polite">
         <span>{formatDay(active.date, lang)}</span>
-        <strong>{formatNumber(active.plays, lang)} <span>{t('analytics.chart.plays')}</span></strong>
+        <strong>{formatCompactNumber(active.plays, lang)} <span>{t('analytics.chart.plays')}</span></strong>
       </div>
       <div className={styles.chartScroll}>
         <div className={styles.plot} style={{ minWidth: days.length > 7 ? 440 : undefined }}>
           <div className={styles.gridLines} aria-hidden="true">
-            <span>{formatNumber(maximum, lang)}</span>
-            <span>{formatNumber(Math.round(maximum / 2), lang)}</span>
+            <span>{formatCompactNumber(maximum, lang)}</span>
+            <span>{formatCompactNumber(Math.round(maximum / 2), lang)}</span>
             <span>0</span>
           </div>
           <div className={styles.bars} role="group" aria-label={t('analytics.chart.selectDay')}>
@@ -53,7 +53,7 @@ export function PlaysChart({ days }: { days: DailyPlays[] | null }) {
         <table className={styles.dailyTable}>
           <caption className={styles.srOnly}>{t('analytics.chart.title')}</caption>
           <thead><tr><th scope="col">{t('analytics.chart.date')}</th><th scope="col">{t('analytics.metrics.plays')}</th></tr></thead>
-          <tbody>{days.map((day) => <tr key={day.date}><th scope="row">{formatDay(day.date, lang)}</th><td>{formatNumber(day.plays, lang)}</td></tr>)}</tbody>
+          <tbody>{days.map((day) => <tr key={day.date}><th scope="row">{formatDay(day.date, lang)}</th><td>{formatCompactNumber(day.plays, lang)}</td></tr>)}</tbody>
         </table>
       </Disclosure>
     </div>

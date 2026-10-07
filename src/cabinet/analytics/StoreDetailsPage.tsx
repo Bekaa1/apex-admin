@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useParams } from 'react-router';
 import { Alert, Button, Icon, Meter, Skeleton, StatTile } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatNumber } from '../../lib/format';
+import { formatCompactNumber, formatNumber } from '../../lib/format';
 import { ButtonLink } from '../ui/ButtonLink';
 import { AnalyticsError, AnalyticsLoading, PeriodPicker, StoreStatus } from './AnalyticsShared';
 import { CampaignPreview } from './CampaignPreview';
@@ -74,8 +74,8 @@ export function StoreDetailsPage() {
       <div className={styles.kpis}>
         <StatTile icon="video" label={t('analytics.metrics.carts')} value={carts === null ? '—' : formatNumber(carts, lang)} meta={t('analytics.fleet.totalHint')} />
         <StatTile icon="check-circle" label={t('analytics.metrics.online')} value={online !== null ? formatNumber(online, lang) : '—'} meta={carts !== null ? t('analytics.ofCarts', { total: carts }) : t('analytics.noData')} />
-        <StatTile icon="play" label={t('analytics.metrics.plays')} value={metrics.plays === null ? '—' : formatNumber(metrics.plays, lang)} meta={t('analytics.period.' + filters.period)} />
-        <StatTile icon="chart" label={t('analytics.metrics.average')} value={metrics.average === null ? '—' : formatNumber(metrics.average, lang)} meta={metrics.averageDays ? t('analytics.availableDays', { count: metrics.averageDays }) : t(filters.period === 'today' ? 'analytics.incompleteDay' : 'analytics.noData')} />
+        <StatTile icon="play" label={t('analytics.metrics.plays')} value={metrics.plays === null ? '—' : formatCompactNumber(metrics.plays, lang)} meta={t('analytics.period.' + filters.period)} />
+        <StatTile icon="chart" label={t('analytics.metrics.average')} value={metrics.average === null ? '—' : formatCompactNumber(metrics.average, lang)} meta={metrics.averageDays ? t('analytics.availableDays', { count: metrics.averageDays }) : t(filters.period === 'today' ? 'analytics.incompleteDay' : 'analytics.noData')} />
       </div>
       <div className={styles.detailGrid}>
         <section className={styles.panel} aria-labelledby="plays-chart-title">

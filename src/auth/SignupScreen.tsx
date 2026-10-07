@@ -4,6 +4,7 @@ import { useI18n } from '../i18n/i18n';
 import { AuthHead, AuthLayout, AuthNote } from './AuthLayout';
 import { useAuthLinks } from './links';
 import { useContactInput } from './useContactInput';
+import { useSignupConsent } from './signupConsent';
 import { EMAIL_ERROR_KEY, PASSWORD_ERROR_KEY, normalizeKazakhstanPhone, validateEmail, validateNewPassword } from './validation';
 
 export interface SignupValues { email: string; phone: string; password: string }
@@ -33,7 +34,7 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
   const [email, setEmail] = useState(defaultValues?.email ?? '');
   const { contact: phone, handleBeforeInput, handleChange, handleBlur } = useContactInput(defaultValues?.phone ?? '');
   const [password, setPassword] = useState(defaultValues?.password ?? '');
-  const [terms, setTerms] = useState(defaultValues?.terms ?? false);
+  const { accepted: terms, setAllAccepted: setTerms } = useSignupConsent(defaultValues?.terms);
   const [submitted, setSubmitted] = useState(Boolean(showErrors));
 
   const emailProblem = submitted ? validateEmail(email) : null;
@@ -120,7 +121,7 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
           disabled={loading}
           required
         />
-        <Checkbox className="signup__terms" checked={terms} onChange={(e) => setTerms(e.target.checked)} error={termsError}>
+        <Checkbox className="signup__terms" checked={terms} onChange={(e) => setTerms(e.target.checked)} error={termsError} disabled={loading}>
           {tRich('signup.terms', {
             offer: (chunk) => <a href={`${links.offer}${returnToSignup}`}>{chunk}</a>,
             privacy: (chunk) => <a href={`${links.privacy}${returnToSignup}`}>{chunk}</a>,

@@ -1,3 +1,4 @@
+import { postAuthDestination } from '../lib/campaignIntent'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Navigate } from 'react-router'
@@ -7,6 +8,7 @@ import { AuthLayout } from './AuthLayout'
 import { SessionLoading } from './RequireSession'
 import { useAuthSession } from './useAuthSession'
 import { SignupPhoneFlow } from './SignupPhoneFlow'
+import { clearSignupConsent } from './signupConsent'
 import { DUAL_CONTACT_SIGNUP, hasConfirmedSignupContacts, isDualContactSignup, needsSignupContactVerification } from './signupContacts'
 import { VerifyEmailScreen } from './CodeScreens'
 import type { CodeError } from './CodeScreens'
@@ -142,6 +144,7 @@ export function SignupFlow() {
         return
       }
 
+      clearSignupConsent()
       if (result.data.session) {
         navigateAuth('/signup')
         return
@@ -353,7 +356,7 @@ export function LoginFlow() {
       const result = await client.auth.signInWithPassword(credentials)
 
       if (!result.error) {
-        navigateAuth('/cabinet')
+        navigateAuth(postAuthDestination())
         return
       }
       logAuthFailure('password-signin', result.error, channel)
@@ -456,7 +459,7 @@ export function VerificationFlow({ verification }: { verification: VerificationS
       }
       navigateAuth(verification.purpose === 'signup'
         ? isDualContactSignup(result.data.user) ? '/signup' : '/signup/profile'
-        : '/cabinet')
+        : postAuthDestination())
     } catch {
       setError('unavailable')
     } finally {
@@ -562,7 +565,7 @@ export function SignupProfileFlow() {
         return
       }
 
-      navigateAuth('/cabinet')
+      navigateAuth(postAuthDestination())
     } catch {
       setUnavailable(true)
     } finally {

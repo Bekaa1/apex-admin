@@ -42,6 +42,8 @@
     "offer": "Public offer",
     "back": "Back to home",
     "backToSignup": "Back to sign up",
+    "acceptPrivacy": "I have read the privacy policy and accept its terms",
+    "acceptOffer": "I have read the public offer and accept its terms",
     "originalLanguage": "The original document is provided in Russian.",
     "downloadOriginal": "Download original DOCX",
     "loading": "Opening document…",

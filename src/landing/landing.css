@@ -1,21 +1,6 @@
-/* Landing — text-first hero and legal footer, using the Apex design tokens. */
-.land { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--font-sans); }
-
-.land__header { position: sticky; top: 0; z-index: 10; width: 100%; margin: 0; padding: var(--space-4) var(--space-9); box-sizing: border-box;
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4) var(--space-7);
-  background: var(--bg); border-bottom: 1px solid var(--border); }
-.land__nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-7); font-size: 15px; font-weight: 500; }
-.land__nav a { color: var(--text); text-decoration: none; }
-.land__nav a:hover { color: var(--link); }
-.land__nav a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
-.land__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
-.land__preferences { display: flex; align-items: center; gap: var(--space-3); }
-.land__mobile-menu, .land__mobile-menu-toggle, .land__mobile-menu-panel { display: none; }
-
+/* Landing hero; shared public navigation lives in PublicLayout.module.css. */
 .land__hero { width: 100%; margin: 0; padding: var(--space-11) var(--space-9); box-sizing: border-box;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center; }
-.land__footer { width: 100%; margin: var(--space-9) 0 0; padding: var(--space-5) var(--space-9) var(--space-6); box-sizing: border-box;
-  display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3) var(--space-7); border-top: 1px solid var(--border); }
 .land__copy { width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: var(--space-7); text-align: center; }
 .land__eyebrow { margin: 0; align-self: center; display: inline-flex; align-items: center; gap: var(--space-3);
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3); border-radius: var(--radius-full);
@@ -29,35 +14,12 @@
 .land__stat { flex: 1 1 120px; text-align: center; }
 .land__stat-value { margin: 0; font-family: var(--font-display); font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
 .land__stat-label { margin: var(--space-1) 0 0; font-size: 14px; line-height: 1.4; color: var(--text-muted); }
-.land__legal-link { color: var(--link); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-.land__legal-link:hover { color: var(--primary-hover); }
-.land__legal-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-xs); }
 
-@media (max-width: 1279px) {
-  /* tablet and small laptop: row 1 — logo and actions, row 2 — nav (the single row does not fit in Kazakh/Russian) */
-  .land__actions { order: 1; margin-left: auto; }
-  .land__nav { order: 2; flex-basis: 100%; }
-}
 @media (max-width: 1100px) {
-  .land__header, .land__hero, .land__footer { padding-left: var(--space-7); padding-right: var(--space-7); }
+  .land__hero { padding-left: var(--space-7); padding-right: var(--space-7); }
 }
 @media (max-width: 760px) {
-  .land__header { padding: var(--space-3) var(--space-5); gap: var(--space-3); flex-wrap: nowrap; }
-  .land__nav { display: none; }
-  .land__actions { display: flex; flex-wrap: nowrap; align-items: center; gap: var(--space-2); }
-  .land__logo { order: 0; margin-right: auto; }
-  .land__preferences, .land__start { display: none; }
-  .land__login { margin: 0; padding: 0 var(--space-2); }
-  .land__mobile-menu { position: relative; display: block; }
-  .land__mobile-menu-toggle { display: inline-flex; }
-  .land__mobile-menu-panel { position: absolute; z-index: 20; top: calc(100% + var(--space-2)); right: 0;
-    align-items: center; justify-content: space-between; gap: var(--space-3); width: max-content; max-width: calc(100vw - 40px);
-    padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface);
-    box-shadow: var(--shadow-md); }
-  .land__mobile-menu-panel:not([hidden]) { display: flex; }
-  .land__mobile-menu-panel[hidden] { display: none; }
   .land__hero { padding: var(--space-5) var(--space-5) var(--space-9); gap: var(--space-8); }
-  .land__footer { margin-top: var(--space-5); padding: var(--space-4) var(--space-5) var(--space-5); gap: var(--space-3) var(--space-5); }
   .land__copy { gap: var(--space-6); }
   .land__title { font-size: 40px; }
   .land__text { font-size: 17px; }

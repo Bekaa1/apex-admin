@@ -1,6 +1,6 @@
 import { StatTile, type StatDeltaTone } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatDelta, formatList, formatMoney, formatNumber, pluralCategory } from '../../lib/format';
+import { formatCompactNumber, formatDelta, formatList, formatMoney, formatNumber, pluralCategory } from '../../lib/format';
 import type { HomeData } from './types';
 
 function deltaTone(delta: number): StatDeltaTone {
@@ -22,7 +22,7 @@ export function KpiTiles({ data }: { data: HomeData }) {
       <StatTile
         icon="play"
         label={t('home.summary.plays')}
-        value={formatNumber(data.plays7d, lang)}
+        value={formatCompactNumber(data.plays7d, lang)}
         delta={
           playsDelta === null
             ? undefined

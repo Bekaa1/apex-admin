@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Button, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system'
+import { Button, Checkbox, LANG_OPTIONS, Logo, SegmentedControl, ThemeToggle } from '../design-system'
 import { useI18n } from '../i18n/i18n'
 import { DEFAULT_AUTH_LINKS } from '../auth/links'
+import { useSignupConsent } from '../auth/signupConsent'
 
 const documentLoaders = {
   privacy: () => import('./privacy-policy.ru.json'),
@@ -72,6 +73,7 @@ export function LegalDocumentPage({ kind }: { kind: LegalPageKind }) {
   const returnToSignup = new URLSearchParams(window.location.search).get('returnTo') === DEFAULT_AUTH_LINKS.signup
   const backHref = returnToSignup ? DEFAULT_AUTH_LINKS.signup : DEFAULT_AUTH_LINKS.home
   const backLabel = t(returnToSignup ? 'landing.legal.backToSignup' : 'landing.legal.back')
+  const { documents, setDocumentAccepted } = useSignupConsent()
 
   useEffect(() => {
     let active = true
@@ -155,6 +157,19 @@ export function LegalDocumentPage({ kind }: { kind: LegalPageKind }) {
           )}
 
           <footer className="legal-document__footer">
+            {returnToSignup && loadState.status === 'loaded' ? (
+              <div className="legal-document__consent">
+                <Checkbox
+                  checked={documents[kind]}
+                  onChange={(event) => setDocumentAccepted(kind, event.target.checked)}
+                >
+                  {t(kind === 'privacy' ? 'landing.legal.acceptPrivacy' : 'landing.legal.acceptOffer')}
+                </Checkbox>
+                <Button size="md" href={backHref} iconLeft="arrow-left">
+                  {backLabel}
+                </Button>
+              </div>
+            ) : null}
             <Button
               variant="secondary"
               size="md"

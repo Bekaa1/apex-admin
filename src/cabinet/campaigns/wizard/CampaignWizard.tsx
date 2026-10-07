@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Alert, Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
+import { clearCampaignIntent } from '../../../lib/campaignIntent';
 import { CABINET_LINKS } from '../../sections';
 import { activeSteps } from './steps';
 import { StepBudget } from './steps/StepBudget';
@@ -31,19 +32,22 @@ export function CampaignWizard(options: WizardOptions) {
   const hasErrors = Object.keys(wizard.errors).length > 0;
   const moderation = mode.kind === 'fix' ? mode.moderation : null;
 
-  // The form came from ?copy=; without it a reload keeps the edits saved in this tab instead of copying again.
-  const copied = params.has('copy');
+  // Once initialized, the saved form wins over a copy or a choice from the public catalog on reload.
+  const hasPrefill = params.has('copy') || params.has('tariff') || params.has('store');
   useEffect(() => {
-    if (!copied) return;
+    if (mode.kind === 'new') clearCampaignIntent();
+    if (!hasPrefill) return;
     setParams(
       (prev) => {
         const next = new URLSearchParams(prev);
         next.delete('copy');
+        next.delete('tariff');
+        next.delete('store');
         return next;
       },
       { replace: true },
     );
-  }, [copied, setParams]);
+  }, [hasPrefill, mode.kind, setParams]);
 
   // A new step starts at the top, and screen readers land on its title.
   useEffect(() => {

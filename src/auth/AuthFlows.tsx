@@ -1,16 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { Navigate } from 'react-router'
+import { Alert, Button } from '../design-system'
+import { useI18n } from '../i18n/i18n'
+import { AuthLayout } from './AuthLayout'
+import { SessionLoading } from './RequireSession'
+import { useAuthSession } from './useAuthSession'
+import { SignupPhoneFlow } from './SignupPhoneFlow'
+import { DUAL_CONTACT_SIGNUP, hasConfirmedSignupContacts, isDualContactSignup, needsSignupContactVerification } from './signupContacts'
 import { VerifyEmailScreen } from './CodeScreens'
 import type { CodeError } from './CodeScreens'
 import { LoginScreen } from './LoginScreen'
 import type { LoginError } from './LoginScreen'
 import { useAuthNavigate } from './navigation'
 import type { VerificationChannel, VerificationState } from './navigation'
-import { SignupScreen } from './SignupScreen'
+import { SignupScreen, type SignupValues } from './SignupScreen'
 import { SignupProfileScreen } from './SignupProfileScreen'
 import { ResetPasswordCodeScreen } from './CodeScreens'
 import { ResetPasswordDoneScreen, ResetPasswordEmailScreen, ResetPasswordNewScreen } from './ResetScreens'
 import type { ResetPasswordStartError } from './ResetScreens'
-import { normalizeKazakhstanPhone } from './validation'
+import { normalizeKazakhstanPhone, validateEmail, validateNewPassword } from './validation'
 import { requireSupabase } from '../lib/supabase'
 import { useAuthLinks } from './links'
 
@@ -71,14 +80,32 @@ function verificationError(error: unknown): CodeError {
 
 export function SignupFlow() {
   const navigateAuth = useAuthNavigate()
+  const { t } = useI18n()
+  const { session, status } = useAuthSession()
+  const continuingSignup = Boolean(session && isDualContactSignup(session.user))
+  const signupUser = useQuery({
+    queryKey: ['signup-user', session?.user.id],
+    enabled: continuingSignup,
+    retry: false,
+    queryFn: async () => {
+      const { data, error } = await requireSupabase().auth.getUser()
+      if (error) throw error
+      return data.user
+    },
+  })
   const [loading, setLoading] = useState(false)
   const [contactTaken, setContactTaken] = useState(false)
   const [recoveryTarget, setRecoveryTarget] = useState<{ contact: string; channel: VerificationChannel } | null>(null)
   const [passwordRejected, setPasswordRejected] = useState(false)
   const [rateLimited, setRateLimited] = useState(false)
   const [unavailable, setUnavailable] = useState(false)
+  const submissionInProgress = useRef(false)
 
-  const submit = async ({ contact, password }: { contact: string; password: string }) => {
+  const submit = async ({ email, phone, password }: SignupValues) => {
+    if (submissionInProgress.current) return
+    const normalizedPhone = normalizeKazakhstanPhone(phone)
+    if (validateEmail(email) || !normalizedPhone || validateNewPassword(password)) return
+    submissionInProgress.current = true
     setLoading(true)
     setContactTaken(false)
     setRecoveryTarget(null)
@@ -86,15 +113,15 @@ export function SignupFlow() {
     setRateLimited(false)
     setUnavailable(false)
 
-    let channel: VerificationChannel | undefined
+    const channel = 'email'
     try {
-      const normalized = normalizeContact(contact)
-      channel = normalized.channel
-      const { value } = normalized
+      const value = email.trim().toLowerCase()
       const client = requireSupabase()
-      const result = channel === 'sms'
-        ? await client.auth.signUp({ phone: value, password, options: { channel: 'sms' } })
-        : await client.auth.signUp({ email: value, password })
+      const result = await client.auth.signUp({
+        email: value,
+        password,
+        options: { data: { signup_flow: DUAL_CONTACT_SIGNUP, signup_phone: normalizedPhone } },
+      })
 
       if (result.error) {
         logAuthFailure('signup', result.error, channel)
@@ -116,7 +143,7 @@ export function SignupFlow() {
       }
 
       if (result.data.session) {
-        navigateAuth('/signup/profile')
+        navigateAuth('/signup')
         return
       }
 
@@ -125,8 +152,23 @@ export function SignupFlow() {
       logAuthFailure('signup', error, channel)
       setUnavailable(true)
     } finally {
+      submissionInProgress.current = false
       setLoading(false)
     }
+  }
+
+  if (status === 'loading' || (continuingSignup && signupUser.isPending)) return <SessionLoading />
+  if (continuingSignup && signupUser.isError) {
+    return <AuthLayout showLegalLinks={false}><div className="auth__form">
+      <Alert tone="danger" title={t('signup.errors.unavailableTitle')}>{t('signup.errors.unavailableBody')}</Alert>
+      <Button onClick={() => void signupUser.refetch()}>{t('home.summary.retry')}</Button>
+    </div></AuthLayout>
+  }
+  if (continuingSignup && signupUser.data) {
+    if (hasConfirmedSignupContacts(signupUser.data)) return <Navigate to="/signup/profile" replace />
+    if (signupUser.data.email_confirmed_at) return <SignupPhoneFlow key={signupUser.data.id} user={signupUser.data} />
+    // Covers an interrupted email confirmation without creating another account.
+    return <VerificationFlow verification={{ contact: signupUser.data.email ?? '', channel: 'email', purpose: 'signup' }} />
   }
 
   return (
@@ -408,7 +450,13 @@ export function VerificationFlow({ verification }: { verification: VerificationS
         return
       }
 
-      navigateAuth(verification.purpose === 'signup' ? '/signup/profile' : '/cabinet')
+      if (!result.data.session || !result.data.user) {
+        setError('unavailable')
+        return
+      }
+      navigateAuth(verification.purpose === 'signup'
+        ? isDualContactSignup(result.data.user) ? '/signup' : '/signup/profile'
+        : '/cabinet')
     } catch {
       setError('unavailable')
     } finally {
@@ -418,6 +466,9 @@ export function VerificationFlow({ verification }: { verification: VerificationS
   }
 
   const resendCode = async () => {
+    if (submissionInProgress.current) return
+    submissionInProgress.current = true
+    setLoading(true)
     setError(null)
     try {
       const client = requireSupabase()
@@ -429,9 +480,12 @@ export function VerificationFlow({ verification }: { verification: VerificationS
           ? await client.auth.resend({ type: 'sms', phone: verification.contact })
           : await client.auth.resend({ type: 'signup', email: verification.contact })
 
-      if (result.error) setError('unavailable')
+      if (result.error) setError(errorStatus(result.error) === 429 ? 'ratelimit' : 'unavailable')
     } catch {
       setError('unavailable')
+    } finally {
+      submissionInProgress.current = false
+      setLoading(false)
     }
   }
 
@@ -461,13 +515,13 @@ export function SignupProfileFlow() {
 
     void (async () => {
       try {
-        const { data, error } = await requireSupabase().auth.getSession()
+        const { data, error } = await requireSupabase().auth.getUser()
         if (!active) return
-        if (error) {
+        if (error && errorCode(error) !== 'session_not_found' && error.name !== 'AuthSessionMissingError') {
           setUnavailable(true)
           return
         }
-        if (!data.session) {
+        if (!data.user || needsSignupContactVerification(data.user)) {
           navigateAuth('/signup')
           return
         }
@@ -490,7 +544,14 @@ export function SignupProfileFlow() {
     setUnavailable(false)
 
     try {
-      const { error } = await requireSupabase().rpc('complete_signup_profile', {
+      const client = requireSupabase()
+      const current = await client.auth.getUser()
+      if (current.error) throw current.error
+      if (needsSignupContactVerification(current.data.user)) {
+        navigateAuth('/signup')
+        return
+      }
+      const { error } = await client.rpc('complete_signup_profile', {
         p_full_name: values.fullName.trim(),
         p_bin: values.bin.trim(),
         p_company_name: values.companyName.trim(),

@@ -5,7 +5,7 @@ import { AuthHead, AuthLayout, ResendBlock } from './AuthLayout';
 import { useAuthLinks } from './links';
 
 /** invalid — wrong or expired code (Supabase reports both as otp_expired); expired — client knows the code timed out and a new one was sent. */
-export type CodeError = 'invalid' | 'expired' | 'unavailable';
+export type CodeError = 'invalid' | 'expired' | 'unavailable' | 'ratelimit';
 
 export interface CodeScreenProps {
   /** Where the code was sent. */
@@ -43,24 +43,25 @@ export function VerifyEmailScreen({
   channel = 'email',
   purpose = 'signup',
   backHref,
-}: CodeScreenProps & { channel?: 'email' | 'sms'; purpose?: 'signup' | 'signin'; backHref?: string }) {
+  onChangeContact,
+}: CodeScreenProps & { channel?: 'email' | 'sms'; purpose?: 'signup' | 'signin'; backHref?: string; onChangeContact?: () => void }) {
   const { t, tRich } = useI18n();
   const links = useAuthLinks();
   const { setCode, submit } = useCodeForm(onSubmit);
   return (
-    <AuthLayout back={{ href: backHref ?? links.signup, label: t('common.back') }}>
+    <AuthLayout showLegalLinks={purpose !== 'signup'} back={{ href: backHref ?? links.signup, label: t('common.back'), onClick: onChangeContact }}>
       <form className="auth__form" noValidate onSubmit={submit}>
         <AuthHead
           badge={purpose === 'signup' ? t('signup.step1') : undefined}
           icon="mail"
           title={t(channel === 'sms' ? 'verify.phoneTitle' : purpose === 'signin' ? 'verify.signinTitle' : 'verify.title')}
-          subtitle={tRich(channel === 'sms' ? 'verify.phoneSubtitle' : purpose === 'signin' ? 'verify.signinSubtitle' : 'verify.subtitle', {}, { email: <strong>{contact}</strong> })}
+          subtitle={tRich(purpose === 'signup' ? channel === 'sms' ? 'signup.phoneCodeSubtitle' : 'signup.emailCodeSubtitle' : channel === 'sms' ? 'verify.phoneSubtitle' : 'verify.signinSubtitle', {}, { email: <strong>{contact}</strong> })}
         />
         <OtpInput
           label={t(channel === 'sms' ? 'common.codeFromSms' : 'common.codeLabel')}
           cellLabel={t('common.codeCell')}
           defaultValue={defaultCode}
-          error={error ? t(error === 'expired' ? 'verify.errors.expired' : error === 'unavailable' ? 'verify.errors.unavailable' : 'verify.errors.invalid') : undefined}
+          error={error ? t(error === 'ratelimit' ? 'signup.errors.rateLimitBody' : error === 'expired' ? 'verify.errors.expired' : error === 'unavailable' ? 'verify.errors.unavailable' : 'verify.errors.invalid') : undefined}
           disabled={loading}
           onChange={setCode}
           onComplete={(c) => onSubmit?.(c)}
@@ -72,6 +73,8 @@ export function VerifyEmailScreen({
           seconds={resendSeconds}
           forceAvailable={resendAvailable}
           onResend={onResend}
+          disabled={loading}
+          onChangeContact={onChangeContact}
           changeHref={backHref ?? links.signup}
           wrongContactLabel={t(channel === 'sms' ? 'common.wrongPhone' : 'common.wrongEmail')}
         />

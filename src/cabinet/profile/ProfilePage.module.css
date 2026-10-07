@@ -57,6 +57,10 @@
   gap: var(--space-4);
 }
 
+.contactForm {
+  overflow-wrap: anywhere;
+}
+
 .fields,
 .contacts {
   display: grid;

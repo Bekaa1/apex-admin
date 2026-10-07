@@ -7,7 +7,8 @@
   "otpSent": "We sent a verification code to {contact}.",
   "otpSentBoth": "We sent codes to your current email ({current}) and new email ({next}). Confirm the current address first, then the new one.",
   "currentEmailConfirmed": "Your current email is confirmed. Enter the code sent to the new address.",
-  "codeResent": "A new code has been sent.",
+  "codeResent": "A new code has been sent. Use the code from the latest message.",
+  "codesResent": "New codes have been sent. Use the codes from the latest messages.",
   "profileSaved": "Personal details saved.",
   "contactSaved": "Sign-in method verified and updated.",
   "notSet": "Not provided",
@@ -17,8 +18,8 @@
     "email": "Email address",
     "phone": "Phone number",
     "code": "Verification code",
-    "currentEmailCode": "Code from your current email",
-    "newEmailCode": "Code from your new email"
+    "currentEmailCode": "Code sent to your current email: {email}",
+    "newEmailCode": "Code sent to your new email: {email}"
   },
   "actions": {
     "save": "Save changes",

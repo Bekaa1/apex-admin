@@ -52,6 +52,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
   const [flow, setFlow] = useState<ContactFlow>(null);
   const [contactError, setContactError] = useState<string | null>(null);
   const [contactSaved, setContactSaved] = useState(false);
+  const contactBusy = requestChange.isPending || resendCode.isPending || verifyChange.isPending;
 
   async function handleProfileSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -74,6 +75,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
   }
 
   function startContactChange(channel: ContactChannel, currentValue: string | undefined) {
+    if (contactBusy) return;
     requestChange.reset();
     resendCode.reset();
     verifyChange.reset();
@@ -86,7 +88,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
 
   async function sendCode(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!flow || flow.step !== 'edit') return;
+    if (!flow || flow.step !== 'edit' || contactBusy) return;
     setContactError(null);
     setContactSaved(false);
 
@@ -140,8 +142,9 @@ function ProfileEditor({ profile, userId, email, phone }: {
 
   async function verifyCode(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!flow || flow.step !== 'verify') return;
+    if (!flow || flow.step !== 'verify' || contactBusy) return;
     setContactError(null);
+    resendCode.reset();
 
     try {
       if (flow.channel === 'email' && flow.currentEmail && !flow.currentConfirmed) {
@@ -169,7 +172,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
   }
 
   async function handleResend() {
-    if (!flow || flow.step !== 'verify') return;
+    if (!flow || flow.step !== 'verify' || contactBusy) return;
     setContactError(null);
     try {
       await resendCode.mutateAsync({ channel: flow.channel, value: flow.value });
@@ -199,6 +202,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
               setContactError(null);
               setFlow({ ...flow, value: event.currentTarget.value });
             }}
+            disabled={contactBusy}
             required
           />
           {contactError ? <Alert tone="danger">{contactError}</Alert> : null}
@@ -206,7 +210,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
             <Button type="submit" size="md" loading={requestChange.isPending}>
               {t('profile.actions.sendCode')}
             </Button>
-            <Button type="button" variant="secondary" size="md" onClick={() => setFlow(null)}>
+            <Button type="button" variant="secondary" size="md" disabled={contactBusy} onClick={() => setFlow(null)}>
               {t('profile.actions.cancel')}
             </Button>
           </div>
@@ -224,16 +228,16 @@ function ProfileEditor({ profile, userId, email, phone }: {
         {flow.channel === 'email' && flow.currentEmail && !flow.currentConfirmed ? (
           <>
             <OtpInput
-              label={t('profile.fields.currentEmailCode')}
+              label={t('profile.fields.currentEmailCode', { email: flow.currentEmail })}
               value={flow.currentToken}
               onChange={(currentToken) => {
                 setContactError(null);
                 setFlow({ ...flow, currentToken });
               }}
               autoFocus
-              disabled={verifyChange.isPending}
+              disabled={contactBusy}
             />
-            <Button type="submit" size="md" loading={verifyChange.isPending}>
+            <Button type="submit" size="md" loading={verifyChange.isPending} disabled={contactBusy}>
               {t('profile.actions.confirmCurrentEmail')}
             </Button>
           </>
@@ -243,27 +247,33 @@ function ProfileEditor({ profile, userId, email, phone }: {
               <Alert tone="success">{t('profile.currentEmailConfirmed')}</Alert>
             ) : null}
             <OtpInput
-              label={t(flow.channel === 'email' ? 'profile.fields.newEmailCode' : 'profile.fields.code')}
+              label={flow.channel === 'email'
+                ? t('profile.fields.newEmailCode', { email: flow.value })
+                : t('profile.fields.code')}
               value={flow.channel === 'email' ? flow.newToken : flow.token}
               onChange={(token) => {
                 setContactError(null);
                 setFlow(flow.channel === 'email' ? { ...flow, newToken: token } : { ...flow, token });
               }}
               autoFocus
-              disabled={verifyChange.isPending}
+              disabled={contactBusy}
             />
-            <Button type="submit" size="md" loading={verifyChange.isPending}>
+            <Button type="submit" size="md" loading={verifyChange.isPending} disabled={contactBusy}>
               {t(flow.channel === 'email' ? 'profile.actions.confirmNewEmail' : 'profile.actions.confirm')}
             </Button>
           </>
         )}
         {contactError ? <Alert tone="danger">{contactError}</Alert> : null}
-        {resendCode.isSuccess ? <Alert tone="success">{t('profile.codeResent')}</Alert> : null}
+        {resendCode.isSuccess ? (
+          <Alert tone="success">
+            {t(flow.channel === 'email' && flow.currentEmail ? 'profile.codesResent' : 'profile.codeResent')}
+          </Alert>
+        ) : null}
         <div className={styles.actions}>
-          <Button type="button" variant="secondary" size="md" loading={resendCode.isPending} onClick={handleResend}>
+          <Button type="button" variant="secondary" size="md" loading={resendCode.isPending} disabled={contactBusy} onClick={handleResend}>
             {t(flow.channel === 'email' && flow.currentEmail ? 'profile.actions.resendBothCodes' : 'profile.actions.resendCode')}
           </Button>
-          <Button type="button" variant="ghost" size="md" onClick={() => setFlow(null)}>
+          <Button type="button" variant="ghost" size="md" disabled={contactBusy} onClick={() => setFlow(null)}>
             {t('profile.actions.cancel')}
           </Button>
         </div>
@@ -285,6 +295,7 @@ function ProfileEditor({ profile, userId, email, phone }: {
             <Button
               variant="secondary"
               size="md"
+              disabled={contactBusy}
               onClick={() => startContactChange(channel, value)}
             >
               {t(value ? 'profile.actions.change' : 'profile.actions.add')}

@@ -37,12 +37,9 @@ export async function requestContactChange(input: { channel: ContactChannel; val
 }
 
 export async function resendContactCode(input: { channel: ContactChannel; value: string }): Promise<void> {
-  const client = requireSupabase();
-  const { error } = input.channel === 'email'
-    ? await client.auth.resend({ type: 'email_change', email: input.value })
-    : await client.auth.resend({ type: 'phone_change', phone: input.value });
-
-  if (error) throw error;
+  // /resend looks up the account by its existing contact, not the pending one.
+  // Reissue the change through the signed-in user's session instead.
+  await requestContactChange(input);
 }
 
 export async function verifyContactChange(input: { channel: ContactChannel; value: string; token: string }): Promise<void> {

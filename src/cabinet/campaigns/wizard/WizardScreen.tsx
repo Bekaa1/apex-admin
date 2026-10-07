@@ -1,4 +1,6 @@
 import { Alert, Skeleton } from '../../../design-system';
+import { useSearchParams } from 'react-router';
+import { campaignIntentFromParams } from '../../../lib/campaignIntent';
 import { useI18n } from '../../../i18n/i18n';
 import { CABINET_LINKS } from '../../sections';
 import { ButtonLink } from '../../ui/ButtonLink';
@@ -27,6 +29,7 @@ function WizardSkeleton() {
 export function WizardScreen({ source }: { source: WizardSource }) {
   const { t } = useI18n();
   const data = useWizardData(source);
+  const [params] = useSearchParams();
 
   if (data.status === 'loading') return <WizardSkeleton />;
   if (data.status === 'error') {
@@ -60,7 +63,17 @@ export function WizardScreen({ source }: { source: WizardSource }) {
     data.edited && data.prefill ? { kind: 'edit', campaign: data.edited, original: data.prefill, moderation: data.moderation } : { kind: 'new' };
   const storageKey = formStorageKey(data.userId, mode.kind === 'edit' ? mode.campaign.id : null);
   // A copy always starts from the source campaign; otherwise what was typed in this tab wins.
-  const initial = (source.kind === 'copy' ? null : loadForm(storageKey)) ?? data.prefill ?? emptyForm();
+  let initial = (source.kind === 'copy' ? null : loadForm(storageKey)) ?? data.prefill ?? emptyForm();
+  // A plan or a store chosen in the public catalog before signing in starts the new campaign.
+  if (source.kind === 'new') {
+    const intent = campaignIntentFromParams(params);
+    if (intent.tariff && intent.tariff !== initial.tariff) {
+      initial = { ...initial, tariff: intent.tariff, zoneIds: [], rulesAccepted: false };
+    }
+    if (intent.storeId && data.catalog.stores.some((store) => store.id === intent.storeId)) {
+      initial = { ...initial, storeIds: [intent.storeId], zoneIds: [], rulesAccepted: false };
+    }
+  }
   return (
     <CampaignWizard
       key={storageKey}

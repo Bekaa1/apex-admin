@@ -6,9 +6,8 @@ import { RequireSession, SessionLoading } from './auth/RequireSession';
 import { DEFAULT_AUTH_LINKS } from './auth/links';
 import { CABINET_ROOT, CABINET_SECTIONS, type CabinetRouteHandle } from './cabinet/sections';
 import { Landing } from './landing/Landing';
+import { PublicLayout } from './landing/PublicLayout';
 import { LegalDocumentPage } from './legal/LegalDocumentPage';
-
-const landing = <Landing loginHref={DEFAULT_AUTH_LINKS.login} startHref={DEFAULT_AUTH_LINKS.signup} />;
 
 function cabinetRoute(path: string, handle: CabinetRouteHandle, page?: () => Promise<ComponentType>): RouteObject {
   const route = {
@@ -27,7 +26,14 @@ const cabinetRoutes: RouteObject[] = [
 ];
 
 export const routes: RouteObject[] = [
-  { path: '/', element: landing },
+  {
+    path: '/', element: <PublicLayout />, children: [
+      { index: true, element: <Landing /> },
+      { path: 'pricing', lazy: async () => ({ Component: (await import('./landing/PricingPage')).PricingPage }) },
+      { path: 'stores', lazy: async () => ({ Component: (await import('./landing/StoresPage')).StoresPage }) },
+      { path: 'how-it-works', lazy: async () => ({ Component: (await import('./landing/HowItWorksPage')).HowItWorksPage }) },
+    ],
+  },
   { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow /> },
   { path: DEFAULT_AUTH_LINKS.signup, element: <SignupFlow /> },
   { path: DEFAULT_AUTH_LINKS.verify, element: <VerificationRoute /> },
@@ -47,5 +53,5 @@ export const routes: RouteObject[] = [
       children: cabinetRoutes,
     }],
   },
-  { path: '*', element: landing },
+  { path: '*', element: <Navigate to="/" replace /> },
 ];

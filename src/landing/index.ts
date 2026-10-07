@@ -1,1 +1,1 @@
-export { Landing, type LandingProps } from './Landing';
+export { Landing } from './Landing';

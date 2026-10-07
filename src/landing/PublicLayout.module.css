@@ -1,0 +1,45 @@
+.layout { min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+.header { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); padding: var(--space-4) var(--space-7); border-bottom: 1px solid var(--border); background: var(--bg); }
+.desktopNav, .actions, .preferences { display: flex; align-items: center; gap: var(--space-5); }
+.actions, .preferences { gap: var(--space-2); }
+.navLink, .activeLink, .navButton { color: var(--text-muted); font: inherit; font-weight: 500; font-size: 14px; text-decoration: none; white-space: nowrap; }
+.navLink, .activeLink { display: flex; align-items: center; min-height: var(--control-md); }
+.activeLink { color: var(--link); }
+.navButton { display: flex; align-items: center; gap: var(--space-1); min-height: var(--control-md); padding: 0; border: 0; background: transparent; cursor: pointer; }
+.navLink:hover, .navButton:hover, .navButton[aria-expanded="true"] { color: var(--link); }
+.layout a:focus-visible, .layout button:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-xs); }
+.contacts { position: relative; }
+.contactPosition { position: absolute; top: 100%; right: 0; width: 330px; padding-top: var(--space-3); }
+.contactPosition[hidden], .mobilePanel[hidden] { display: none; }
+.contactPanel { display: grid; gap: var(--space-4); padding: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); }
+.contactHeading { margin: 0; font-weight: 600; font-size: 19px; color: var(--text); }
+.contactLead { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+.contactLink { display: flex; align-items: center; gap: var(--space-3); min-height: 40px; color: var(--text); text-decoration: none; font-size: 15px; overflow-wrap: anywhere; }
+.contactLink svg { flex-shrink: 0; color: var(--link); }
+.main { flex: 1; min-width: 0; outline: none; }
+.footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-5); padding: var(--space-6) var(--space-7); border-top: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
+.footer p { margin: 0; }
+.footer div { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+.footer a { color: var(--text-muted); text-underline-offset: 3px; }
+.skip { position: fixed; z-index: 40; top: var(--space-2); left: var(--space-2); padding: var(--space-3); transform: translateY(-200%); background: var(--surface); color: var(--link); }
+.skip:focus { transform: translateY(0); }
+.mobileMenu { display: none; }
+@media (max-width: 1190px) {
+  .desktopNav, .preferences, .start { display: none; }
+  .header { gap: var(--space-3); }
+  .actions { margin-left: auto; }
+  .mobileMenu { display: block; position: relative; }
+  .mobilePanel { position: absolute; top: calc(100% + var(--space-3)); right: 0; width: min(340px, calc(100vw - 32px)); max-height: calc(100dvh - 90px); overflow-y: auto; padding: var(--space-5); border-radius: var(--radius-xl); border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow-md); }
+  .mobilePanel nav { display: grid; gap: var(--space-1); }
+  .mobilePanel .navLink, .mobilePanel .activeLink, .mobilePanel .navButton { padding: var(--space-2) 0; font-size: 16px; min-height: 48px; }
+  .mobileContacts .navButton { width: 100%; justify-content: space-between; }
+  .mobileContacts .contactPosition { position: static; width: auto; padding-top: 0; }
+  .mobileContacts .contactPanel { border: 0; border-radius: 0; padding: var(--space-3) 0 var(--space-5); box-shadow: none; }
+  .mobilePreferences { display: flex; justify-content: space-between; gap: var(--space-3); margin: var(--space-4) 0; padding-top: var(--space-5); border-top: 1px solid var(--border); }
+}
+@media (max-width: 600px) {
+  .header { padding: var(--space-3) var(--space-4); }
+  .login { padding-inline: var(--space-2); }
+  .footer { padding: var(--space-6) var(--space-5); }
+  .footer div { gap: var(--space-3); }
+}

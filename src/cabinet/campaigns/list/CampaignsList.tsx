@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 import { useI18n } from '../../../i18n/i18n';
-import { formatNumber, pluralKey } from '../../../lib/format';
+import { compactPluralKey, formatCompactNumber, formatNumber, pluralKey } from '../../../lib/format';
 import { countByTab, totalPlaysFor, visibleCards } from '../listFilters';
 import type { CampaignCard } from '../types';
 import { useListFilters } from '../useListFilters';
@@ -38,8 +38,8 @@ export function CampaignsList({ cards }: { cards: CampaignCard[] }) {
               <span>{t(pluralKey('campaigns.list.count', visible.length, lang), { count: formatNumber(visible.length, lang) })}</span>
               <span aria-hidden="true">·</span>
               <span>
-                {t(pluralKey('campaigns.list.plays', plays, lang), {
-                  count: formatNumber(plays, lang),
+                {t(compactPluralKey('campaigns.list.plays', plays, lang), {
+                  count: formatCompactNumber(plays, lang),
                   period: t(`campaigns.list.periodFor.${filters.period}`),
                 })}
               </span>

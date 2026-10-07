@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { Badge, Icon, Meter } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatMoney, formatNumber } from '../../lib/format';
+import { formatCompactNumber, formatMoney } from '../../lib/format';
 import { STATUS_TONE, statusLabelKey } from '../campaignStatus';
 import { CABINET_LINKS } from '../sections';
 import { ButtonLink } from '../ui/ButtonLink';
@@ -67,7 +67,7 @@ export function CampaignRow({ campaign, index }: { campaign: CampaignItem; index
             —<span className="cab-sr"> {notStarted}</span>
           </span>
         ) : (
-          formatNumber(campaign.plays7d, lang)
+          formatCompactNumber(campaign.plays7d, lang)
         )}
       </td>
       <td className="cab-table__action">

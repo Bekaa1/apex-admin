@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { Button, Icon, Meter, StatTile, TextField } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatNumber } from '../../lib/format';
+import { formatCompactNumber, formatNumber } from '../../lib/format';
 import { storeMetrics } from './model';
 import { AnalyticsError, AnalyticsLoading, PeriodPicker, StoreStatus } from './AnalyticsShared';
 import { useAnalytics } from './useAnalytics';
@@ -57,7 +57,7 @@ export function AnalyticsPage() {
         <StatTile icon="store" label={t('analytics.metrics.stores')} value={formatNumber(stores.length, lang)} meta={t('analytics.filteredSummary')} />
         <StatTile icon="video" label={t('analytics.metrics.carts')} value={knownCarts.length || !stores.length ? formatNumber(carts, lang) : '—'} meta={coverage(knownCarts.length)} />
         <StatTile icon="check-circle" label={t('analytics.metrics.online')} value={knownOnline.length ? formatNumber(online, lang) : '—'} meta={coverage(knownOnline.length)} />
-        <StatTile icon="play" label={t('analytics.metrics.plays')} value={knownPlays.length ? formatNumber(plays, lang) : '—'} meta={coverage(knownPlays.length)} />
+        <StatTile icon="play" label={t('analytics.metrics.plays')} value={knownPlays.length ? formatCompactNumber(plays, lang) : '—'} meta={coverage(knownPlays.length)} />
       </div>
 
       <section className={styles.catalog} aria-labelledby="store-catalog-title">
@@ -127,8 +127,8 @@ export function AnalyticsPage() {
                           {store.online !== null && store.carts !== null ? <Meter value={store.carts ? store.online / store.carts * 100 : 0} label={t('analytics.fleetMeter', { online: store.online, total: store.carts })} size="sm" tone={store.online ? 'success' : 'warning'} /> : <span className={styles.muted}>{t('analytics.noData')}</span>}
                         </div>
                       </td>
-                      <td className={styles.numberCell} data-label={t('analytics.metrics.plays')}><strong>{store.plays === null ? '—' : formatNumber(store.plays, lang)}</strong></td>
-                      <td className={styles.numberCell} data-label={t('analytics.metrics.average')}>{store.average === null ? '—' : <>{formatNumber(store.average, lang)}<span className={styles.cellHint}>{t('analytics.availableDays', { count: store.averageDays })}</span></>}</td>
+                      <td className={styles.numberCell} data-label={t('analytics.metrics.plays')}><strong>{store.plays === null ? '—' : formatCompactNumber(store.plays, lang)}</strong></td>
+                      <td className={styles.numberCell} data-label={t('analytics.metrics.average')}>{store.average === null ? '—' : <>{formatCompactNumber(store.average, lang)}<span className={styles.cellHint}>{t('analytics.availableDays', { count: store.averageDays })}</span></>}</td>
                       <td className={styles.actionCell}><Link className={styles.detailLink} to={href} aria-label={t('analytics.openStore', { name })}>{t('analytics.details')} <Icon name="arrow-right" size={18} /></Link></td>
                     </tr>
                   );

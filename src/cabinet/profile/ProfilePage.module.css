@@ -114,6 +114,10 @@
   display: block;
 }
 
+.mobileAccountActions {
+  display: none;
+}
+
 @media (max-width: 720px) {
   .card {
     padding: var(--space-4);
@@ -126,6 +130,13 @@
 
   .contactHeader {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .mobileAccountActions {
+    display: grid;
+    gap: var(--space-3);
   }
 }
 

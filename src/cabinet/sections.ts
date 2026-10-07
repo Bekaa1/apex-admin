@@ -43,7 +43,13 @@ export const CABINET_SECTIONS: CabinetSection[] = [
   },
   { id: 'stats', path: 'stats', labelKey: 'cabinet.nav.stats', icon: 'chart' },
   { id: 'analytics', path: 'analytics', labelKey: 'cabinet.nav.analytics', icon: 'pie-chart' },
-  { id: 'profile', path: 'profile', labelKey: 'cabinet.nav.profile', icon: 'user' },
+  {
+    id: 'profile',
+    path: 'profile',
+    labelKey: 'cabinet.nav.profile',
+    icon: 'user',
+    page: () => import('./profile/ProfilePage').then((m) => m.ProfilePage),
+  },
 ];
 
 export const CABINET_ROOT = '/cabinet';

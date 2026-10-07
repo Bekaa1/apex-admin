@@ -129,9 +129,12 @@ function ProfileEditor({ profile, userId, email, phone }: {
         : { channel: 'phone', step: 'verify', value, token: '' });
     } catch (error) {
       const code = authErrorCode(error);
-      setContactError(code === 'email_exists' || code === 'phone_exists'
-        ? t('profile.errors.contactInUse')
-        : t('profile.errors.sendCode'));
+      const contactInUseKey = code === 'email_exists'
+        ? 'profile.errors.emailInUse'
+        : code === 'phone_exists'
+          ? 'profile.errors.phoneInUse'
+          : null;
+      setContactError(contactInUseKey ? t(contactInUseKey) : t('profile.errors.sendCode'));
     }
   }
 

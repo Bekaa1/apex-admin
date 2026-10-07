@@ -10,8 +10,8 @@ export function CampaignsSkeleton() {
     <div className="cab-stack cab-stack--tight" aria-busy="true" aria-label={t('campaigns.list.loading')}>
       <div className="cmp-toolbar">
         <div className="cmp-skel-tabs">
-          {TAB_WIDTHS.map((width) => (
-            <Skeleton key={width} width={width} height={20} />
+          {TAB_WIDTHS.map((width, index) => (
+            <Skeleton key={index} width={width} height={20} />
           ))}
         </div>
         <div className="cmp-toolbar__row">

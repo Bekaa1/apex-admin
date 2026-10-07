@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthSession } from '../auth/useAuthSession';
 import { getAccountCompanyName } from './api';
 import { parseDemoVariant } from './demo';
+import { queryKeys } from './queryKeys';
 
 export interface Account {
   companyName: string | null;
@@ -16,7 +17,7 @@ export function useAccount(): Account {
   const demo = parseDemoVariant(params.get('demo'));
   const userId = session?.user.id;
   const profile = useQuery({
-    queryKey: ['account', userId],
+    queryKey: queryKeys.account(userId),
     queryFn: () => {
       if (!userId) throw new Error('Authentication required');
       return getAccountCompanyName(userId);

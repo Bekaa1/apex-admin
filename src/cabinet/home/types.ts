@@ -1,6 +1,7 @@
 // Rows Home reads from Supabase, picked from the generated database types.
 import type { Database, Tables } from '../../lib/database.types';
 import type { VisibleStatus } from '../campaignStatus';
+import type { DailyPlaysRow } from '../plays';
 
 type Views = Database['public']['Views'];
 
@@ -9,9 +10,6 @@ export type CampaignStatsRow = Pick<
   Views['my_campaigns_stats']['Row'],
   'ad_id' | 'title' | 'name' | 'status' | 'budget' | 'spent_budget' | 'remaining_budget' | 'total_plays' | 'created_at'
 >;
-
-/** `my_daily_plays_by_campaign` (Asia/Almaty days), last 14 days: this week and the one before. */
-export type DailyPlaysRow = Pick<Views['my_daily_plays_by_campaign']['Row'], 'ad_id' | 'play_date' | 'plays'>;
 
 /** `ads` columns the views lack; `tariff` arrives when the backend links campaigns to tariffs. */
 export type CampaignExtraRow = Pick<Tables<'ads'>, 'id' | 'content_url' | 'store_id'> & { tariff?: string | null };
@@ -23,6 +21,7 @@ export interface HomeSource {
   /** YYYY-MM-DD in Almaty; the 7-day windows end on this day. */
   today: string;
   campaigns: CampaignStatsRow[];
+  /** Last 14 days: this week and the one before. */
   dailyPlays: DailyPlaysRow[];
   extras: CampaignExtraRow[];
   stores: StoreRow[];
@@ -39,7 +38,7 @@ export interface CampaignItem {
   budget: number;
   left: number;
   spentPct: number;
-  /** Budget share left ≤ LOW_BUDGET_SHARE while the campaign runs. */
+  /** Budget share left ≤ LOW_BUDGET_SHARE (campaignBudget.ts) while the campaign runs. */
   lowBudget: boolean;
   /** Budget ran out (status or nothing left). */
   budgetEnded: boolean;

@@ -10,9 +10,9 @@ import { LegalDocumentPage } from './legal/LegalDocumentPage';
 
 const landing = <Landing loginHref={DEFAULT_AUTH_LINKS.login} startHref={DEFAULT_AUTH_LINKS.signup} />;
 
-function cabinetRoute(path: string, titleKey: string, page?: () => Promise<ComponentType>): RouteObject {
+function cabinetRoute(path: string, handle: CabinetRouteHandle, page?: () => Promise<ComponentType>): RouteObject {
   const route = {
-    handle: { titleKey } satisfies CabinetRouteHandle,
+    handle,
     lazy: page ? async () => ({ Component: await page() }) : undefined,
   };
   return path ? { ...route, path } : { ...route, index: true };
@@ -20,8 +20,8 @@ function cabinetRoute(path: string, titleKey: string, page?: () => Promise<Compo
 
 const cabinetRoutes: RouteObject[] = [
   ...CABINET_SECTIONS.flatMap((section) => [
-    cabinetRoute(section.path, section.labelKey, section.page),
-    ...(section.subpages ?? []).map((sub) => cabinetRoute(sub.path, sub.titleKey, sub.page)),
+    cabinetRoute(section.path, { titleKey: section.labelKey }, section.page),
+    ...(section.subpages ?? []).map((sub) => cabinetRoute(sub.path, { titleKey: sub.titleKey, hideCreate: sub.hideCreate }, sub.page)),
   ]),
   { path: '*', element: <Navigate to={CABINET_ROOT} replace /> },
 ];

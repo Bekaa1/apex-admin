@@ -64,7 +64,7 @@ export function GuideHero() {
         <dl className="cab-receipt">
           <div>
             <dt>{t('home.guide.example.tariff')}</dt>
-            <dd>{t('home.tariffs.zones.name')}</dd>
+            <dd>{t('cabinet.tariffs.zones.name')}</dd>
           </div>
           <div>
             <dt>{t('home.guide.example.stores')}</dt>

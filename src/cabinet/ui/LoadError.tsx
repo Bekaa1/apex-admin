@@ -1,20 +1,22 @@
+import type { ReactNode } from 'react';
 import { Alert, Button } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
 
-export function HomeError({ onRetry }: { onRetry: () => void }) {
+/** Page-level «couldn't load» message with a retry button. */
+export function LoadError({ title, children, onRetry }: { title: string; children: ReactNode; onRetry: () => void }) {
   const { t } = useI18n();
   return (
     <div className="cab-stack cab-stack--tight">
       <Alert
         tone="danger"
-        title={t('home.summary.errorTitle')}
+        title={title}
         action={
           <Button variant="secondary" size="md" iconLeft="refresh" onClick={onRetry}>
-            {t('home.summary.retry')}
+            {t('cabinet.retry')}
           </Button>
         }
       >
-        {t('home.summary.errorText')}
+        {children}
       </Alert>
     </div>
   );

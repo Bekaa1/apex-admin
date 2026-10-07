@@ -1,0 +1,122 @@
+/*
+ * Cabinet → «Мои кампании»: list, empty and search states, corporate banner. Prefix: cmp-.
+ * Ported from the «Apex — Мои кампании» design and aligned with the kit (type scale, token radii, 44px controls).
+ * Load after cabinet.css. Cover placeholders reuse .cab-thumb--1…3 (logo gradient). Blocks adapt with container queries on .cab__content.
+ */
+
+/* ── Shared ────────────────────────────────────────────── */
+.cmp-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--success); font-weight: 600; }
+
+/* Cover 16:9 — placeholder gradient comes from .cab-thumb--N */
+.cmp-cover { position: relative; flex: none; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; color: var(--on-primary); aspect-ratio: 16 / 9; }
+.cmp-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cmp-cover--md { width: 96px; border-radius: var(--radius-sm); }
+
+/* ── List page ─────────────────────────────────────────── */
+.cmp-toolbar { display: flex; flex-direction: column; gap: var(--space-4); }
+.cmp-toolbar__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.cmp-toolbar__search { flex: 1 1 260px; max-width: 420px; }
+.cmp-toolbar__select { flex: 0 1 240px; min-width: 200px; }
+.cmp-toolbar__period { display: flex; align-items: center; gap: var(--space-2); }
+.cmp-toolbar__label { font-size: 14px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.cmp-toolbar__period .ax-seg { background: var(--surface); }
+[data-theme="dark"] .cmp-toolbar__period .ax-seg { background: var(--bg); }
+.cmp-toolbar__period .ax-seg__item { padding: 0 12px; white-space: nowrap; }
+.cmp-toolbar__select .ax-select__input, .cmp-filters .ax-select__input { background: var(--surface); }
+.cmp-toolbar .ax-search__input, .cmp-filters .ax-search__input { background: var(--surface); }
+.cmp-skel-tabs { display: flex; gap: var(--space-5); padding: 12px 0; border-bottom: 1px solid var(--border); }
+.cmp-panel { display: flex; flex-direction: column; gap: var(--space-3); }
+.cmp-panel__summary { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 8px; font-size: 14px; color: var(--text-muted); }
+.cmp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+
+.cmp-row { overflow: hidden; }
+.cmp-row__grid { display: grid; grid-template-columns: 96px minmax(0, 1.5fr) minmax(136px, 0.9fr) minmax(176px, 1.2fr) 112px 176px;
+  grid-template-areas: 'cover main status budget shows action'; align-items: center; gap: var(--space-4) var(--space-5); padding: var(--space-4) var(--space-5); }
+.cmp-row__grid > .cmp-cover, .cmp-row__grid > .ax-skeleton:first-child { grid-area: cover; }
+.cmp-row__main { grid-area: main; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.cmp-row__name { font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--text); text-decoration: none; overflow-wrap: anywhere; }
+.cmp-row__name:hover { color: var(--link); text-decoration: underline; }
+.cmp-row__name:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-xs); }
+.cmp-row__meta { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 0; font-size: 13px; line-height: 1.4; color: var(--text-muted); }
+.cmp-row__meta span:not(:last-child)::after { content: '·'; margin: 0 6px; color: var(--text-subtle); }
+.cmp-row__status { grid-area: status; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.cmp-row__note { font-size: 13px; line-height: 1.35; color: var(--text-muted); }
+.cmp-row__budget { grid-area: budget; min-width: 0; }
+.cmp-row__money { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
+.cmp-row__shows { grid-area: shows; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
+.cmp-row__shows-num { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.cmp-row__shows-label { max-width: 9.5em; font-size: 13px; line-height: 1.3; color: var(--text-subtle); }
+.cmp-row__action { grid-area: action; display: flex; justify-content: flex-end; min-width: 0; }
+.cmp-row__muted { font-size: 14px; color: var(--text-subtle); }
+.cmp-row__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); padding: var(--space-3) var(--space-5); border-top: 1px solid var(--border); background: var(--bg); }
+.cmp-row__foot-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.cmp-row__foot-note { margin: 0 0 0 auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); }
+.cmp-row__foot-note .ax-icon { color: var(--link); }
+.cmp-row__foot--danger { align-items: flex-start; flex-wrap: nowrap; gap: var(--space-3); background: var(--danger-soft); border-top-color: transparent; }
+.cmp-row__foot--danger > .ax-icon { flex: none; color: var(--danger); margin-top: 1px; }
+.cmp-row__reason { min-width: 0; font-size: 14px; line-height: 1.5; }
+.cmp-row__reason-title { margin: 0; font-weight: 600; }
+.cmp-row__reason ul { margin: 2px 0 0; padding-left: 18px; color: var(--text); }
+.cmp-row__comment { margin: 4px 0 0; color: var(--text-muted); }
+.cmp-row__draft-meter { flex: 0 1 220px; }
+.cmp-row--draft .cmp-row__name { color: var(--text-muted); }
+
+/* Empty state */
+.cmp-empty { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); padding: var(--space-10) var(--space-8); text-align: center; }
+.cmp-empty--small { padding: var(--space-9) var(--space-6); gap: var(--space-3); }
+.cmp-empty--small .cab-muted { max-width: 30em; }
+.cmp-empty__art { position: relative; width: 220px; height: 112px; margin-bottom: var(--space-2); }
+.cmp-empty__card { position: absolute; width: 150px; aspect-ratio: 16 / 9; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--on-primary); box-shadow: var(--shadow-md); }
+.cmp-empty__card:first-child { left: 0; top: 0; transform: rotate(-6deg); opacity: .55; }
+.cmp-empty__card:nth-child(2) { right: 8px; bottom: 0; transform: rotate(3deg); }
+.cmp-empty__plus { position: absolute; right: -4px; top: 0; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: var(--primary); color: var(--on-primary); box-shadow: 0 0 0 5px var(--surface); }
+.cmp-empty__lead { max-width: 34em; margin: 0; }
+.cmp-empty__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
+.cmp-empty__chain { justify-content: center; margin-top: var(--space-4); }
+.cmp-prep { display: flex; flex-direction: column; gap: var(--space-4); }
+.cmp-prep__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.cmp-prep__item { display: flex; align-items: flex-start; gap: var(--space-4); padding: var(--space-5); }
+.cmp-prep__copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+.cmp-prep__copy strong { font-size: 16px; color: var(--text); }
+
+/* Corporate banner */
+.cmp-corp-banner { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-5); padding: var(--space-5) var(--space-6); }
+.cmp-corp-banner__copy { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.cmp-corp-banner__title { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; }
+
+/* ── Content width breakpoints ─────────────────────────── */
+@container content (max-width: 1079px) {
+  .cmp-row__grid { grid-template-columns: 96px minmax(0, 1fr) minmax(0, 1.25fr) 176px; grid-template-areas: 'cover main main action' 'cover status budget shows'; row-gap: var(--space-3); }
+  .cmp-row__grid > .cmp-cover { align-self: start; }
+}
+@container content (max-width: 899px) {
+  .cmp-prep__list { grid-template-columns: minmax(0, 1fr); }
+}
+@container content (max-width: 639px) {
+  .cmp-toolbar__search { flex: 1 1 100%; max-width: none; }
+  .cmp-toolbar__period { flex: 1 1 0; min-width: 0; }
+  .cmp-toolbar__label { display: none; }
+  .cmp-toolbar__period .ax-seg { flex: 1 1 auto; min-width: 0; }
+  .cmp-toolbar__period .ax-seg__item { flex: 1 1 0; min-width: 0; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; }
+  .cmp-toolbar__sort { flex: none; width: var(--control-md); min-width: 0; }
+  .cmp-toolbar__sort .ax-select__input { height: var(--control-md); padding: 0; color: transparent; }
+  .cmp-toolbar__sort .ax-select__input option { color: var(--text); }
+  .cmp-toolbar__sort .ax-select__icon { left: 50%; transform: translateX(-50%); color: var(--text); }
+  .cmp-toolbar__sort .ax-select__chevron { display: none; }
+  .cmp-row__shows.is-empty { display: none; }
+  .cmp-row__foot { flex-direction: column; align-items: flex-start; }
+  .cmp-row__foot--danger { flex-direction: row; }
+  .cmp-row__foot .ax-timeline--horizontal { flex-direction: column; gap: var(--space-2); }
+  .cmp-row__foot .ax-timeline--horizontal .ax-timeline__item::after { display: none; }
+  .cmp-row__grid { grid-template-columns: 72px minmax(0, 1fr) auto; grid-template-areas: 'cover main main' 'status status shows' 'budget budget budget' 'action action action'; padding: var(--space-4); gap: var(--space-3); }
+  .cmp-row__grid > .cmp-cover { width: 72px; border-radius: var(--radius-sm); }
+  .cmp-row__status { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .cmp-row__action .ax-btn { width: 100%; }
+  .cmp-row__foot { padding: var(--space-3) var(--space-4); }
+  .cmp-row__foot-note { margin-left: 0; }
+  .cmp-empty { padding: var(--space-8) var(--space-5); }
+  .cmp-empty__ctas, .cmp-empty__ctas .ax-btn { width: 100%; }
+  .cmp-empty__chain { justify-content: flex-start; }
+  .cmp-corp-banner { padding: var(--space-5); }
+}

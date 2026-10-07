@@ -1,0 +1,152 @@
+{
+  "titles": {
+    "new": "New campaign",
+    "fix": "Fix the campaign",
+    "corporate": "Corporate plan"
+  },
+  "steps": {
+    "media": "Video and details",
+    "tariff": "Plan",
+    "stores": "Stores",
+    "zones": "Shelf zones",
+    "budget": "Budget and review"
+  },
+  "stepsLabel": "Campaign creation steps",
+  "rules": {
+    "duration_7s": "The video is exactly 7 seconds, horizontal 16:9",
+    "languages_kk_ru": "Text in the video is in Kazakh and Russian",
+    "prohibited": "No prohibited ads: alcohol, tobacco and vapes, gambling and betting",
+    "claims": "“The best”, “No. 1” and the like — only with proof",
+    "flashing": "No sharp flashes or fast blinking",
+    "metadata": "The name, description and cover match the video"
+  },
+  "list": {
+    "filterLabel": "Filter by status",
+    "tabs": {
+      "all": "All",
+      "running": "Running",
+      "review": "In review",
+      "finished": "Finished"
+    },
+    "search": "Search by name",
+    "clearSearch": "Clear",
+    "periodLabel": "Impressions for",
+    "periodGroup": "Impressions period",
+    "period": {
+      "week": "7 days",
+      "month": "30 days",
+      "all": "all time"
+    },
+    "sortLabel": "Sort",
+    "sort": {
+      "new": "Newest first",
+      "budgetLeft": "By budget left",
+      "shows": "By impressions",
+      "name": "By name"
+    },
+    "count": {
+      "one": "{count} campaign",
+      "other": "{count} campaigns"
+    },
+    "plays": {
+      "one": "{count} impression {period}",
+      "other": "{count} impressions {period}"
+    },
+    "periodFor": {
+      "week": "in 7 days",
+      "month": "in 30 days",
+      "all": "all time"
+    },
+    "loading": "Loading campaigns"
+  },
+  "row": {
+    "stores": {
+      "one": "{count} store",
+      "other": "{count} stores"
+    },
+    "carts": {
+      "one": "{count} cart",
+      "other": "{count} carts"
+    },
+    "note": {
+      "review": "Usually within 24 hours",
+      "approved": "Video approved",
+      "rejected": "Needs fixing",
+      "since": "Since {date}",
+      "stopped": "Impressions stopped",
+      "period": "{from} — {to}"
+    },
+    "budgetNotSet": "No budget set",
+    "notPaid": "Not paid yet",
+    "paid": "Budget paid",
+    "left": "{left} left of {total}",
+    "spentOf": "{spent} spent of {total}",
+    "ended": "The budget ran out — top it up to continue",
+    "spentPct": "{pct}% of the budget spent",
+    "playsLabel": {
+      "week": "impressions in 7 days",
+      "month": "impressions in 30 days",
+      "all": "impressions all time"
+    },
+    "notStarted": "not started yet",
+    "actions": {
+      "open": "Open",
+      "howToPay": "How to pay",
+      "fix": "Fix",
+      "stats": "Statistics",
+      "topUp": "Top up",
+      "repeat": "Repeat"
+    },
+    "beforeLaunch": "Before launch",
+    "timeline": {
+      "review": "Video review",
+      "approved": "Video approved",
+      "payment": "Budget payment",
+      "paid": "Budget paid",
+      "launch": "Impressions start"
+    },
+    "stepState": {
+      "done": ", done",
+      "current": ", current step",
+      "todo": ", upcoming"
+    },
+    "invoiceSent": "We sent an invoice for {amount} to {email}",
+    "returned": "The moderator returned the campaign:",
+    "comment": "“{text}”"
+  },
+  "empty": {
+    "title": "Your campaigns will be here",
+    "lead": "Create the first one — it takes about 10 minutes. You’ll need a 7-second video and a budget from {amount}.",
+    "how": "How it works",
+    "prepTitle": "What to prepare",
+    "prep": {
+      "video": {
+        "title": "A 7-second video",
+        "text": "MP4 or MOV, horizontal, up to 50 MB. Text in Kazakh and Russian."
+      },
+      "cover": {
+        "title": "Cover — optional",
+        "text": "A 16:9 image for the campaign list and reports. Without a cover we show the first frame of the video."
+      },
+      "budget": {
+        "title": "Budget",
+        "text": "The minimum depends on the plan: from {amount}. Payment by invoice."
+      }
+    }
+  },
+  "notFound": {
+    "titleQuery": "Nothing found for “{query}”",
+    "title": "Nothing found",
+    "text": "Check the name or reset the filters.",
+    "reset": "Show all campaigns"
+  },
+  "banner": {
+    "title": "Need special terms?",
+    "text": "Corporate plan: an exclusive contract for your brand — reach, formats and budget are agreed individually.",
+    "more": "Learn more"
+  },
+  "error": {
+    "title": "Couldn't load campaigns",
+    "text": "Check your connection and try again."
+  }
+}

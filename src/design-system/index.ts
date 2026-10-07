@@ -17,3 +17,7 @@ export { StatTile, type StatTileProps, type StatDeltaTone } from './StatTile';
 export { Skeleton, type SkeletonProps } from './Skeleton';
 export { Avatar, type AvatarProps } from './Avatar';
 export { Disclosure, DisclosureGroup, type DisclosureProps } from './Disclosure';
+export { Tabs, type TabsProps, type TabItem } from './Tabs';
+export { SearchField, type SearchFieldProps } from './SearchField';
+export { Select, type SelectProps, type SelectOption } from './Select';
+export { Timeline, type TimelineProps, type TimelineItem, type TimelineState } from './Timeline';

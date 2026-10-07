@@ -2,6 +2,7 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router';
 import { useAuthSession } from '../../auth/useAuthSession';
 import { parseDemoVariant } from '../demo';
+import { queryKeys } from '../queryKeys';
 import { fetchHomeSource } from './api';
 import { demoHomeState } from './demo';
 import { buildHomeData } from './model';
@@ -15,7 +16,7 @@ export function useHomeState(): HomeState {
   const demo = import.meta.env.DEV ? parseDemoVariant(params.get('demo')) : null;
 
   const query = useQuery({
-    queryKey: ['home', userId],
+    queryKey: queryKeys.home(userId),
     queryFn: userId && !demo ? ({ signal }) => fetchHomeSource(userId, signal) : skipToken,
     select: buildHomeData,
   });

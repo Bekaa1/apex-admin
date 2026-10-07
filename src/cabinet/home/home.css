@@ -3,20 +3,12 @@
 /* ── Guide: hero ───────────────────────────────────────── */
 .cab-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--space-9); padding: var(--space-9); border-radius: var(--radius-2xl); }
 .cab-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-5); min-width: 0; }
-.cab-hero__title { margin: 0; max-width: 14em; font-family: var(--font-display); font-weight: 600; font-size: 40px; line-height: 1.08; letter-spacing: -0.025em; }
-.cab-hero__text { margin: 0; max-width: 34em; font-size: 18px; line-height: 1.55; color: var(--text-muted); }
-.cab-hero__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-1); }
 .cab-hero__facts { list-style: none; align-self: stretch; margin: var(--space-2) 0 0; padding: var(--space-5) 0 0; border-top: 1px solid var(--border);
   display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); font-size: 14px; line-height: 1.4; color: var(--text-muted); }
 .cab-hero__facts li { display: inline-flex; align-items: center; gap: var(--space-2); }
 .cab-hero__facts .ax-icon { color: var(--link); }
 .cab-hero__visual { margin: 0; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: var(--space-4); padding: var(--space-6);
   border-radius: var(--radius-xl); background: var(--bg); border: 1px solid var(--border); }
-.cab-receipt { margin: 0; padding: var(--space-1) var(--space-4); background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
-.cab-receipt > div { display: flex; justify-content: space-between; gap: var(--space-4); padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.4; }
-.cab-receipt > div:last-child { border-bottom: 0; }
-.cab-receipt dt { color: var(--text-muted); }
-.cab-receipt dd { margin: 0; font-weight: 600; text-align: right; }
 
 /* Device illustration — the tablet is near-black glass, the ad uses the logo gradient (illustration-only colours). */
 .cab-device { width: 74%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
@@ -82,21 +74,6 @@
 
 /* ── Guide: plans ──────────────────────────────────────── */
 .cab-tariffs { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
-.cab-tariff { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
-.cab-tariff__level { display: flex; gap: 4px; }
-.cab-tariff__level span { width: 20px; height: 6px; border-radius: 3px; background: var(--primary-soft); }
-.cab-tariff__level span.is-on { background: var(--primary); }
-.cab-tariff__text { margin: 0; min-height: 4.5em; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
-.cab-tariff__features { list-style: none; margin: 0; padding: var(--space-3) 0 0; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: var(--space-2);
-  font-size: 14px; line-height: 1.4; }
-.cab-tariff__features li { display: flex; align-items: flex-start; gap: var(--space-2); }
-.cab-tariff__features li.is-on .ax-icon { color: var(--success); }
-.cab-tariff__features li.is-off { color: var(--text-subtle); }
-.cab-tariff__min { margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
-.cab-tariff__min span { font-size: 13px; color: var(--text-muted); }
-.cab-tariff__min strong { font-family: var(--font-display); font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
-.cab-note { margin: 0; display: flex; align-items: flex-start; gap: var(--space-2); font-size: 14px; line-height: 1.5; color: var(--text-muted); }
-.cab-note .ax-icon { margin-top: 1px; color: var(--link); }
 
 /* ── Guide: budget ─────────────────────────────────────── */
 .cab-budget { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; gap: var(--space-9); padding: var(--space-9); border-radius: var(--radius-2xl); }
@@ -138,11 +115,6 @@
 .cab-support { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding: var(--space-7); }
 
 .cab-next { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding: var(--space-7); }
-.cab-chain { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.cab-chain li { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 14px 4px 6px; box-sizing: border-box; border-radius: var(--radius-full);
-  background: var(--bg); border: 1px solid var(--border); font-size: 14px; font-weight: 600; }
-.cab-chain li > span { flex: none; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-soft);
-  color: var(--link); font-size: 13px; }
 .cab-next__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-1); }
 
 /* ── Content width breakpoints (container queries) ─────── */
@@ -166,9 +138,6 @@
 }
 @container content (max-width: 639px) {
   .cab-hero, .cab-budget { padding: var(--space-6) var(--space-5); gap: var(--space-6); border-radius: var(--radius-xl); }
-  .cab-hero__title { font-size: 30px; }
-  .cab-hero__text { font-size: 16px; }
-  .cab-hero__ctas, .cab-hero__ctas .ax-btn { width: 100%; }
   .cab-hero__facts { flex-direction: column; }
   .cab-hero__visual { display: flex; padding: var(--space-4); }
   .cab-hero__visual .cab-device { width: 74%; }
@@ -176,7 +145,6 @@
   .cab-step__preview { grid-column: 2; }
   .cab-tariffs { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(250px, 84%); overflow-x: auto; scroll-snap-type: x mandatory;
     margin: 0 calc(-1 * var(--space-4)); padding: 2px var(--space-4) var(--space-2); scroll-padding-inline: var(--space-4); }
-  .cab-tariff { scroll-snap-align: start; padding: var(--space-5); }
   .cab-links { grid-template-columns: minmax(0, 1fr); }
   .cab-linkcard, .cab-faq, .cab-support, .cab-next { padding: var(--space-5); }
   .cab-after { padding: var(--space-5); }

@@ -66,32 +66,6 @@
   "tariffs": {
     "title": "Plans",
     "lead": "The plan defines where the video is shown and the minimum campaign budget. The higher the plan, the more options and the higher the minimum.",
-    "standard": {
-      "name": "Standard",
-      "text": "The video plays in the general rotation on all carts of the selected stores."
-    },
-    "zones": {
-      "name": "Standard + Zones",
-      "text": "Plus priority at the selected shelves: only zone-plan videos play in the zone."
-    },
-    "premium": {
-      "name": "Premium",
-      "text": "Zones and more impressions: the video plays more often both in rotation and at the shelves."
-    },
-    "exclusive": {
-      "name": "Exclusive",
-      "text": "Only your brand in the selected zones — no other advertisers."
-    },
-    "feature": {
-      "allCarts": "All carts of the selected stores",
-      "zonePriority": "Priority in shelf zones",
-      "moreShows": "More impressions in rotation",
-      "brandOnly": "Only your brand in the zone"
-    },
-    "has": "Included:",
-    "hasNot": "Not included:",
-    "minimum": "Minimum budget",
-    "from": "from {amount}",
     "note": "The minimum budget is the amount a campaign can start with. You can top up the budget at any time."
   },
   "budget": {

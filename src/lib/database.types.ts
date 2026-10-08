@@ -833,6 +833,8 @@ export type Database = {
           moderator_comment: string | null
           name: string | null
           paid_amount: number
+          paused_at: string | null
+          paused_by: string | null
           plays_count: number
           price_per_play: number | null
           rejection_reasons: string[] | null
@@ -880,6 +882,8 @@ export type Database = {
           moderator_comment?: string | null
           name?: string | null
           paid_amount?: number
+          paused_at?: string | null
+          paused_by?: string | null
           plays_count?: number
           price_per_play?: number | null
           rejection_reasons?: string[] | null
@@ -927,6 +931,8 @@ export type Database = {
           moderator_comment?: string | null
           name?: string | null
           paid_amount?: number
+          paused_at?: string | null
+          paused_by?: string | null
           plays_count?: number
           price_per_play?: number | null
           rejection_reasons?: string[] | null
@@ -4226,6 +4232,8 @@ export type Database = {
           name: string | null
           online_cart_count: number | null
           paid_amount: number | null
+          paused_at: string | null
+          paused_by: string | null
           plays_count: number | null
           price_per_play: number | null
           rejection_reasons: string[] | null
@@ -5613,6 +5621,7 @@ export type Database = {
       }
       owns_ad: { Args: { p_ad_id: string }; Returns: boolean }
       partner_store_ids: { Args: never; Returns: string[] }
+      pause_campaign: { Args: { p_id: string }; Returns: string }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -5662,6 +5671,7 @@ export type Database = {
         Returns: string
       }
       resubmit_campaign: { Args: { p: Json; p_id: string }; Returns: string }
+      resume_campaign: { Args: { p_id: string }; Returns: string }
       select_ad_for_zone: {
         Args: { p_store_id: string; p_zone_id: string }
         Returns: string

@@ -434,3 +434,30 @@ body { margin: 0; font-family: var(--font-sans); background: var(--bg); color: v
 .ax-menu__item[aria-disabled="true"] { color: var(--text-subtle); cursor: default; }
 .ax-menu__item[aria-disabled="true"]:hover { background: transparent; }
 [data-theme="dark"] .ax-menu__item:hover, [data-theme="dark"] .ax-menu__item:focus-visible { background: var(--segment-active); }
+
+/* ── v4.3: Dialog (confirmations) ───────────────────────────── */
+.ax-dialog { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 24px 16px; font-family: var(--font-sans); }
+.ax-dialog__backdrop { position: absolute; inset: 0; background: rgba(11, 16, 48, 0.48); }
+[data-theme="dark"] .ax-dialog__backdrop { background: rgba(0, 0, 0, 0.62); }
+.ax-dialog__panel { position: relative; width: 100%; max-width: 480px; max-height: 100%; overflow-y: auto; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;
+  padding: 28px 28px 24px; border-radius: var(--radius-xl); background: var(--surface-raised); color: var(--text); box-shadow: var(--shadow-lg); outline: none; }
+[data-theme="dark"] .ax-dialog__panel { border: 1px solid var(--border); }
+.ax-dialog__close { position: absolute; top: 12px; right: 12px; }
+.ax-dialog__icon { width: 52px; height: 52px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; }
+.ax-dialog__icon--brand { background: var(--primary-soft); color: var(--link); }
+.ax-dialog__icon--warning { background: var(--warning-soft); color: var(--warning); }
+.ax-dialog__icon--danger { background: var(--danger-soft); color: var(--danger); }
+.ax-dialog__title { margin: 0; padding-right: 36px; font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.ax-dialog__body { font-size: 15px; line-height: 1.5; color: var(--text-muted); }
+.ax-dialog__body p { margin: 0; }
+.ax-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+/* The kit's markup inside a native modal <dialog>: its own backdrop and panel do the looks. */
+dialog.ax-dialog { width: auto; height: auto; max-width: none; max-height: none; margin: 0; border: 0; background: transparent; color: inherit; }
+dialog.ax-dialog:not([open]) { display: none; }
+dialog.ax-dialog::backdrop { background: transparent; }
+@media (max-width: 520px) {
+  .ax-dialog { align-items: flex-end; padding: 0; }
+  .ax-dialog__panel { max-width: none; border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 24px 20px calc(20px + env(safe-area-inset-bottom)); }
+  .ax-dialog__actions { flex-direction: column-reverse; }
+  .ax-dialog__actions .ax-btn { width: 100%; }
+}

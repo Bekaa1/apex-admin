@@ -6,10 +6,10 @@ import { useAuthSession } from './useAuthSession';
 import { DEFAULT_AUTH_LINKS } from './links';
 import { needsSignupContactVerification } from './signupContacts';
 
-export function SessionLoading() {
+export function SessionLoading({ admin = false }: { admin?: boolean }) {
   const { t } = useI18n();
   return (
-      <AuthLayout showLegalLinks={false}>
+      <AuthLayout admin={admin} showLegalLinks={false}>
         <div className="auth__form" role="status" aria-busy="true">
           <p>{t('cabinet.sessionLoading')}</p>
           <Skeleton variant="block" height="var(--control-lg)" />

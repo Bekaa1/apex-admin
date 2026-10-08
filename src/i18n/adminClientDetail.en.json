@@ -1,0 +1,24 @@
+{
+  "title": "Client details",
+  "description": "Profile and related records. Read only. Dates use Asia/Almaty time.",
+  "back": "Back to clients",
+  "profile": "Profile information",
+  "contacts": "Contact details come from the profile. Their verification status is not available here.",
+  "records": "Related client records",
+  "tabs": { "campaigns": "Campaigns", "invoices": "Invoices" },
+  "pagination": { "campaigns": "Client campaign pages", "invoices": "Client invoice pages" },
+  "empty": { "campaigns": "The source returned no accessible campaigns for this client.", "invoices": "The source returned no accessible invoices for this client." },
+  "unconfigured": "Administrative access to profiles is not configured",
+  "invalidId": "The client ID in the URL is invalid. Return to the client list.",
+  "invalidPage": "The tab or page in the URL is invalid. Open the first page of the tab.",
+  "notFound": "Profile not found or unavailable",
+  "notFoundBody": "The source returned no profile for this ID. This does not confirm that the account does not exist.",
+  "errorTitle": "Could not load the profile",
+  "recordsError": "Could not load related records",
+  "errors": {
+    "denied": "The server denied access to this data. Check access permissions.",
+    "missing": "The source is unavailable in the API. Server configuration is required.",
+    "invalid": "The server response does not match the expected format or selected client. Data is not displayed.",
+    "unavailable": "Could not retrieve data. Please try again."
+  }
+}

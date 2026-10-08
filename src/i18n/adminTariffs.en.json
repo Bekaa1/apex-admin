@@ -1,0 +1,24 @@
+{
+  "title": "Tariffs",
+  "description": "Current and archived tariff conditions. Update dates use the Asia/Almaty time zone.",
+  "historyNote": "Conditions for paid invoices and budget portions are stored separately and may differ from the current tariff",
+  "columns": { "name": "Name", "code": "Code", "price": "Price per play", "minimum": "Minimum amount", "version": "Version", "purchase": "Purchase", "archive": "Archive status", "updated": "Updated", "details": "Parameters" },
+  "parameters": { "can_select_store": "Store selection", "can_select_zone": "Zone selection", "has_sound": "Sound", "exclusive_zone": "Exclusive zone", "more_plays": "Increased number of plays", "badge": "Badge", "sort_order": "Sort order" },
+  "archiveFilter": "Archive status", "purchaseFilter": "Purchase availability",
+  "active": "Current", "archived": "Archived", "all": "All",
+  "purchase": { "yes": "Available", "no": "Unavailable" },
+  "archive": { "yes": "Archived", "no": "Current" },
+  "yes": "Yes", "no": "No", "noCode": "Code not set", "notSpecified": "Not specified",
+  "details": "Parameters", "hide": "Hide", "showFor": "Show parameters for tariff {name}", "hideFor": "Hide parameters for tariff {name}",
+  "showAll": "Show all tariffs", "pagination": "Tariff pages",
+  "invalid": "Invalid filter or page in the address. Check the parameters or show all tariffs.",
+  "denied": "Tariff access denied", "errorTitle": "Could not load tariffs",
+  "errors": {
+    "denied": "The server denied access to tariffs. Access permissions need to be checked.",
+    "missing": "The tariff table or required fields are unavailable in the API. Server configuration is required.",
+    "invalid": "The server response does not match the expected format, filters or page boundaries. Data has not been displayed.",
+    "unavailable": "Could not retrieve data. Please try again."
+  },
+  "empty": { "title": "No accessible tariffs", "body": "The source returned no accessible tariff records." },
+  "noMatches": { "title": "No matches", "body": "Change the archive and purchase filters, or show all tariffs." }
+}

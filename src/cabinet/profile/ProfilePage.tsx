@@ -375,7 +375,9 @@ export function ProfilePage() {
 
   if (profile.isPending) return <ProfileLoading />;
   if (profile.isError || !profile.data || !userId) {
-    return <Alert tone="danger" title={t('profile.errors.loadTitle')}>{t('profile.errors.load')}</Alert>;
+    return <Alert tone="danger" title={t('profile.errors.loadTitle')} action={
+      <Button variant="secondary" size="md" loading={profile.isFetching} onClick={() => void profile.refetch()}>{t('cabinet.retry')}</Button>
+    }>{t('profile.errors.load')}</Alert>;
   }
 
   return (

@@ -1,0 +1,11 @@
+/* Reuse the existing table with profile navigation and no editing actions. */
+.table.table { min-width: 1180px; }
+.table.table th:first-child { width: 8%; }
+.table.table th:nth-child(2), .table.table th:nth-child(3) { width: 19%; }
+.table.table th:nth-child(4) { width: 13%; }
+.table.table th:nth-child(5) { width: 18%; }
+.table.table th:last-child { width: 13%; }
+.nameLink { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
+.nameLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--radius-sm); }
+.tabPanel { min-width: 0; }
+.tabPanel:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }

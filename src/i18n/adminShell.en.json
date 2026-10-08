@@ -1,0 +1,13 @@
+{
+  "sections": { "overview": "Overview", "campaigns": "Campaigns", "moderation": "Moderation", "invoices": "Invoices", "clients": "Clients", "stores": "Stores", "equipment": "Equipment", "tariffs": "Pricing", "corporate": "Corporate requests" },
+  "menu": "ApexAdmin menu",
+  "mobileMenu": "ApexAdmin quick navigation",
+  "more": "More",
+  "closeMenu": "Close menu",
+  "skip": "Skip to content",
+  "inDevelopment": "Section under development",
+  "accessNotConfigured": "Panel access has not been configured yet",
+  "preview": "Layout preview · no database connection",
+  "backOverview": "Back to overview",
+  "notFound": { "title": "Page not found · 404", "body": "This page does not exist in ApexAdmin. Select a section from the menu or return to the overview." }
+}

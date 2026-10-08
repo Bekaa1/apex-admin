@@ -1,0 +1,28 @@
+{
+  "title": "Corporate request",
+  "listTitle": "Corporate requests",
+  "readOnly": "View request details.",
+  "backList": "Back to requests",
+  "backOverview": "Back to overview",
+  "limitedList": "Up to five recent requests are currently available. The full list with search, filters and pagination is not connected yet; URL parameters do not affect this selection.",
+  "notSpecified": "Not specified",
+  "noAccount": "Request is not linked to an account",
+  "noMessage": "No message added",
+  "noComment": "No comment added",
+  "timezone": "Times are shown in Asia/Almaty.",
+  "fields": {
+    "company": "Company", "contactName": "Contact person", "phone": "Phone", "email": "Email",
+    "message": "Message", "status": "Status", "managerComment": "Manager comment",
+    "createdAt": "Created", "updatedAt": "Updated", "userId": "Linked user ID", "id": "Request ID"
+  },
+  "invalidId": { "title": "Invalid request address", "body": "The identifier in the URL must be a UUID. Open a request from the list." },
+  "notFound": { "title": "Request not found", "body": "The server returned no accessible record. It may not exist or may be hidden by access rules." },
+  "errorTitle": "Could not load request",
+  "deniedTitle": "Request access denied",
+  "errors": {
+    "denied": "The server denied read access to this request. Check permissions.",
+    "missing": "The corporate requests source is unavailable in the API.",
+    "invalid": "The server returned an unexpected data format. The request could not be displayed.",
+    "unavailable": "Could not load data. Try again."
+  }
+}

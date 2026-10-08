@@ -1,0 +1,32 @@
+{
+  "description": "Company requests, including submissions without a linked account.",
+  "search": "Company or contact person",
+  "searchHint": "Case-insensitive search within a company name or contact name. Special characters are treated as text.",
+  "status": "Exact status value",
+  "statusHint": "Enter the server value exactly. Leave empty for all statuses.",
+  "apply": "Apply",
+  "reset": "Clear filters",
+  "refresh": "Refresh",
+  "count": "Accessible matches: {count}",
+  "scope": "Times use Asia/Almaty. Counts cover records accessible to your account; complete administrator access needs verification on the server.",
+  "pagination": "Corporate request pages",
+  "previous": "Previous",
+  "next": "Next",
+  "firstPage": "Go to first page",
+  "page": "Page {page} · {size} per page",
+  "empty": { "title": "No requests yet", "body": "The server returned no accessible requests. An empty response may also result from access restrictions." },
+  "noMatches": { "title": "No matches found", "body": "Change the search or exact status value, or clear the filters." },
+  "pageEmpty": { "title": "No requests on this page", "body": "The list may have changed. Return to the first page of these results." },
+  "errorTitle": "Could not load requests",
+  "deniedTitle": "Request access denied",
+  "errors": {
+    "denied": "The server denied read access. Check permissions.",
+    "missing": "The corporate requests source is unavailable in the API.",
+    "invalid": "The server did not return the expected page and exact count. Reload the data.",
+    "unavailable": "Could not load data. Try again."
+  },
+  "validation": {
+    "page": "Invalid page number in the URL. Apply the filters again or clear them.",
+    "filters": "Search and status allow up to 256 characters without control characters. Each parameter must appear only once in the URL."
+  }
+}

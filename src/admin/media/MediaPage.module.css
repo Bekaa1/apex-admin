@@ -1,0 +1,29 @@
+.page { display: grid; gap: var(--space-5); min-width: 0; color: var(--text); }
+.page p { margin: 0; }
+.heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); }
+.heading > div { flex: 1 1 400px; min-width: 0; }
+.heading h1 { margin: 0 0 var(--space-2); font: 600 clamp(24px, 3vw, 30px)/1.3 var(--font-display); overflow-wrap: anywhere; }
+.muted { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+.panel { display: grid; gap: var(--space-4); min-width: 0; padding: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+.summary { display: grid; gap: var(--space-2); }
+.count { font-weight: 600; }
+.filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(210px, 0.65fr); gap: var(--space-4); align-items: end; }
+.tableWrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+.tableWrap:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.table { width: 100%; min-width: 600px; table-layout: fixed; border-collapse: collapse; font-size: 14px; text-align: left; }
+.table th, .table td { padding: var(--space-4); vertical-align: top; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+.table th { background: var(--surface-muted); color: var(--text-muted); font-weight: 600; }
+.table th:first-child { width: 50%; }
+.table th:nth-child(2) { width: 20%; }
+.table tbody tr:last-child td { border-bottom: 0; }
+.path { white-space: pre-wrap; word-break: break-word; }
+.state { display: grid; justify-items: start; gap: var(--space-4); padding: var(--space-6) 0; }
+.state > span { width: 100%; }
+.state h2 { margin: 0; font: 600 20px/1.4 var(--font-display); }
+.state p { color: var(--text-muted); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 600px) {
+  .panel { padding: var(--space-4); }
+  .filters { grid-template-columns: minmax(0, 1fr); }
+  .heading > div { flex-basis: 100%; }
+}

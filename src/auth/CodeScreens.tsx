@@ -84,12 +84,12 @@ export function VerifyEmailScreen({
 }
 
 /** Reset step 2: the code from the reset email (verifyOtp type 'recovery'). */
-export function ResetPasswordCodeScreen({ contact, channel = 'email', loading, error, defaultCode, resendSeconds, resendAvailable, onSubmit, onResend }: Omit<CodeScreenProps, 'contact'> & { contact: string; channel?: 'email' | 'sms' }) {
+export function ResetPasswordCodeScreen({ admin = false, contact, channel = 'email', loading, error, defaultCode, resendSeconds, resendAvailable, onSubmit, onResend }: Omit<CodeScreenProps, 'contact'> & { admin?: boolean; contact: string; channel?: 'email' | 'sms' }) {
   const { t, tRich } = useI18n();
   const links = useAuthLinks();
   const { setCode, submit } = useCodeForm(onSubmit);
   return (
-    <AuthLayout back={{ href: links.resetEmail, label: t('common.back') }}>
+    <AuthLayout admin={admin} back={{ href: links.resetEmail, label: t('common.back') }}>
       <form className="auth__form" noValidate onSubmit={submit}>
         <AuthHead
           badge={t('common.step', { n: 2 })}
@@ -102,6 +102,7 @@ export function ResetPasswordCodeScreen({ contact, channel = 'email', loading, e
           label={t(channel === 'sms' ? 'common.codeFromSms' : 'common.codeLabel')}
           cellLabel={t('common.codeCell')}
           defaultValue={defaultCode}
+          disabled={loading}
           error={error ? t(error === 'expired' ? 'verify.errors.expired' : error === 'unavailable' ? 'verify.errors.unavailable' : 'verify.errors.invalid') : undefined}
           onChange={setCode}
           onComplete={(c) => onSubmit?.(c)}
@@ -109,7 +110,7 @@ export function ResetPasswordCodeScreen({ contact, channel = 'email', loading, e
         <Button type="submit" fullWidth loading={loading}>
           {t('reset.code.submit')}
         </Button>
-        <ResendBlock seconds={resendSeconds} forceAvailable={resendAvailable || Boolean(error)} onResend={onResend} changeHref={links.resetEmail} />
+        <ResendBlock disabled={loading} seconds={resendSeconds} forceAvailable={resendAvailable || Boolean(error)} onResend={onResend} changeHref={links.resetEmail} />
       </form>
     </AuthLayout>
   );

@@ -1,0 +1,36 @@
+{
+  "title": "Stores",
+  "description": "View accessible stores. Creation dates use Asia/Almaty time.",
+  "columns": { "name": "Name", "city": "City", "address": "Address", "partner": "Partner", "timezone": "Time zone", "created": "Created" },
+  "notSpecified": "Not specified",
+  "search": "Store name",
+  "searchHint": "Search by part of the name, ignoring case.",
+  "cityFilter": "City",
+  "cityHint": "Exact city name, including case. Leave empty for any city.",
+  "apply": "Apply",
+  "reset": "Reset filters",
+  "refresh": "Refresh",
+  "count": "Accessible records matching filters: {count}",
+  "countUnknown": "The total count is unavailable. Use Previous and Next.",
+  "pagination": "Store list pages",
+  "page": "Page {page} · up to {size} records",
+  "previous": "Previous",
+  "next": "Next",
+  "firstPage": "First page",
+  "partnersUnavailable": "Some partner names are unavailable. Partner IDs are shown instead; stores remain in the list.",
+  "empty": { "title": "The list is empty", "body": "The source returned no accessible stores." },
+  "noMatches": { "title": "No matches", "body": "Change the name or city, or reset the filters." },
+  "pageEmpty": { "title": "No records on this page", "body": "The list may have changed. Go to the previous or first page." },
+  "errorTitle": "Could not load stores",
+  "deniedTitle": "Store access denied",
+  "errors": {
+    "denied": "The server denied access to stores. Check access permissions.",
+    "missing": "The store source is unavailable in the API. Server configuration is required.",
+    "invalid": "The server response does not match the expected format or page boundaries. Data is not displayed.",
+    "unavailable": "Could not retrieve data. Please try again."
+  },
+  "validation": {
+    "filters": "A filter is too long or invalid. Check your input and repeated URL parameters.",
+    "page": "The page in the URL is invalid. Apply or reset the filters."
+  }
+}

@@ -4,12 +4,13 @@ import { useI18n } from '../i18n/i18n';
 import { AuthHead, AuthLayout, AuthNote } from './AuthLayout';
 import { useAuthLinks } from './links';
 import { useContactInput } from './useContactInput';
-import { CONTACT_ERROR_KEY, validateSignupContact } from './validation';
+import { CONTACT_ERROR_KEY, EMAIL_ERROR_KEY, validateEmail, validateSignupContact } from './validation';
 
 /** Server-side outcomes of signInWithPassword (see supabaseAuth.ts). */
 export type LoginError = 'invalid' | 'unconfirmed' | 'ratelimit' | 'unavailable';
 
 export interface LoginScreenProps {
+  admin?: boolean;
   loading?: boolean;
   emailCodeLoading?: boolean;
   error?: LoginError | null;
@@ -21,20 +22,23 @@ export interface LoginScreenProps {
   onEmailCode?: (email: string) => void | Promise<void>;
 }
 
-export function LoginScreen({ loading, emailCodeLoading, error, email: sentTo, defaultEmail = '', defaultPassword = '', onSubmit, onEmailCode }: LoginScreenProps) {
+export function LoginScreen({ admin = false, loading, emailCodeLoading, error, email: sentTo, defaultEmail = '', defaultPassword = '', onSubmit, onEmailCode }: LoginScreenProps) {
   const { t } = useI18n();
   const links = useAuthLinks();
-  const { contact, handleBeforeInput: handleContactBeforeInput, handleChange: handleContactChange, handleBlur: handleContactBlur } = useContactInput(defaultEmail);
+  const input = useContactInput(defaultEmail);
+  const [email, setEmail] = useState(defaultEmail);
+  const contact = admin ? email : input.contact;
+  const validate = admin ? validateEmail : validateSignupContact;
   const [password, setPassword] = useState(defaultPassword);
   const [submitted, setSubmitted] = useState(false);
 
-  const contactProblem = submitted ? validateSignupContact(contact) : null;
+  const contactProblem = submitted ? validate(contact) : null;
   const passwordMissing = submitted && !password;
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    if (validateSignupContact(contact) || !password) return;
+    if (loading || validate(contact) || !password) return;
     void onSubmit?.({ contact: contact.trim(), password });
   };
   const requestEmailCode = () => {
@@ -45,9 +49,9 @@ export function LoginScreen({ loading, emailCodeLoading, error, email: sentTo, d
   const isPhoneInput = /^[+\d]/.test(contact.trim());
 
   return (
-    <AuthLayout showLegalLinks={false}>
+    <AuthLayout admin={admin} showLegalLinks={false}>
       <form className="auth__form" noValidate onSubmit={submit}>
-        <AuthHead title={t('login.title')} subtitle={t('login.subtitle')} />
+        <AuthHead title={t(admin ? 'adminAuth.loginTitle' : 'login.title')} subtitle={t(admin ? 'adminAuth.loginSubtitle' : 'login.subtitle')} />
 
         {error === 'invalid' ? (
           <Alert tone="danger" title={t('login.errors.invalidTitle')}>
@@ -56,7 +60,7 @@ export function LoginScreen({ loading, emailCodeLoading, error, email: sentTo, d
         ) : null}
         {error === 'unconfirmed' ? (
           <Alert tone="info" title={t('login.errors.unconfirmedTitle')}>
-            {t('login.errors.unconfirmedBody', { email: sentTo || contact })}
+            {t(admin ? 'adminAuth.unconfirmed' : 'login.errors.unconfirmedBody', { email: sentTo || contact })}
           </Alert>
         ) : null}
         {error === 'ratelimit' ? (
@@ -71,20 +75,23 @@ export function LoginScreen({ loading, emailCodeLoading, error, email: sentTo, d
         ) : null}
 
         <TextField
-          label={t('login.emailLabel')}
-          type="text"
-          inputMode={isPhoneInput ? 'tel' : 'email'}
+          label={t(admin ? 'adminAuth.email' : 'login.emailLabel')}
+          type={admin ? 'email' : 'text'}
+          inputMode={!admin && isPhoneInput ? 'tel' : 'email'}
           autoComplete="username"
-          placeholder={t('common.contactPlaceholder')}
+          placeholder={admin ? 'name@company.kz' : t('common.contactPlaceholder')}
           value={contact}
-          onBeforeInput={handleContactBeforeInput}
-          onChange={handleContactChange}
-          onBlur={handleContactBlur}
-          error={contactProblem ? t(CONTACT_ERROR_KEY[contactProblem]) : undefined}
+          maxLength={admin ? 254 : undefined}
+          disabled={loading}
+          onBeforeInput={admin ? undefined : input.handleBeforeInput}
+          onChange={admin ? (event) => setEmail(event.target.value) : input.handleChange}
+          onBlur={admin ? undefined : input.handleBlur}
+          error={contactProblem ? t((admin ? EMAIL_ERROR_KEY : CONTACT_ERROR_KEY)[contactProblem]) : undefined}
         />
         <PasswordField
           label={t('common.password')}
           autoComplete="current-password"
+          disabled={loading}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           error={passwordMissing ? t('login.errors.required') : undefined}
@@ -93,16 +100,16 @@ export function LoginScreen({ loading, emailCodeLoading, error, email: sentTo, d
           hideLabel={t('common.hidePassword')}
         />
 
-        <Button type="submit" fullWidth loading={loading} disabled={emailCodeLoading || error === 'ratelimit'}>
+        <Button type="submit" fullWidth loading={loading} disabled={emailCodeLoading || (!admin && error === 'ratelimit')}>
           {t('login.submit')}
         </Button>
-        {!isPhoneInput ? (
+        {!admin && !isPhoneInput ? (
           <Button type="button" variant="secondary" fullWidth loading={emailCodeLoading} disabled={loading || error === 'ratelimit'} onClick={requestEmailCode}>
             {t('login.emailCode')}
           </Button>
         ) : null}
 
-        <AuthNote text={t('login.noAccount')} link={t('login.signup')} href={links.signup} />
+        {!admin ? <AuthNote text={t('login.noAccount')} link={t('login.signup')} href={links.signup} /> : null}
       </form>
     </AuthLayout>
   );

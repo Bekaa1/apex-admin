@@ -28,16 +28,16 @@ export function Landing() {
   return (
     <>
       <section className="land__hero" aria-labelledby={titleId}>
-        <HeroVideo media={media} held={watching} />
+        {media && <HeroVideo media={media} held={watching} />}
         <div className="land__copy">
           <p className="land__eyebrow"><span className="land__dot" aria-hidden="true" />{t('landing.hero.eyebrow')}</p>
           <h1 className="land__title" id={titleId}>{t('landing.hero.titleBefore')}<span className="land__accent">{t('landing.hero.titleAccent')}</span>{t('landing.hero.titleAfter')}</h1>
           <div className="land__ctas">
             <CampaignLink size="xl" iconRight="arrow-right">{t('landing.hero.ctaPrimary')}</CampaignLink>
-            <Button size="xl" variant="secondary" className="land__watch" iconLeft="play" onClick={openVideo}>
+            {media && <Button size="xl" variant="secondary" className="land__watch" iconLeft="play" onClick={openVideo}>
               {t('landing.hero.watch')}
               <span className="land__watch-length"> · {t('landing.hero.watchLength')}</span>
-            </Button>
+            </Button>}
           </div>
         </div>
       </section>
@@ -47,7 +47,7 @@ export function Landing() {
           {[1, 2, 3].map((n) => <div className="land__stat" key={n}><p className="land__stat-value">{t('landing.stats.s' + n + 'Value')}</p><p className="land__stat-label">{t('landing.stats.s' + n + 'Label')}</p></div>)}
         </div>
       </section>
-      <VideoDialog dialogRef={playerRef} videoRef={fullRef} sources={media.full} poster={media.poster.src} onClose={() => setWatching(false)} />
+      {media && <VideoDialog dialogRef={playerRef} videoRef={fullRef} sources={media.full} poster={media.poster.src} onClose={() => setWatching(false)} />}
     </>
   );
 }

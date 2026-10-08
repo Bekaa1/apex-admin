@@ -22,6 +22,7 @@ function headOf(source: StatsSource, single: Chosen): CampaignHead {
     id: single.id,
     name: single.name,
     coverUrl: single.row.content_url || null,
+    videoUrl: single.row.video_url || null,
     coverTone: single.coverTone,
     tariff: single.tariff,
     stage: single.stage,

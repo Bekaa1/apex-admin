@@ -12,7 +12,7 @@ export type CampaignStatsRow = Pick<
 >;
 
 /** `ads` columns the views lack; `tariff` arrives when the backend links campaigns to tariffs. */
-export type CampaignExtraRow = Pick<Tables<'ads'>, 'id' | 'content_url' | 'store_id'> & { tariff?: string | null };
+export type CampaignExtraRow = Pick<Tables<'ads'>, 'id' | 'content_url' | 'video_url' | 'store_id'> & { tariff?: string | null };
 
 /** `stores`. */
 export type StoreRow = Pick<Tables<'stores'>, 'id' | 'name' | 'city'>;
@@ -34,6 +34,7 @@ export interface CampaignItem {
   name: string;
   tariff: string | null;
   coverUrl: string | null;
+  videoUrl: string | null;
   status: VisibleStatus;
   budget: number;
   left: number;

@@ -46,6 +46,7 @@ export function campaignLines(chosen: Chosen[], plays: CampaignPlays, perDay: (i
         id: c.id,
         name: c.name,
         coverUrl: c.row.content_url || null,
+        videoUrl: c.row.video_url || null,
         coverTone: c.coverTone,
         tariff: c.tariff,
         stage: c.stage,

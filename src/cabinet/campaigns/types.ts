@@ -27,6 +27,7 @@ export type CampaignStatsRow = Pick<
   | 'store_count'
   | 'cart_count'
   | 'content_url'
+  | 'video_url'
   | 'paid_amount'
   | 'unpaid_amount'
   | 'invoice_sent_to'
@@ -34,6 +35,8 @@ export type CampaignStatsRow = Pick<
   | 'moderator_comment'
   | 'submitted_at'
   | 'tariff_can_extend'
+  | 'paused_at'
+  | 'paused_by'
 >;
 
 export interface CampaignsSource {
@@ -52,6 +55,8 @@ export interface CampaignCard {
   id: string;
   name: string;
   coverUrl: string | null;
+  /** Its first frame stands in for a missing cover. */
+  videoUrl: string | null;
   /** Placeholder gradient 1–3, picked from the id so it stays put while filtering. */
   coverTone: 1 | 2 | 3;
   /** Name in `cabinet.tariffs.<code>.name`. */

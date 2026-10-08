@@ -35,6 +35,9 @@ export type StatsCampaignRow = Pick<
   | 'cart_count'
   | 'online_cart_count'
   | 'content_url'
+  | 'video_url'
+  | 'paused_at'
+  | 'paused_by'
 >;
 
 /** `my_campaign_locations`: stores and shelf zones chosen in a campaign. */
@@ -159,6 +162,7 @@ export interface CampaignLine {
   id: string;
   name: string;
   coverUrl: string | null;
+  videoUrl: string | null;
   coverTone: CoverTone;
   tariff: TariffCode | 'corporate' | null;
   stage: CampaignStage;
@@ -219,6 +223,7 @@ export interface CampaignHead {
   id: string;
   name: string;
   coverUrl: string | null;
+  videoUrl: string | null;
   coverTone: CoverTone;
   tariff: TariffCode | 'corporate' | null;
   stage: CampaignStage;

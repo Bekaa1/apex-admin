@@ -8,3 +8,8 @@ export function coverTone(id: string): CoverTone {
   for (const char of id) sum += char.charCodeAt(0);
   return COVER_TONES[sum % COVER_TONES.length];
 }
+
+export type CoverSize = 'sm' | 'md' | 'lg' | 'xl';
+
+/** The play mark of a cover without an image. */
+export const COVER_PLAY_ICON: Record<CoverSize, number> = { sm: 16, md: 16, lg: 22, xl: 28 };

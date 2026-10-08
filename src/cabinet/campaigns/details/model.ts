@@ -102,6 +102,7 @@ function historyOf(source: CampaignDetailsSource, launched: boolean): HistoryEve
   }
   add({ key: 'started', kind: 'started', date: row.start_date }, row.start_date);
   if (resubmitted && launched) add({ key: 'changesSent', kind: 'changesSent', date: resubmitted, current: row.status === 'pending' }, resubmitted);
+  if (row.status === 'paused') add({ key: 'paused', kind: 'paused', date: row.paused_at }, row.paused_at ?? `${source.today}T23:59:59+05:00`);
   if (row.status === 'budget_ended') add({ key: 'budgetEnded', kind: 'budgetEnded', date: null }, `${source.today}T23:59:59+05:00`);
   if (row.status === 'completed') add({ key: 'finished', kind: 'finished', date: row.end_date }, row.end_date);
 
@@ -135,6 +136,7 @@ export function buildCampaignDetails(source: CampaignDetailsSource, catalog: Sto
     stats,
     media: {
       video: source.files.video,
+      videoUrl: row.video_url || null,
       durationSec: row.video_duration_sec,
       width: source.files.width,
       height: source.files.height,

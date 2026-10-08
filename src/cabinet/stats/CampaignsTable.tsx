@@ -57,7 +57,7 @@ export function CampaignsTable({ lines, hrefOf }: { lines: CampaignLine[]; hrefO
                 <tr key={line.id}>
                   <td className="cab-table__main">
                     <div className="cab-cell-campaign">
-                      <CampaignCover url={line.coverUrl} tone={line.coverTone} size="sm" />
+                      <CampaignCover url={line.coverUrl} videoUrl={line.videoUrl} tone={line.coverTone} size="sm" />
                       <div className="st-camp">
                         <span className="cab-table__name">
                           <Link to={hrefOf(line.id)}>{line.name}</Link>

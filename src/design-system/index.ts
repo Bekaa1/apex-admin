@@ -29,6 +29,7 @@ export { TextAreaField, type TextAreaFieldProps } from './TextAreaField';
 export { Delta, type DeltaProps, type DeltaTone, type DeltaTrend } from './Delta';
 export { ColumnsChart, type ColumnsChartProps, type ColumnsChartBar } from './ColumnsChart';
 export { Menu, type MenuProps, type MenuItem } from './Menu';
+export { Dialog, type DialogProps, type DialogTone } from './Dialog';
 export { Sparkline, type SparklineProps } from './Sparkline';
 export { BarList, type BarListProps, type BarListItem } from './BarList';
 export { Heatmap, type HeatmapProps, type HeatmapRow, type HeatmapLevel } from './Heatmap';

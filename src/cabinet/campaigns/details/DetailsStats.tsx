@@ -78,6 +78,12 @@ export function DetailsStats({ details }: { details: CampaignDetails }) {
         keyboardHint={t('campaigns.details.stats.chartHint')}
         plotHeight={150}
       />
+      {stage.kind === 'paused' && stage.pausedAt ? (
+        <p className="cab-note">
+          <Icon name="pause" size={18} />
+          {t('campaigns.details.stats.holdNote', { date: formatDayMonth(stage.pausedAt, lang) })}
+        </p>
+      ) : null}
       {stage.kind === 'changesReview' && stage.since ? (
         <p className="cab-note">
           <Icon name="pause" size={18} />

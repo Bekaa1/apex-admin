@@ -41,6 +41,7 @@ test('public build preserves landing, auth and cabinet; admin URLs resolve only 
   assert.equal(root.at(-1).route.element.type.name, 'Landing');
   assert.ok(names(root).includes('PublicLayout'));
   assert.equal(names(root).filter(n => n === 'ChatRouteLayout').length, 1);
+  assert.equal(matchRoutes(publicRoutes, '/how-it-works').at(-1).route.element.props.to, '/');
   for (const url of ['/login', '/signup', '/signup/verify', '/signup/profile']) {
     const matches = matchRoutes(publicRoutes, url);
     assert.notEqual(matches.at(-1).route.path, '*');

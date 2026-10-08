@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Checkbox, Chip, Icon, TextField, Timeline } from '../../../../design-system';
+import { Chip, Icon, TextField, Timeline } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatMoney, formatNumber, formatPrice } from '../../../../lib/format';
 import { termsOf } from '../../../tariffs';
@@ -9,6 +9,7 @@ import type { WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 import { WizardTermsChanged } from '../WizardTermsChanged';
 import { ReviewList } from './ReviewList';
+import { RulesCheckbox } from './RulesCheckbox';
 
 /** Step 5: budget, review of the campaign, what happens next and the rules consent. */
 export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
@@ -100,13 +101,7 @@ export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; c
           ]}
         />
       </section>
-      <Checkbox
-        checked={form.rulesAccepted}
-        error={errors.rules ? t('campaigns.wizard.budget.rulesError') : undefined}
-        onChange={(event) => dispatch({ type: 'rules', value: event.target.checked })}
-      >
-        {t('campaigns.wizard.budget.rules')}
-      </Checkbox>
+      <RulesCheckbox wizard={wizard} />
     </div>
   );
 }

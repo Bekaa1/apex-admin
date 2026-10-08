@@ -128,7 +128,7 @@ src/
 - Что важно фронту (снимок на 07.10, подробности в session-log):
   - Данные кабинета берём только из `my_*` вью: `my_ad_stats_summary`, `my_campaigns_stats`, `my_daily_plays*`, `my_campaign_store_shares`, `my_campaign_zone_shares`. Они фильтруют по `auth.uid()`.
   - Вью `advertiser_*`, `ad_campaign_stats`, `user_ad_stats`, `all_*`, `partner_*` и похожие не используем: они отдают данные всех пользователей.
-  - Свои строки `ads` и `ad_stores` рекламодатель только читает; кампании создаются и меняются через RPC (`submit_campaign`, `edit_campaign`, `extend_campaign`). Ошибка RPC приходит кодом в `message` (`invalid_video`, `missing_email`…), поле — в `hint`.
+  - Свои строки `ads` и `ad_stores` рекламодатель только читает; кампании создаются и меняются через RPC (`submit_campaign`, `edit_campaign`, `extend_campaign`, пауза — `pause_campaign`/`resume_campaign`: возобновить можно только свою паузу, `paused_by = 'advertiser'`). Ошибка RPC приходит кодом в `message` (`invalid_video`, `missing_email`…), поле — в `hint`.
   - Профиль — `public.users` (1:1 к `auth.users`). Текущая регистрация сохраняет его через RPC `complete_signup_profile(p_full_name, p_bin, p_company_name)`.
   - Статистика приходит из «Cart» раз в час, поэтому возможна задержка до часа.
 - Если фронту нужна правка бэкенда, пишу запрос для бэкенд-разработчика: что нужно, для какого экрана, предлагаемый SQL/RLS, насколько срочно.

@@ -68,7 +68,7 @@ export interface DetailsStore {
   zones: string[];
 }
 
-export type HistoryKind = 'created' | 'sent' | 'approved' | 'rejected' | 'paid' | 'toppedUp' | 'invoice' | 'started' | 'changesSent' | 'budgetEnded' | 'finished';
+export type HistoryKind = 'created' | 'sent' | 'approved' | 'rejected' | 'paid' | 'toppedUp' | 'invoice' | 'started' | 'changesSent' | 'paused' | 'budgetEnded' | 'finished';
 
 export interface HistoryEvent {
   key: string;
@@ -96,7 +96,7 @@ export interface CampaignDetails {
   canEdit: boolean;
   canTopUp: boolean;
   stats: DetailsStats | null;
-  media: { video: string | null; durationSec: number | null; width: number | null; height: number | null; cover: string | null; description: string };
+  media: { video: string | null; videoUrl: string | null; durationSec: number | null; width: number | null; height: number | null; cover: string | null; description: string };
   stores: DetailsStore[];
   budget: BudgetFigures & {
     /** Not launched yet: whether the budget is paid. */

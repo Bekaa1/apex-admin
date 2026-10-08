@@ -10,6 +10,11 @@ const FIRST_ROWS = 6;
 /** As drawn: a store with fewer carts online than this share is marked. */
 const ONLINE_WARNING = 0.9;
 
+function onlineTone(carts: { online: number; total: number }): string | undefined {
+  if (carts.online === 0) return 'is-offline';
+  return carts.online < carts.total * ONLINE_WARNING ? 'is-warning' : undefined;
+}
+
 /** «По магазинам»: plays per store and per cart, and carts online now. */
 export function StoresTable({ lines }: { lines: StoreLine[] }) {
   const { t, lang } = useI18n();
@@ -71,7 +76,7 @@ export function StoresTable({ lines }: { lines: StoreLine[] }) {
                 {withCarts ? (
                   <td className="cab-table__num" data-label={column('online')}>
                     {line.carts ? (
-                      <span className={cx('st-online', line.carts.online < line.carts.total * ONLINE_WARNING && 'is-warning')}>
+                      <span className={cx('st-online', onlineTone(line.carts))}>
                         <span className="st-online__dot" aria-hidden="true" />
                         {t('stats.stores.onlineOf', { online: formatNumber(line.carts.online, lang), total: formatNumber(line.carts.total, lang) })}
                       </span>

@@ -31,6 +31,7 @@ function toItem(row: HomeRow, plays: Map<string, number>, source: HomeSource): C
     name: row.title || row.name || '—',
     tariff: extra?.tariff ?? null,
     coverUrl: extra?.content_url || null,
+    videoUrl: extra?.video_url || null,
     status: row.status,
     budget: money.budget,
     left: money.left,

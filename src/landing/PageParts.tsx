@@ -4,11 +4,13 @@ import { SUPPORT_WHATSAPP_URL } from '../lib/contacts';
 import { CampaignLink } from './CampaignLink';
 import styles from './PublicPages.module.css';
 
-export function PageHeading({ page }: { page: 'pricing' | 'stores' | 'how' }) {
+/** `level={2}` for a heading inside a page that already has its h1 (the landing). */
+export function PageHeading({ page, level = 1, titleId }: { page: 'pricing' | 'stores' | 'how'; level?: 1 | 2; titleId?: string }) {
   const { t } = useI18n();
+  const Title = level === 1 ? 'h1' : 'h2';
   return <header className={styles.heading}>
     <p className={styles.eyebrow}><span />{t(`public.${page}.eyebrow`)}</p>
-    <h1>{t(`public.${page}.title`)}</h1>
+    <Title id={titleId}>{t(`public.${page}.title`)}</Title>
     <p className={styles.lead}>{t(`public.${page}.text`)}</p>
   </header>;
 }

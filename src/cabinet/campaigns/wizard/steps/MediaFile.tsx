@@ -1,6 +1,8 @@
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Button, Icon, IconButton, Meter } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
+import { CampaignCover } from '../../../ui/CampaignCover';
+import { VideoCover } from '../../../ui/VideoCover';
 import { formatClock } from '../media';
 import type { MediaState } from '../types';
 import { useMetaLine, useProblemText } from './mediaText';
@@ -17,21 +19,38 @@ interface MediaFileProps {
   coverTone?: 1 | 2 | 3;
 }
 
-/** A chosen file: thumbnail, name and checks; while uploading — progress and «Отменить». */
+/** A chosen file: thumbnail (a ready video plays from it), name and checks; while uploading — progress and «Отменить». */
 export function MediaFile({ kind, media, accept, onFile, onRemove, coverTone = 1 }: MediaFileProps) {
   const { t } = useI18n();
   const replaceRef = useRef<HTMLInputElement>(null);
   const problemText = useProblemText();
   const metaLine = useMetaLine(media.meta);
   const duration = media.meta?.durationSec;
-  const image = kind === 'cover' && media.status === 'ready' ? media.url : null;
+  const time = duration && media.status !== 'uploading' ? <span className="cmp-cover__time">{formatClock(duration)}</span> : null;
+  let thumb: ReactNode;
+  if (kind === 'cover') {
+    thumb = (
+      <span className={`cmp-cover cmp-cover--lg cab-thumb--${coverTone}`} aria-hidden="true">
+        {media.status === 'ready' ? <img src={media.url} alt="" /> : <Icon name="image" size={22} />}
+      </span>
+    );
+  } else if (media.status === 'ready') {
+    thumb = (
+      <VideoCover src={media.url} cover={null} tone={coverTone} size="lg">
+        {time}
+      </VideoCover>
+    );
+  } else {
+    thumb = (
+      <CampaignCover url={null} tone={coverTone} size="lg">
+        {time}
+      </CampaignCover>
+    );
+  }
 
   return (
     <div className={media.status === 'failed' ? 'cmp-file is-invalid' : 'cmp-file'}>
-      <span className={`cmp-cover cmp-cover--lg cab-thumb--${coverTone}`} aria-hidden="true">
-        {image ? <img src={image} alt="" /> : <Icon name={kind === 'video' ? 'play' : 'image'} size={22} />}
-        {kind === 'video' && duration && media.status !== 'uploading' ? <span className="cmp-cover__time">{formatClock(duration)}</span> : null}
-      </span>
+      {thumb}
       <div className="cmp-file__body">
         <p className="cmp-file__name">{media.fileName}</p>
         {media.status === 'uploading' ? (

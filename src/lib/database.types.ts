@@ -833,6 +833,8 @@ export type Database = {
           moderator_comment: string | null
           name: string | null
           paid_amount: number
+          paused_at: string | null
+          paused_by: string | null
           plays_count: number
           price_per_play: number | null
           rejection_reasons: string[] | null
@@ -880,6 +882,8 @@ export type Database = {
           moderator_comment?: string | null
           name?: string | null
           paid_amount?: number
+          paused_at?: string | null
+          paused_by?: string | null
           plays_count?: number
           price_per_play?: number | null
           rejection_reasons?: string[] | null
@@ -927,6 +931,8 @@ export type Database = {
           moderator_comment?: string | null
           name?: string | null
           paid_amount?: number
+          paused_at?: string | null
+          paused_by?: string | null
           plays_count?: number
           price_per_play?: number | null
           rejection_reasons?: string[] | null
@@ -2723,6 +2729,163 @@ export type Database = {
           },
         ]
       }
+      site_notifications: {
+        Row: {
+          action: string | null
+          ad_id: string | null
+          audience: string
+          body: string
+          created_at: string
+          data: Json
+          dedup_key: string | null
+          id: string
+          invoice_id: string | null
+          read_at: string | null
+          severity: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action?: string | null
+          ad_id?: string | null
+          audience?: string
+          body: string
+          created_at?: string
+          data?: Json
+          dedup_key?: string | null
+          id?: string
+          invoice_id?: string | null
+          read_at?: string | null
+          severity?: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action?: string | null
+          ad_id?: string | null
+          audience?: string
+          body?: string
+          created_at?: string
+          data?: Json
+          dedup_key?: string | null
+          id?: string
+          invoice_id?: string | null
+          read_at?: string | null
+          severity?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "site_notifications_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_notifications_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "partner_team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       spatial_ref_sys: {
         Row: {
           auth_name: string | null
@@ -4069,6 +4232,8 @@ export type Database = {
           name: string | null
           online_cart_count: number | null
           paid_amount: number | null
+          paused_at: string | null
+          paused_by: string | null
           plays_count: number | null
           price_per_play: number | null
           rejection_reasons: string[] | null
@@ -4928,6 +5093,11 @@ export type Database = {
         Args: { p_request_id: string }
         Returns: boolean
       }
+      _ntf_ad_label: {
+        Args: { a: Database["public"]["Tables"]["ads"]["Row"] }
+        Returns: string
+      }
+      _ntf_money: { Args: { p: number }; Returns: string }
       _postgis_deprecate: {
         Args: { newname: string; oldname: string; version: string }
         Returns: undefined
@@ -5401,6 +5571,7 @@ export type Database = {
       is_apex_admin: { Args: never; Returns: boolean }
       is_apex_store_owner: { Args: never; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number }
       my_carts_with_plays: {
         Args: { p_ad_ids?: string[]; p_from: string; p_to: string }
         Returns: {
@@ -5416,6 +5587,7 @@ export type Database = {
           weekday: number
         }[]
       }
+      my_unread_notifications_count: { Args: never; Returns: number }
       owner_approve_store_request: {
         Args: { p_expected_revision: number; p_id: string }
         Returns: string
@@ -5449,6 +5621,7 @@ export type Database = {
       }
       owns_ad: { Args: { p_ad_id: string }; Returns: boolean }
       partner_store_ids: { Args: never; Returns: string[] }
+      pause_campaign: { Args: { p_id: string }; Returns: string }
       populate_geometry_columns:
         | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
         | { Args: { use_typmod?: boolean }; Returns: string }
@@ -5498,6 +5671,7 @@ export type Database = {
         Returns: string
       }
       resubmit_campaign: { Args: { p: Json; p_id: string }; Returns: string }
+      resume_campaign: { Args: { p_id: string }; Returns: string }
       select_ad_for_zone: {
         Args: { p_store_id: string; p_zone_id: string }
         Returns: string

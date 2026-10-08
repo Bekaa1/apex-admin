@@ -49,6 +49,8 @@
 .st-online__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
 .st-online.is-warning { color: var(--warning); font-weight: 600; }
 .st-online.is-warning .st-online__dot { background: var(--warning); }
+.st-online.is-offline { color: var(--danger); font-weight: 600; }
+.st-online.is-offline .st-online__dot { background: var(--danger); }
 .st-more { align-self: flex-start; margin: calc(-1 * var(--space-2)) 0 calc(-1 * var(--space-2)) calc(-1 * var(--space-4)); }
 
 /* ── Carts ─────────────────────────────────────────────── */
@@ -60,12 +62,14 @@
 .st-facts > div { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 .st-facts dt { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); }
 .st-facts dt .ax-icon { color: var(--text-subtle); }
+.st-facts dt.is-online .ax-icon { color: var(--success); }
+.st-facts dt.is-offline .ax-icon { color: var(--danger); }
 .st-facts dd { margin: 0; display: inline-flex; align-items: baseline; gap: 8px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .st-carts__worst { display: flex; flex-direction: column; gap: var(--space-2); }
 .st-carts__worst ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .st-carts__worst li { display: flex; justify-content: space-between; gap: var(--space-3); font-size: 14px; color: var(--text-muted); }
 .st-carts__worst li span { min-width: 0; overflow-wrap: anywhere; }
-.st-carts__worst li strong { flex: none; color: var(--warning); font-weight: 600; }
+.st-carts__worst li strong { flex: none; color: var(--danger); font-weight: 600; }
 
 /* ── Zones ─────────────────────────────────────────────── */
 .st-split { display: flex; flex-direction: column; gap: var(--space-3); }

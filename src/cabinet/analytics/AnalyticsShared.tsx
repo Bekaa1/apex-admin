@@ -34,7 +34,7 @@ export function PeriodPicker({ value, today, from, to, onChange, onRangeChange }
 export function StoreStatus({ online, carts }: { online: number | null; carts: number | null }) {
   const { t } = useI18n();
   const status = carts === 0 ? 'noCarts' : online === null ? 'unknown' : online === 0 ? 'offline' : 'online';
-  return <Badge tone={status === 'online' ? 'success' : 'neutral'} dot>{t('analytics.status.' + status)}</Badge>;
+  return <Badge tone={status === 'online' ? 'success' : status === 'offline' ? 'danger' : 'neutral'} dot>{t('analytics.status.' + status)}</Badge>;
 }
 
 export function AnalyticsLoading() {

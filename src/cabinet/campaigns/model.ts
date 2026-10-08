@@ -42,6 +42,7 @@ export function buildCampaignCards(source: CampaignsSource): CampaignCard[] {
       id,
       name: row.title || row.name || '—',
       coverUrl: row.content_url || null,
+      videoUrl: row.video_url || null,
       coverTone: coverTone(id),
       tariff: tariffOf(row.tariff_code),
       storesCount: row.store_count,

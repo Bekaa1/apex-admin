@@ -35,6 +35,11 @@
 .cab__title { margin: 0; flex: 1 1 auto; min-width: 0; font-family: var(--font-display); font-weight: 600; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cab__top-actions { flex: none; display: flex; align-items: center; gap: var(--space-3); }
+.cab__prefs { display: flex; align-items: center; gap: var(--space-3); }
+.cab__prefs-menu { position: relative; display: none; }
+.cab__prefs-menu > .is-open { background: var(--surface-muted); }
+.cab__prefs-panel { position: absolute; z-index: 30; top: calc(100% + 8px); right: 0; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-raised); box-shadow: var(--shadow-lg); }
 .cab__main { flex: 1 1 auto; padding: var(--space-7) var(--space-8) var(--space-11); }
 .cab__content { max-width: 1200px; margin: 0 auto; container: content / inline-size; }
 .cab-tabs { display: none; }
@@ -96,8 +101,8 @@
 .cab-cell-budget .is-danger { color: var(--danger); font-weight: 600; }
 .cab-table__action { width: 1%; white-space: nowrap; }
 /* Campaign cover placeholders — logo gradient (cover = an ad screen, illustration-only colours). Real covers replace them. */
-.cab-thumb { flex: none; width: 56px; height: 40px; border-radius: 8px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; }
-.cab-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.cab-thumb { position: relative; flex: none; width: 56px; height: 40px; border-radius: 8px; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; }
+.cab-thumb img, .cab-thumb video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .cab-thumb--1 { background: linear-gradient(135deg, var(--brand-cyan), var(--brand-blue)); }
 .cab-thumb--2 { background: linear-gradient(135deg, var(--brand-blue), var(--brand-magenta)); }
 .cab-thumb--3 { background: linear-gradient(135deg, var(--brand-cyan), var(--brand-magenta)); }
@@ -193,6 +198,8 @@
   .cab__title { font-size: 20px; line-height: 1.2; white-space: normal; overflow-wrap: break-word; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   .cab__lang .ax-seg__item { min-width: var(--control-md); padding: 0 8px; }
   .cab__create { display: none; }
+  .cab__prefs { display: none; }
+  .cab__prefs-menu { display: inline-flex; }
   .cab__main { padding: var(--space-5) var(--space-4) calc(96px + env(safe-area-inset-bottom)); }
   .cab-tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
     background: var(--surface); border-top: 1px solid var(--border); }
@@ -208,10 +215,23 @@
 /* ═══ Campaign blocks shared by «Мои кампании» and «Статистика»: campaigns.css loads only with the campaign pages ═══ */
 /* Cover 16:9 — placeholder gradient comes from .cab-thumb--N */
 .cmp-cover { position: relative; flex: none; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; color: var(--on-primary); aspect-ratio: 16 / 9; }
-.cmp-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cmp-cover img, .cmp-cover video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cmp-cover video { pointer-events: none; }
 .cmp-cover--sm { width: 72px; border-radius: var(--radius-sm); }
 .cmp-cover--md { width: 96px; border-radius: var(--radius-sm); }
 .cmp-cover--lg { width: 160px; border-radius: var(--radius-md); }
+/* A cover that opens the video (ui/VideoCover); the play mark stays above the cover image */
+.cab-cover-btn { padding: 0; border: 0; font: inherit; cursor: pointer; }
+.cab-cover-btn > .ax-icon { position: relative; z-index: 1; box-sizing: content-box; padding: 10px; border-radius: var(--radius-full); background: rgba(5, 6, 12, 0.45); transition: background-color .15s ease; }
+.cab-cover-btn:hover > .ax-icon { background: rgba(5, 6, 12, 0.65); }
+.cab-cover-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cab-player { width: min(1280px, calc(100vw - 32px)); max-width: none; max-height: none; padding: var(--control-md) 0 0; border: 0; background: transparent; overflow: visible; }
+.cab-player::backdrop { background: rgba(5, 6, 12, 0.88); }
+.cab-player__video { display: block; width: 100%; max-height: calc(100dvh - 120px); aspect-ratio: 16 / 9; border-radius: var(--radius-lg); background: rgb(5, 6, 12); }
+.cab-player__close.ax-iconbtn { position: absolute; top: 0; right: 0; transform: translateY(-12px); border-color: color-mix(in oklab, var(--on-primary) 45%, transparent);
+  background: color-mix(in oklab, var(--on-primary) 14%, transparent); color: var(--on-primary); }
+.cab-player__close.ax-iconbtn:hover { background: color-mix(in oklab, var(--on-primary) 24%, transparent); }
+.cab-player__close.ax-iconbtn:focus-visible { outline-color: var(--on-primary); }
 .cmp-row__meta { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 0; font-size: 13px; line-height: 1.4; color: var(--text-muted); }
 .cmp-row__meta span:not(:last-child)::after { content: '·'; margin: 0 6px; color: var(--text-subtle); }
 .cmp-back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: var(--control-md); font-size: 15px; }

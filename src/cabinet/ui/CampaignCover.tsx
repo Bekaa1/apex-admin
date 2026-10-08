@@ -1,13 +1,31 @@
+import type { ReactNode } from 'react';
 import { Icon } from '../../design-system';
-import type { CoverTone } from '../campaignCover';
+import { COVER_PLAY_ICON, type CoverSize, type CoverTone } from '../campaignCover';
 
-const PLAY_ICON = { sm: 16, md: 16, lg: 28 } as const;
+/** The uploaded cover; without one, the video's first frame, as the wizard promises («Без обложки покажем первый кадр ролика»). */
+export function CoverMedia({ url, videoUrl }: { url: string | null; videoUrl?: string | null }) {
+  if (url) return <img src={url} alt="" />;
+  // With `#t` browsers paint that frame without playing; until it loads, or when the codec isn't supported, the placeholder shows through.
+  if (videoUrl) return <video src={`${videoUrl}#t=0.1`} preload="metadata" muted playsInline tabIndex={-1} />;
+  return null;
+}
 
-/** 16:9 campaign cover; without an image it shows the logo-gradient placeholder with a play mark. */
-export function CampaignCover({ url, tone, size = 'md' }: { url: string | null; tone: CoverTone; size?: keyof typeof PLAY_ICON }) {
+interface CampaignCoverProps {
+  url: string | null;
+  videoUrl?: string | null;
+  tone: CoverTone;
+  size?: CoverSize;
+  /** Drawn on top, e.g. the duration. */
+  children?: ReactNode;
+}
+
+/** 16:9 campaign cover over the logo-gradient placeholder with a play mark. */
+export function CampaignCover({ url, videoUrl, tone, size = 'md', children }: CampaignCoverProps) {
   return (
     <span className={`cmp-cover cmp-cover--${size} cab-thumb--${tone}`} aria-hidden="true">
-      {url ? <img src={url} alt="" /> : <Icon name="play" size={PLAY_ICON[size]} />}
+      <CoverMedia url={url} videoUrl={videoUrl} />
+      {url ? null : <Icon name="play" size={COVER_PLAY_ICON[size]} />}
+      {children}
     </span>
   );
 }

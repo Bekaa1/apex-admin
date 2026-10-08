@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import type { RouteObject } from 'react-router';
+import { Navigate, type RouteObject } from 'react-router';
 import { ResetPasswordRoute, VerificationRoute } from '../auth/AuthRoutes';
 import { LoginFlow, SignupFlow, SignupProfileFlow } from '../auth/AuthFlows';
 import { RequireSession, SessionLoading } from '../auth/RequireSession';
@@ -34,7 +34,7 @@ const applicationRoutes: RouteObject[] = [
       { index: true, element: <Landing /> },
       { path: 'pricing', lazy: async () => ({ Component: (await import('../landing/PricingPage')).PricingPage }) },
       { path: 'stores', lazy: async () => ({ Component: (await import('../landing/StoresPage')).StoresPage }) },
-      { path: 'how-it-works', lazy: async () => ({ Component: (await import('../landing/HowItWorksPage')).HowItWorksPage }) },
+      { path: 'how-it-works', element: <Navigate to="/" replace /> },
     ],
   },
   { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow /> },

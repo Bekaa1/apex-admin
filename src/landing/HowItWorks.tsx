@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Button, Disclosure, DisclosureGroup, Icon, type IconName } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 import { formatMoney } from '../lib/format';
@@ -45,21 +45,23 @@ function StepPreview({ step }: { step: number }) {
   </div>;
 }
 
-export function HowItWorksPage() {
+/** «Как это работает» on the landing, under the first screen. */
+export function HowItWorks() {
   const { t } = useI18n();
+  const titleId = useId();
   const [step, setStep] = useState(0);
-  return <div className={styles.page}>
-    <div className={styles.howHero}><PageHeading page="how" /><ShelfIllustration /></div>
-    <ol className={styles.buyerSteps}>{['approach', 'watch', 'count'].map((key, index) => <li key={key}><span>{String(index + 1).padStart(2, '0')}</span><div><h2>{t(`public.how.buyer.${key}.title`)}</h2><p>{t(`public.how.buyer.${key}.text`)}</p></div></li>)}</ol>
-    <section className={styles.section}>
-      <div className={styles.sectionHeading}><p className={styles.eyebrow}>{t('public.how.forAdvertiser')}</p><h2>{t('public.how.stepsTitle')}</h2><p>{t('public.how.stepsText')}</p></div>
+  return <section className={styles.page} aria-labelledby={titleId}>
+    <div className={styles.howHero}><PageHeading page="how" level={2} titleId={titleId} /><ShelfIllustration /></div>
+    <ol className={styles.buyerSteps}>{['approach', 'watch', 'count'].map((key, index) => <li key={key}><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{t(`public.how.buyer.${key}.title`)}</h3><p>{t(`public.how.buyer.${key}.text`)}</p></div></li>)}</ol>
+    <div className={styles.section}>
+      <div className={styles.sectionHeading}><p className={styles.eyebrow}>{t('public.how.forAdvertiser')}</p><h3>{t('public.how.stepsTitle')}</h3><p>{t('public.how.stepsText')}</p></div>
       <div className={styles.guideGrid}>
         <ol className={styles.stepList}>{STEPS.map((item, index) => <li key={item.key}><button type="button" className={step === index ? styles.selectedStep : ''} aria-pressed={step === index} aria-controls="public-step-preview" onClick={() => setStep(index)}><span className={styles.stepNumber}>{index + 1}</span><span><strong>{t(`public.how.steps.${item.key}.title`)}</strong><span>{t(`public.how.steps.${item.key}.text`)}</span></span><Icon name={item.icon} size={21} /></button></li>)}</ol>
         <div id="public-step-preview" className={styles.previewContainer} role="region" aria-label={t(`public.how.steps.${STEPS[step].key}.title`)}><StepPreview step={step} /></div>
       </div>
-    </section>
-    <section className={styles.afterGrid}>{(['review', 'launch', 'results'] as const).map((key, index) => <article key={key}><span className={styles.iconTile}><Icon name={index === 0 ? 'shield-check' : index === 1 ? 'play' : 'chart'} size={23} /></span><h2>{t(`public.how.after.${key}.title`)}</h2><p>{t(`public.how.after.${key}.text`)}</p></article>)}</section>
-    <section className={styles.faq}><h2>{t('public.faq')}</h2><DisclosureGroup>{['video', 'timing', 'impression'].map((key) => <Disclosure key={key} summary={t(`public.how.faq.${key}.q`)}>{t(`public.how.faq.${key}.a`)}</Disclosure>)}</DisclosureGroup></section>
+    </div>
+    <div className={styles.afterGrid}>{(['review', 'launch', 'results'] as const).map((key, index) => <article key={key}><span className={styles.iconTile}><Icon name={index === 0 ? 'shield-check' : index === 1 ? 'play' : 'chart'} size={23} /></span><h3>{t(`public.how.after.${key}.title`)}</h3><p>{t(`public.how.after.${key}.text`)}</p></article>)}</div>
+    <div className={styles.faq}><h3>{t('public.faq')}</h3><DisclosureGroup>{['video', 'timing', 'impression'].map((key) => <Disclosure key={key} summary={t(`public.how.faq.${key}.q`)}>{t(`public.how.faq.${key}.a`)}</Disclosure>)}</DisclosureGroup></div>
     <StartBanner />
-  </div>;
+  </section>;
 }

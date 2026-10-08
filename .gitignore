@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+apex_store_contract.zip
+chat_backend_contract.zip
 dist
 dist-ssr
 *.local

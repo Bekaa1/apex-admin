@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { Navigate, type RouteObject } from 'react-router';
 import { RequireAdmin } from './auth/RequireAdmin';
+import { RequireStoreOwner } from './auth/RequireStoreOwner';
 import { AdminLayout } from './admin/AdminLayout';
 import { AdminNotFound, AdminPlaceholder } from './admin/AdminPlaceholder';
 import { ADMIN_SECTIONS } from './admin/sections';
@@ -12,6 +13,7 @@ import { DEFAULT_AUTH_LINKS } from './auth/links';
 import { CABINET_ROOT, CABINET_SECTIONS, type CabinetRouteHandle } from './cabinet/sections';
 import { PublicLayout } from './landing/PublicLayout';
 import { LegalDocumentPage } from './legal/LegalDocumentPage';
+import { ChatRouteLayout } from './chat/widget/ChatRouteLayout';
 
 function cabinetRoute(path: string, handle: CabinetRouteHandle, page?: () => Promise<ComponentType>): RouteObject {
   const route = {
@@ -30,13 +32,31 @@ const cabinetRoutes: RouteObject[] = [
   { path: '*', element: <RouteState to={CABINET_ROOT} /> },
 ];
 
-export const routes: RouteObject[] = [
+const applicationRoutes: RouteObject[] = [
   { path: '/', element: <Navigate to="/admin" replace /> },
   { path: '/access-denied', element: <AccessDenied /> },
   {
     path: '/admin', element: <RequireAdmin />, children: [
       { element: <AdminLayout />, children: [
         { index: true, lazy: async () => ({ Component: (await import('./admin/overview/OverviewPage')).OverviewPage }) },
+        { path: 'campaigns', lazy: async () => ({ Component: (await import('./admin/campaigns/CampaignsPage')).CampaignsPage }) },
+        { path: 'moderation', lazy: async () => ({ Component: (await import('./admin/campaigns/CampaignsPage')).ModerationPage }) },
+        { path: 'campaigns/:id', lazy: async () => ({ Component: (await import('./admin/campaigns/details/CampaignDetailPage')).CampaignDetailPage }) },
+        { path: 'invoices', lazy: async () => ({ Component: (await import('./admin/invoices/InvoicesPage')).InvoicesPage }) },
+        { path: 'invoices/:id', lazy: async () => ({ Component: (await import('./admin/invoices/details/InvoiceDetailPage')).InvoiceDetailPage }) },
+        { path: 'clients', lazy: async () => ({ Component: (await import('./admin/clients/ClientsPage')).ClientsPage }) },
+        { path: 'clients/:id', lazy: async () => ({ Component: (await import('./admin/clients/details/ClientDetailPage')).ClientDetailPage }) },
+        { path: 'stores', lazy: async () => ({ Component: (await import('./admin/stores/StoresPage')).StoresPage }) },
+        { path: 'store-requests', lazy: async () => ({ Component: (await import('./admin/stores/owner/StoreRequestsHome')).StoreRequestsHome }) },
+        { element: <RequireStoreOwner />, children: [
+          { path: 'store-requests/pending', lazy: async () => ({ Component: (await import('./admin/stores/owner/OwnerQueuePage')).OwnerQueuePage }) },
+          { path: 'store-requests/:requestId/review', lazy: async () => ({ Component: (await import('./admin/stores/owner/OwnerReviewPage')).OwnerReviewPage }) },
+        ] },
+        { path: 'stores/new', lazy: async () => ({ Component: (await import('./admin/stores/onboarding/StoreRequestPage')).StoreRequestPage }) },
+        { path: 'stores/new/:requestId', lazy: async () => ({ Component: (await import('./admin/stores/onboarding/StoreRequestPage')).StoreRequestPage }) },
+        { path: 'stores/:id', lazy: async () => ({ Component: (await import('./admin/stores/details/StoreDetailPage')).StoreDetailPage }) },
+        { path: 'equipment', lazy: async () => ({ Component: (await import('./admin/equipment/EquipmentPage')).EquipmentPage }) },
+        { path: 'tariffs', lazy: async () => ({ Component: (await import('./admin/tariffs/TariffsPage')).TariffsPage }) },
         { path: 'media', lazy: async () => ({ Component: (await import('./admin/media/MediaPage')).MediaPage }) },
         { path: 'audit', lazy: async () => ({ Component: (await import('./admin/audit/AuditPage')).AuditPage }) },
         { path: 'corporate-requests', lazy: async () => ({ Component: (await import('./admin/corporate-requests/CorporateRequestsPage')).CorporateRequestsPage }) },
@@ -47,7 +67,7 @@ export const routes: RouteObject[] = [
     ],
   },
   {
-    element: <PublicLayout />, children: [
+    element: <PublicLayout />, handle: { publicChat: true }, children: [
       { path: 'pricing', lazy: async () => ({ Component: (await import('./landing/PricingPage')).PricingPage }) },
       { path: 'stores', lazy: async () => ({ Component: (await import('./landing/StoresPage')).StoresPage }) },
       { path: 'how-it-works', lazy: async () => ({ Component: (await import('./landing/HowItWorksPage')).HowItWorksPage }) },
@@ -61,8 +81,8 @@ export const routes: RouteObject[] = [
   { path: DEFAULT_AUTH_LINKS.resetCode, element: <ResetPasswordRoute step="code" /> },
   { path: DEFAULT_AUTH_LINKS.resetNew, element: <ResetPasswordRoute step="new" /> },
   { path: DEFAULT_AUTH_LINKS.resetDone, element: <ResetPasswordRoute step="done" /> },
-  { path: DEFAULT_AUTH_LINKS.privacy, element: <LegalDocumentPage key="privacy" kind="privacy" /> },
-  { path: DEFAULT_AUTH_LINKS.offer, element: <LegalDocumentPage key="offer" kind="offer" /> },
+  { path: DEFAULT_AUTH_LINKS.privacy, handle: { publicChat: true }, element: <LegalDocumentPage key="privacy" kind="privacy" /> },
+  { path: DEFAULT_AUTH_LINKS.offer, handle: { publicChat: true }, element: <LegalDocumentPage key="offer" kind="offer" /> },
   {
     element: <RequireSession />,
     hydrateFallbackElement: <SessionLoading />,
@@ -72,5 +92,7 @@ export const routes: RouteObject[] = [
       children: cabinetRoutes,
     }],
   },
-  { path: '*', element: <RouteFrame><RouteState /></RouteFrame> },
+  { path: '*', element: <RouteFrame admin><RouteState /></RouteFrame> },
 ];
+
+export const routes: RouteObject[] = [{ element: <ChatRouteLayout />, children: applicationRoutes }];

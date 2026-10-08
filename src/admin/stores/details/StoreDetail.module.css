@@ -1,0 +1,19 @@
+.tabPanel { min-width: 0; }
+.tabPanel:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.recordsTable td { white-space: pre-wrap; }
+.zones { min-width: 800px; }
+.zones th:first-child { width: 25%; }
+.zones th:nth-child(2) { width: 45%; }
+.carts { min-width: 1160px; }
+.carts th:first-child, .carts th:nth-child(2) { width: 14%; }
+.carts th:nth-child(3) { width: 10%; }
+.carts th:nth-child(4), .carts th:nth-child(5) { width: 18%; }
+.beacons { min-width: 850px; }
+.beacons th:first-child { width: 18%; }
+.beacons th:nth-child(2) { width: 32%; }
+.beacons th:nth-child(3) { width: 16%; }
+.carts.withStores { min-width: 1380px; }
+.beacons.withStores { min-width: 1050px; }
+.carts.withStores th:nth-child(n), .beacons.withStores th:nth-child(n) { width: auto; }
+.storeLink { color: var(--link); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.storeLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }

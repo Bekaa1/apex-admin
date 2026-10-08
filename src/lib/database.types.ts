@@ -139,6 +139,128 @@ export type Database = {
           },
         ]
       }
+      ad_events: {
+        Row: {
+          ad_id: string
+          amount: number | null
+          created_at: string
+          id: number
+          invoice_id: string | null
+          kind: string
+          status: string | null
+        }
+        Insert: {
+          ad_id: string
+          amount?: number | null
+          created_at?: string
+          id?: never
+          invoice_id?: string | null
+          kind: string
+          status?: string | null
+        }
+        Update: {
+          ad_id?: string
+          amount?: number | null
+          created_at?: string
+          id?: never
+          invoice_id?: string | null
+          kind?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_stores: {
         Row: {
           actually_paid: number | null
@@ -701,6 +823,7 @@ export type Database = {
           display_id: number
           earned_points: number | null
           end_date: string | null
+          exclusive_zone: boolean
           hours_per_day: number | null
           hours_used_pct: number | null
           id: string
@@ -747,6 +870,7 @@ export type Database = {
           display_id?: number
           earned_points?: number | null
           end_date?: string | null
+          exclusive_zone?: boolean
           hours_per_day?: number | null
           hours_used_pct?: number | null
           id?: string
@@ -793,6 +917,7 @@ export type Database = {
           display_id?: number
           earned_points?: number | null
           end_date?: string | null
+          exclusive_zone?: boolean
           hours_per_day?: number | null
           hours_used_pct?: number | null
           id?: string
@@ -965,6 +1090,7 @@ export type Database = {
           id: string
           issued_at: string
           kind: string
+          min_amount: number | null
           number: number
           paid_at: string | null
           paid_by: string | null
@@ -981,6 +1107,7 @@ export type Database = {
           id?: string
           issued_at?: string
           kind?: string
+          min_amount?: number | null
           number?: never
           paid_at?: string | null
           paid_by?: string | null
@@ -997,6 +1124,7 @@ export type Database = {
           id?: string
           issued_at?: string
           kind?: string
+          min_amount?: number | null
           number?: never
           paid_at?: string | null
           paid_by?: string | null
@@ -1092,6 +1220,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      apex_store_owners: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       auction_bids: {
         Row: {
@@ -2692,38 +2838,529 @@ export type Database = {
           },
         ]
       }
+      store_onboarding_assignments: {
+        Row: {
+          created_at: string
+          element_id: string
+          request_id: string
+          zone_id: string
+        }
+        Insert: {
+          created_at?: string
+          element_id: string
+          request_id: string
+          zone_id: string
+        }
+        Update: {
+          created_at?: string
+          element_id?: string
+          request_id?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_onboarding_assignments_zone_fkey"
+            columns: ["request_id", "zone_id"]
+            isOneToOne: false
+            referencedRelation: "store_onboarding_zones"
+            referencedColumns: ["request_id", "id"]
+          },
+        ]
+      }
+      store_onboarding_plans: {
+        Row: {
+          created_at: string
+          format_version: number
+          height: number
+          plan_data: Json
+          request_id: string
+          source_file_name: string | null
+          updated_at: string
+          width: number
+        }
+        Insert: {
+          created_at?: string
+          format_version: number
+          height: number
+          plan_data: Json
+          request_id: string
+          source_file_name?: string | null
+          updated_at?: string
+          width: number
+        }
+        Update: {
+          created_at?: string
+          format_version?: number
+          height?: number
+          plan_data?: Json
+          request_id?: string
+          source_file_name?: string | null
+          updated_at?: string
+          width?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_onboarding_plans_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: true
+            referencedRelation: "store_onboarding_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_onboarding_requests: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          created_by: string
+          id: string
+          name: string | null
+          partner_id: string | null
+          proposed_store_id: string
+          published_store_id: string | null
+          request_key: string
+          review_comment: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          revision: number
+          status: string
+          submitted_at: string | null
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          name?: string | null
+          partner_id?: string | null
+          proposed_store_id?: string
+          published_store_id?: string | null
+          request_key: string
+          review_comment?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          revision?: number
+          status?: string
+          submitted_at?: string | null
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string | null
+          partner_id?: string | null
+          proposed_store_id?: string
+          published_store_id?: string | null
+          request_key?: string
+          review_comment?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          revision?: number
+          status?: string
+          submitted_at?: string | null
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_onboarding_requests_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_dashboard_stats_by_store"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_finance_stats_by_store"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_store_playback_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "store_cart_connectivity"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "store_cart_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "store_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_onboarding_requests_published_store_id_fkey"
+            columns: ["published_store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_onboarding_zones: {
+        Row: {
+          client_id: string
+          color: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          request_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          color: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          request_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          color?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          request_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_onboarding_zones_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "store_onboarding_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_plan_zone_assignments: {
+        Row: {
+          element_id: string
+          plan_id: string
+          zone_id: string
+        }
+        Insert: {
+          element_id: string
+          plan_id: string
+          zone_id: string
+        }
+        Update: {
+          element_id?: string
+          plan_id?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_plan_zone_assignments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "store_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_assignments_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "all_zone_top"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_assignments_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_assignments_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zone_stats"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_assignments_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_plan_zone_styles: {
+        Row: {
+          color: string
+          plan_id: string
+          sort_order: number
+          zone_id: string
+        }
+        Insert: {
+          color: string
+          plan_id: string
+          sort_order: number
+          zone_id: string
+        }
+        Update: {
+          color?: string
+          plan_id?: string
+          sort_order?: number
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_plan_zone_styles_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "store_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_styles_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "all_zone_top"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_styles_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_styles_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zone_stats"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "store_plan_zone_styles_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_plans: {
+        Row: {
+          approved_by: string
+          created_at: string
+          created_by: string
+          format_version: number
+          height: number
+          id: string
+          onboarding_request_id: string
+          plan_data: Json
+          source_file_name: string | null
+          store_id: string
+          updated_at: string
+          width: number
+        }
+        Insert: {
+          approved_by: string
+          created_at?: string
+          created_by: string
+          format_version: number
+          height: number
+          id?: string
+          onboarding_request_id: string
+          plan_data: Json
+          source_file_name?: string | null
+          store_id: string
+          updated_at?: string
+          width: number
+        }
+        Update: {
+          approved_by?: string
+          created_at?: string
+          created_by?: string
+          format_version?: number
+          height?: number
+          id?: string
+          onboarding_request_id?: string
+          plan_data?: Json
+          source_file_name?: string | null
+          store_id?: string
+          updated_at?: string
+          width?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_plans_onboarding_request_id_fkey"
+            columns: ["onboarding_request_id"]
+            isOneToOne: true
+            referencedRelation: "store_onboarding_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "partner_dashboard_stats_by_store"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "partner_finance_stats_by_store"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "partner_store_playback_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "partner_stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "store_cart_connectivity"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "store_cart_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "store_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stores: {
         Row: {
           address: string | null
+          approved_at: string | null
+          approved_by: string | null
           cart_ids: string[] | null
           city: string | null
           created_at: string | null
           id: string
           name: string
+          onboarding_request_id: string | null
           partner_id: string | null
           timezone: string | null
         }
         Insert: {
           address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           cart_ids?: string[] | null
           city?: string | null
           created_at?: string | null
           id?: string
           name: string
+          onboarding_request_id?: string | null
           partner_id?: string | null
           timezone?: string | null
         }
         Update: {
           address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           cart_ids?: string[] | null
           city?: string | null
           created_at?: string | null
           id?: string
           name?: string
+          onboarding_request_id?: string | null
           partner_id?: string | null
           timezone?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "stores_onboarding_request_id_fkey"
+            columns: ["onboarding_request_id"]
+            isOneToOne: true
+            referencedRelation: "store_onboarding_requests"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "stores_partner_id_fkey"
             columns: ["partner_id"]
@@ -3022,6 +3659,7 @@ export type Database = {
           icon_emoji: string
           id: string
           name: string
+          onboarding_request_id: string | null
           price_per_hour: number
           store_id: string | null
         }
@@ -3031,6 +3669,7 @@ export type Database = {
           icon_emoji?: string
           id?: string
           name: string
+          onboarding_request_id?: string | null
           price_per_hour?: number
           store_id?: string | null
         }
@@ -3040,10 +3679,18 @@ export type Database = {
           icon_emoji?: string
           id?: string
           name?: string
+          onboarding_request_id?: string | null
           price_per_hour?: number
           store_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "zones_onboarding_request_id_fkey"
+            columns: ["onboarding_request_id"]
+            isOneToOne: false
+            referencedRelation: "store_onboarding_requests"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "zones_store_id_fkey"
             columns: ["store_id"]
@@ -3420,6 +4067,7 @@ export type Database = {
           moderated_at: string | null
           moderator_comment: string | null
           name: string | null
+          online_cart_count: number | null
           paid_amount: number | null
           plays_count: number | null
           price_per_play: number | null
@@ -3435,6 +4083,7 @@ export type Database = {
           store_name: string | null
           submitted_at: string | null
           tariff_can_extend: boolean | null
+          tariff_can_select_zone: boolean | null
           tariff_code: string | null
           tariff_current_price: number | null
           tariff_min_amount: number | null
@@ -3471,6 +4120,285 @@ export type Database = {
           plays: number | null
         }
         Relationships: []
+      }
+      my_daily_plays_by_store: {
+        Row: {
+          ad_id: string | null
+          play_date: string | null
+          plays: number | null
+          store_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_dashboard_stats_by_store"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_finance_stats_by_store"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_store_playback_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "partner_stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "store_cart_connectivity"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "store_cart_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "store_stats"
+            referencedColumns: ["store_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      my_daily_plays_by_zone: {
+        Row: {
+          ad_id: string | null
+          play_date: string | null
+          plays: number | null
+          zone_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "all_zone_top"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zone_stats"
+            referencedColumns: ["zone_id"]
+          },
+          {
+            foreignKeyName: "ad_view_history_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       partner_campaign_view: {
         Row: {
@@ -3996,6 +4924,10 @@ export type Database = {
         Args: { p: Json; p_require_request?: boolean; p_uid: string }
         Returns: Json
       }
+      _can_read_store_request: {
+        Args: { p_request_id: string }
+        Returns: boolean
+      }
       _postgis_deprecate: {
         Args: { newname: string; oldname: string; version: string }
         Returns: undefined
@@ -4085,6 +5017,66 @@ export type Database = {
         Returns: unknown
       }
       _st_within: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _store_audit: {
+        Args: {
+          p_action: string
+          p_after: Json
+          p_entity_id: string
+          p_entity_type: string
+        }
+        Returns: undefined
+      }
+      _store_err: {
+        Args: { p_code: string; p_detail?: string; p_field?: string }
+        Returns: undefined
+      }
+      _store_owner_configured: { Args: never; Returns: boolean }
+      _store_plan_kinds: { Args: never; Returns: string[] }
+      _store_plan_validate: { Args: { p: Json }; Returns: undefined }
+      _store_request_check_zoning: {
+        Args: { p_plan: Json; p_request_id: string }
+        Returns: undefined
+      }
+      _store_request_lock_draft: {
+        Args: { p_expected_revision: number; p_id: string }
+        Returns: {
+          address: string | null
+          city: string | null
+          created_at: string
+          created_by: string
+          id: string
+          name: string | null
+          partner_id: string | null
+          proposed_store_id: string
+          published_store_id: string | null
+          request_key: string
+          review_comment: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          revision: number
+          status: string
+          submitted_at: string | null
+          timezone: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "store_onboarding_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      _store_validate_fields: {
+        Args: {
+          p_address: string
+          p_city: string
+          p_name: string
+          p_partner_id: string
+          p_require_all: boolean
+          p_timezone: string
+        }
+        Returns: undefined
+      }
       addauth: { Args: { "": string }; Returns: boolean }
       addgeometrycolumn:
         | {
@@ -4131,6 +5123,40 @@ export type Database = {
           size_bytes: number
         }[]
       }
+      admin_create_store_request: {
+        Args: {
+          p_address?: string
+          p_city?: string
+          p_name: string
+          p_partner_id?: string
+          p_request_key: string
+          p_timezone?: string
+        }
+        Returns: string
+      }
+      admin_list_store_requests: {
+        Args: { p_status?: string }
+        Returns: {
+          address: string
+          city: string
+          created_at: string
+          has_plan: boolean
+          id: string
+          is_mine: boolean
+          name: string
+          partner_id: string
+          proposed_store_id: string
+          published_store_id: string
+          review_comment: string
+          reviewed_at: string
+          revision: number
+          status: string
+          submitted_at: string
+          timezone: string
+          updated_at: string
+          zone_count: number
+        }[]
+      }
       admin_mark_invoice_paid: {
         Args: { p_invoice_id: string }
         Returns: string
@@ -4143,6 +5169,40 @@ export type Database = {
           p_reasons?: string[]
         }
         Returns: string
+      }
+      admin_replace_store_zoning: {
+        Args: {
+          p_assignments: Json
+          p_expected_revision: number
+          p_id: string
+          p_zones: Json
+        }
+        Returns: number
+      }
+      admin_save_store_plan: {
+        Args: {
+          p_expected_revision: number
+          p_id: string
+          p_plan: Json
+          p_source_file_name?: string
+        }
+        Returns: number
+      }
+      admin_submit_store_request: {
+        Args: { p_expected_revision: number; p_id: string }
+        Returns: number
+      }
+      admin_update_store_request: {
+        Args: {
+          p_address: string
+          p_city: string
+          p_expected_revision: number
+          p_id: string
+          p_name: string
+          p_partner_id?: string
+          p_timezone?: string
+        }
+        Returns: number
       }
       catalog_stores: {
         Args: never
@@ -4327,6 +5387,8 @@ export type Database = {
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
       get_email_by_phone: { Args: { p_phone: string }; Returns: string }
+      get_store_plan: { Args: { p_store_id: string }; Returns: Json }
+      get_store_request: { Args: { p_id: string }; Returns: Json }
       gettransactionid: { Args: never; Returns: unknown }
       handle_beacon_detected: {
         Args: {
@@ -4337,7 +5399,54 @@ export type Database = {
         Returns: string
       }
       is_apex_admin: { Args: never; Returns: boolean }
+      is_apex_store_owner: { Args: never; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
+      my_carts_with_plays: {
+        Args: { p_ad_ids?: string[]; p_from: string; p_to: string }
+        Returns: {
+          carts: number
+          store_id: string
+        }[]
+      }
+      my_plays_by_hour: {
+        Args: { p_ad_ids?: string[]; p_from: string; p_to: string }
+        Returns: {
+          hour: number
+          plays: number
+          weekday: number
+        }[]
+      }
+      owner_approve_store_request: {
+        Args: { p_expected_revision: number; p_id: string }
+        Returns: string
+      }
+      owner_list_pending_store_requests: {
+        Args: never
+        Returns: {
+          address: string
+          city: string
+          created_at: string
+          has_plan: boolean
+          id: string
+          is_mine: boolean
+          name: string
+          partner_id: string
+          proposed_store_id: string
+          published_store_id: string
+          review_comment: string
+          reviewed_at: string
+          revision: number
+          status: string
+          submitted_at: string
+          timezone: string
+          updated_at: string
+          zone_count: number
+        }[]
+      }
+      owner_reject_store_request: {
+        Args: { p_comment: string; p_expected_revision: number; p_id: string }
+        Returns: number
+      }
       owns_ad: { Args: { p_ad_id: string }; Returns: boolean }
       partner_store_ids: { Args: never; Returns: string[] }
       populate_geometry_columns:
@@ -4973,6 +6082,15 @@ export type Database = {
       st_wrapx: {
         Args: { geom: unknown; move: number; wrap: number }
         Returns: unknown
+      }
+      stats_synced_at: { Args: never; Returns: string }
+      store_carts_now: {
+        Args: never
+        Returns: {
+          cart_count: number
+          online_cart_count: number
+          store_id: string
+        }[]
       }
       submit_campaign: { Args: { p: Json }; Returns: string }
       submit_corporate_request: { Args: { p: Json }; Returns: string }

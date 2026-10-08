@@ -1,0 +1,9 @@
+.table.table { min-width: 1080px; }
+.table.table th:first-child { width: 19%; }
+.table.table th:nth-child(2) { width: 12%; }
+.table.table th:nth-child(3) { width: 25%; }
+.table.table th:nth-child(4) { width: 18%; }
+.table.table th:nth-child(5), .table.table th:last-child { width: 13%; }
+.table tbody tr { cursor: pointer; }
+.table tbody tr:hover, .table tbody tr:focus-within { background: var(--surface-muted); }
+.fullRow { grid-column: 1 / -1; }

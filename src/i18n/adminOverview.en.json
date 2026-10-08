@@ -12,7 +12,7 @@
   "untitled": "Untitled",
   "notSpecified": "Not specified",
   "sections": "Implemented sections",
-  "navigationUnavailable": "Campaign and invoice lists and details are not connected yet. Open corporate requests using the company name or the Corporate requests section.",
+  "navigationUnavailable": "Campaign and invoice lists and details are available in their respective sections. Open corporate requests using the company name or the menu.",
   "refreshHint": "Blocks refresh independently. Each block shows its last successful load time in Asia/Almaty. On an error, its previous value is hidden; an error does not mean zero records.",
   "pending": { "title": "Awaiting moderation", "description": "Up to five oldest pending campaigns, ordered by creation date.", "empty": "The server returned no accessible pending campaigns. An empty response may be caused by access restrictions." },
   "corporate": { "title": "Latest corporate requests", "description": "Up to five most recent requests by creation date, with any status.", "empty": "The server returned no accessible requests. An empty response may be caused by access restrictions." },

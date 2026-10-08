@@ -14,6 +14,7 @@
     "help": "Help",
     "logout": "Log out"
   },
+  "preferences": "Language and theme",
   "createCampaign": "Create campaign",
   "noCompany": "Company not specified",
   "retry": "Try again",
@@ -65,5 +66,18 @@
     "title": "Campaign video",
     "watch": "Watch the video",
     "close": "Close the video"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unreadLabel": "Notifications, unread: {count}",
+    "readAll": "Mark all as read",
+    "unread": "Unread",
+    "more": "Show more",
+    "loading": "Loading notifications…",
+    "emptyTitle": "No notifications yet",
+    "emptyText": "News about moderation, payments and plays of your campaigns will appear here.",
+    "errorTitle": "Couldn't load notifications",
+    "errorText": "Check your connection and try again.",
+    "reasons": "Reasons: {list}"
   }
 }

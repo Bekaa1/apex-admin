@@ -4,6 +4,7 @@ import { Icon } from '../../design-system/Icon';
 import { useI18n } from '../../i18n/i18n';
 import { chatTransport } from '../index';
 import { ChatWidgetController, isNearBottom, shouldSendOnEnter, type WidgetTransport } from './controller';
+import ChatMarkdown from './ChatMarkdown';
 import styles from './ChatWidget.module.css';
 
 export default function ChatWidget({ transport = chatTransport }: { transport?: WidgetTransport }) {
@@ -49,7 +50,7 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
       element.scrollTop = element.scrollHeight;
     }
     previousLast.current = last;
-  }, [state.open, state.messages, state.loadingOlder]);
+  }, [state.open, state.messages, state.loadingOlder, state.connection.replyPending]);
 
   const loadOlder = () => {
     const element = history.current;
@@ -80,7 +81,6 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
         </div>
         <button type="button" className={styles.close} aria-label={t('chat.close')} onClick={close}><Icon name="x" /></button>
       </header>
-      {connection.replyPending ? <p className={styles.empty} role="status">{t('chat.replyPending')}</p> : null}
       {connection.replyError ? <div className={styles.error} role="status">
         <Icon name="alert-circle" /><div><p>{t('chat.replyError')}</p>
           <Button variant="ghost" size="md" disabled={connection.replyPending || !available}
@@ -99,7 +99,10 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
           controller.setNearBottom(nearBottom.current);
         }}>
         {connection.hasOlderMessages ? <div className={styles.older}><Button variant="ghost" size="md" loading={state.loadingOlder} onClick={loadOlder}>{t('chat.older')}</Button></div> : null}
-        {!connection.historyLoaded && connection.phase === 'connecting' ? <p className={styles.empty} role="status">{t('chat.connectingHistory')}</p> : null}
+        {!connection.historyLoaded && connection.phase === 'connecting' ? <div className={styles.historyLoading} role="status">
+          <span className="ax-spinner" aria-hidden="true" />
+          <span className={styles.srOnly}>{t('chat.connectingHistory')}</span>
+        </div> : null}
         {connection.historyLoaded && state.messages.length === 0 ? <div className={styles.empty}>
           <span className={styles.welcomeIcon} aria-hidden="true"><Icon name="message-circle" size={32} /></span>
           <p>{t('chat.initial')}</p>
@@ -107,7 +110,7 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
         <ol className={styles.messages} aria-label={t('chat.messages')}>
           {state.messages.map(message => <li className={styles.message} data-sender={message.sender} key={message.key} data-message-key={message.key}>
             <span className={styles.sender}>{t(message.sender === 'visitor' ? 'chat.you' : 'chat.support')}</span>
-            <p className={styles.body}>{message.body}</p>
+            <ChatMarkdown body={message.body} />
             <div className={styles.meta}>
               <time dateTime={message.createdAt} title={date.format(new Date(message.createdAt))}>{time.format(new Date(message.createdAt))}</time>
               {message.status ? <span className={message.status === 'failed' ? styles.failed : undefined}>{t(`chat.delivery.${message.status}`)}</span> : null}
@@ -117,6 +120,12 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
               <button type="button" disabled={state.sending || !available} onClick={() => void controller.retryMessage(message.clientMessageId)}>{t('chat.retry')}</button>
             </div> : null}
           </li>)}
+          {connection.replyPending ? <li className={`${styles.message} ${styles.typing}`} data-sender="responder">
+            <div role="status">
+              <span className={styles.srOnly}>{t('chat.replyPending')}</span>
+              <span className={styles.typingDots} aria-hidden="true"><span /><span /><span /></span>
+            </div>
+          </li> : null}
         </ol>
       </div>
       {state.newMessages > 0 ? <button type="button" className={styles.newMessages} onClick={scrollToBottom}>{t('chat.newMessages')} <span aria-hidden="true">↓</span></button> : null}

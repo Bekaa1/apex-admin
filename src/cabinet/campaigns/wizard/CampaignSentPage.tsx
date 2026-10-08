@@ -80,12 +80,12 @@ export function CampaignSentPage() {
   if (receipt.kind === 'edit') {
     const fields = receipt.changed.map((field) => t(`campaigns.edit.changed.${field}`)).join(', ');
     const rows: Array<[string, ReactNode]> = [[t('campaigns.sent.name'), receipt.name]];
-    if (fields) rows.push([t('campaigns.edit.sent.changed'), fields.charAt(0).toLocaleUpperCase() + fields.slice(1)]);
+    rows.push([t('campaigns.edit.sent.changed'), fields ? fields.charAt(0).toLocaleUpperCase() + fields.slice(1) : t('campaigns.edit.sent.unchanged')]);
     if (receipt.paused) rows.push([t('campaigns.edit.sent.plays'), t('campaigns.edit.sent.paused')]);
     return (
       <Done
-        title={t('campaigns.edit.sent.title')}
-        lead={t(receipt.paused ? 'campaigns.edit.sent.leadPaused' : 'campaigns.edit.sent.lead', { name: receipt.name, email })}
+        title={t(fields ? 'campaigns.edit.sent.title' : 'campaigns.edit.sent.titleResent')}
+        lead={t(fields ? (receipt.paused ? 'campaigns.edit.sent.leadPaused' : 'campaigns.edit.sent.lead') : 'campaigns.edit.sent.leadResent', { name: receipt.name, email })}
         rows={rows}
         steps={[
           { key: 'review', title: t('campaigns.row.timeline.changesReview'), text: t('campaigns.edit.after.reviewText'), state: 'current' },

@@ -68,7 +68,7 @@ export function validateStep(step: StepId, form: CampaignForm, ctx: WizardContex
       break;
     }
     case 'review':
-      if (ctx.original && !campaignChanges(ctx.original, form, ctx).length) errors.changes = 'required';
+      if (ctx.original && !ctx.resubmit && !campaignChanges(ctx.original, form, ctx).length) errors.changes = 'required';
       if (!form.rulesAccepted) errors.rules = 'required';
       break;
   }

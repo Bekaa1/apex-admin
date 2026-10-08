@@ -164,9 +164,15 @@
     "notStarted": "Impressions not started yet",
     "topUp": "Top up",
     "stats": "Statistics",
-    "open": "Open"
+    "open": "Open",
+    "fix": "Fix"
   },
   "next": {
     "title": "A new campaign in 5 steps"
+  },
+  "rejected": {
+    "title": "The moderator returned «{name}»",
+    "text": "See the reason, fix it and send it again — we’ll check it within a working day.",
+    "fix": "Fix"
   }
 }

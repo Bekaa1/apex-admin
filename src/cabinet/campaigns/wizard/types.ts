@@ -112,6 +112,8 @@ export interface WizardContext {
   zones: boolean | null;
   /** An edit: the campaign as it was opened, to compare with. */
   original: CampaignForm | null;
+  /** «Исправить» after a rejection: it may go back to moderation unchanged (the moderator may have erred). */
+  resubmit: boolean;
 }
 
 export type WizardMode =

@@ -1,0 +1,13 @@
+.panel { display: grid; gap: var(--space-5); min-width: 0; }
+.panel:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.full { grid-column: 1 / -1; }
+.storePicker { display: grid; gap: var(--space-3); min-width: 0; padding: 0; margin: 0; border: 0; }
+.storePicker legend { padding: 0 0 var(--space-2); font-weight: 600; font-size: 14px; }
+.selected { overflow-wrap: anywhere; line-height: 1.6; }
+.selected small { display: block; color: var(--text-muted); }
+.pickerSearch { display: grid; gap: var(--space-3); min-width: 0; }
+.options { display: grid; gap: var(--space-1); list-style: none; margin: 0; padding: var(--space-2); max-height: 300px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+.options li { min-width: 0; }
+.options :global(.ax-btn) { justify-content: flex-start; text-align: left; height: auto; white-space: normal; padding-block: var(--space-2); }
+.optionName, .optionMeta { display: block; overflow-wrap: anywhere; }
+.optionMeta { color: var(--text-muted); font-size: 12px; margin-top: var(--space-1); }

@@ -22,7 +22,7 @@ import { ResetPasswordCodeScreen } from './CodeScreens'
 import { ResetPasswordDoneScreen, ResetPasswordEmailScreen, ResetPasswordNewScreen } from './ResetScreens'
 import type { ResetPasswordStartError } from './ResetScreens'
 import { normalizeKazakhstanPhone, validateEmail, validateNewPassword } from './validation'
-import { requireSupabase } from '../lib/supabase'
+import { requireSupabase, supabase } from '../lib/supabase'
 import { useAuthLinks } from './links'
 
 function normalizeContact(contact: string): { value: string; channel: VerificationChannel } {
@@ -197,10 +197,12 @@ export type ResetPasswordStep = 'email' | 'code' | 'new' | 'done'
 
 export function ResetPasswordFlow({
   step,
+  admin = false,
   contact = '',
   channel = 'email',
 }: {
   step: ResetPasswordStep
+  admin?: boolean
   contact?: string
   channel?: VerificationChannel
 }) {
@@ -211,8 +213,11 @@ export function ResetPasswordFlow({
   const [codeError, setCodeError] = useState<CodeError | null>(null)
   const [passwordRejected, setPasswordRejected] = useState(false)
   const [passwordUnavailable, setPasswordUnavailable] = useState(false)
+  const submissionInProgress = useRef(false)
 
   const sendResetCode = async (rawContact: string, navigateToCode: boolean) => {
+    if (submissionInProgress.current || (admin && validateEmail(rawContact))) return
+    submissionInProgress.current = true
     setLoading(true)
     setStartError(null)
     setCodeError(null)
@@ -247,12 +252,14 @@ export function ResetPasswordFlow({
       if (navigateToCode) setStartError('unavailable')
       else setCodeError('unavailable')
     } finally {
+      submissionInProgress.current = false
       setLoading(false)
     }
   }
 
   const submitCode = async (token: string) => {
-    if (!contact) return
+    if (!contact || submissionInProgress.current) return
+    submissionInProgress.current = true
     setLoading(true)
     setCodeError(null)
     try {
@@ -272,11 +279,14 @@ export function ResetPasswordFlow({
       logAuthFailure('password-reset-verify', error, channel)
       setCodeError('unavailable')
     } finally {
+      submissionInProgress.current = false
       setLoading(false)
     }
   }
 
   const saveNewPassword = async (password: string) => {
+    if (submissionInProgress.current) return
+    submissionInProgress.current = true
     setLoading(true)
     setPasswordRejected(false)
     setPasswordUnavailable(false)
@@ -289,11 +299,12 @@ export function ResetPasswordFlow({
         return
       }
 
-      navigateAuth(links.resetDone)
+      navigateAuth(links.resetDone, { contact: contact ?? '', channel, completed: true })
     } catch (error) {
       logAuthFailure('password-reset-save', error, channel)
       setPasswordUnavailable(true)
     } finally {
+      submissionInProgress.current = false
       setLoading(false)
     }
   }
@@ -301,6 +312,7 @@ export function ResetPasswordFlow({
   if (step === 'email') {
     return (
       <ResetPasswordEmailScreen
+        admin={admin}
         loading={loading}
         error={startError}
         defaultContact={contact}
@@ -310,9 +322,10 @@ export function ResetPasswordFlow({
   }
 
   if (step === 'code') {
-    if (!contact) return <ResetPasswordEmailScreen loading={loading} error={startError} onSubmit={(value) => void sendResetCode(value, true)} />
+    if (!contact) return <ResetPasswordEmailScreen admin={admin} loading={loading} error={startError} onSubmit={(value) => void sendResetCode(value, true)} />
     return (
       <ResetPasswordCodeScreen
+        admin={admin}
         contact={contact}
         channel={channel}
         loading={loading}
@@ -326,6 +339,7 @@ export function ResetPasswordFlow({
   if (step === 'new') {
     return (
       <ResetPasswordNewScreen
+        admin={admin}
         loading={loading}
         rejected={passwordRejected}
         unavailable={passwordUnavailable}
@@ -334,16 +348,21 @@ export function ResetPasswordFlow({
     )
   }
 
-  return <ResetPasswordDoneScreen />
+  return <ResetPasswordDoneScreen admin={admin} />
 }
 
-export function LoginFlow() {
+export function LoginFlow({ admin = false }: { admin?: boolean }) {
   const navigateAuth = useAuthNavigate()
+  const { session, status } = useAuthSession()
+  const { t } = useI18n()
+  const submissionInProgress = useRef(false)
   const [loading, setLoading] = useState(false)
   const [emailCodeLoading, setEmailCodeLoading] = useState(false)
   const [error, setError] = useState<LoginError | null>(null)
 
   const submit = async ({ contact, password }: { contact: string; password: string }) => {
+    if (submissionInProgress.current || (admin && validateEmail(contact))) return
+    submissionInProgress.current = true
     setLoading(true)
     setError(null)
 
@@ -356,12 +375,13 @@ export function LoginFlow() {
       const result = await client.auth.signInWithPassword(credentials)
 
       if (!result.error) {
-        navigateAuth(postAuthDestination())
+        navigateAuth(admin ? '/admin' : postAuthDestination())
         return
       }
       logAuthFailure('password-signin', result.error, channel)
 
       if (isUnconfirmed(result.error, channel)) {
+        if (admin) { setError('unconfirmed'); return }
         const resendResult = channel === 'sms'
           ? await client.auth.signInWithOtp({ phone: value, options: { shouldCreateUser: false } })
           : await client.auth.signInWithOtp({ email: value, options: { shouldCreateUser: false } })
@@ -383,6 +403,7 @@ export function LoginFlow() {
       logAuthFailure('password-signin', error)
       setError('unavailable')
     } finally {
+      submissionInProgress.current = false
       setLoading(false)
     }
   }
@@ -419,8 +440,16 @@ export function LoginFlow() {
     }
   }
 
+  if (admin && !supabase) return <AuthLayout admin showLegalLinks={false}><Alert title={t('adminAuth.notConfigured')} /></AuthLayout>
+  if (admin && status === 'loading') return <SessionLoading admin />
+  if (admin && status === 'error') return <AuthLayout admin showLegalLinks={false}><div className="auth__form">
+    <Alert tone="danger" title={t('cabinet.sessionErrorTitle')}>{t('login.errors.unavailableBody')}</Alert>
+    <Button onClick={() => window.location.reload()}>{t('cabinet.retry')}</Button>
+  </div></AuthLayout>
+  if (admin && session) return <Navigate to="/admin" replace />
   return (
     <LoginScreen
+      admin={admin}
       loading={loading}
       emailCodeLoading={emailCodeLoading}
       error={error}

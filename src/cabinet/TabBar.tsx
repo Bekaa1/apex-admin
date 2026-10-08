@@ -8,7 +8,7 @@ export function TabBar() {
   const { t } = useI18n();
   return (
     <nav className="cab-tabs" aria-label={t('cabinet.nav.label')}>
-      {CABINET_SECTIONS.map((section) => (
+      {CABINET_SECTIONS.filter((section) => section.page).map((section) => (
         <NavLink key={section.id} className="cab-tabs__item" to={cabinetUrl(section.path)} end={!section.path}>
           <span className="cab-tabs__icon">
             <Icon name={section.icon} size={22} />

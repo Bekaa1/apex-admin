@@ -1,0 +1,17 @@
+.panel { display: grid; gap: var(--space-4); padding: var(--space-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+.dialog { box-sizing: border-box; width: min(620px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: var(--space-6); overflow: auto; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+.dialog::backdrop { background: color-mix(in srgb, var(--text) 40%, transparent); }
+.form { display: grid; gap: var(--space-5); min-width: 0; }
+.form h2 { margin: 0; font: 600 22px/1.4 var(--font-display); }
+.form p { margin: 0; line-height: 1.6; }
+.campaign { white-space: pre-wrap; overflow-wrap: anywhere; }
+.reasons { display: grid; gap: var(--space-3); min-width: 0; padding: 0; margin: 0; border: 0; }
+.reasons legend { padding: 0 0 var(--space-3); font-weight: 600; }
+.reasons :global(.ax-check) { align-items: flex-start; }
+.reasons :global(.ax-check > span) { min-width: 0; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.actions > * { max-width: 100%; }
+.actions :global(.ax-btn) { white-space: normal; }
+.error { color: var(--danger); }
+.dialog :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 600px) { .dialog { padding: var(--space-4); } .actions > * { flex: 1 1 100%; } }

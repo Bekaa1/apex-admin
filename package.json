@@ -1,13 +1,19 @@
 {
-  "name": "apex-admin",
+  "name": "apex-admin-console",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev:public": "vite --mode public",
+    "dev:admin": "vite --mode admin",
+    "build": "npm run build:public",
+    "build:public": "tsc -b && vite build --mode public",
+    "build:admin": "tsc -b && vite build --mode admin",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview --mode public",
+    "preview:public": "vite preview --mode public",
+    "preview:admin": "vite preview --mode admin"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

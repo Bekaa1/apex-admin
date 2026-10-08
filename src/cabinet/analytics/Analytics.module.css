@@ -31,7 +31,7 @@
 .results { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); min-height: var(--control-md); margin: var(--space-3) 0; color: var(--text-subtle); font-size: 13px; }
 .results p { margin: 0; }
 .results button { font-size: 12px; }
-.tableWrap { width: 100%; }
+.tableWrap { width: 100%; max-width: 100%; overflow-x: auto; }
 .table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .table th { padding: var(--space-3) var(--space-3); border-bottom: 1px solid var(--border); text-align: left; color: var(--text-subtle); font-size: 12px; font-weight: 500; }
 .table th:nth-child(3), .table th:nth-child(4) { text-align: right; }

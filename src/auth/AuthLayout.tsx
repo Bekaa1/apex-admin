@@ -1,3 +1,4 @@
+import { AppLink } from '../design-system/AppLink';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Badge, Button, Icon, LANG_OPTIONS, Logo, LogoMark, SegmentedControl, ThemeToggle, useTheme, type IconName } from '../design-system';
 import { useI18n } from '../i18n/i18n';
@@ -6,10 +7,12 @@ import { useAuthLinks } from './links';
 /** Two columns on desktop: brand panel left, form right. On phones (≤760px) the panel shrinks to a header. See auth.css. */
 export function AuthLayout({
   back,
+  admin = false,
   showLegalLinks = true,
   children,
 }: {
   back?: { href: string; label: string; onClick?: () => void };
+  admin?: boolean;
   showLegalLinks?: boolean;
   children: ReactNode;
 }) {
@@ -17,6 +20,12 @@ export function AuthLayout({
   const { theme } = useTheme();
   const links = useAuthLinks();
   const homeLabel = t('landing.nav.home');
+  useEffect(() => {
+    if (!admin) return;
+    const previous = document.title;
+    document.title = 'ApexAdmin';
+    return () => { document.title = previous; };
+  }, [admin]);
   return (
     <div className="auth">
       <aside className="auth__panel">
@@ -26,13 +35,18 @@ export function AuthLayout({
         <div className="auth__mark auth__mark--color" aria-hidden="true">
           <LogoMark />
         </div>
-        <Logo className="auth__logo auth__logo--desktop" variant={theme === 'dark' ? 'color' : 'white'} size={28} href={links.home} label={homeLabel} />
-        <Logo className="auth__logo auth__logo--mobile" size={30} href={links.home} label={homeLabel} />
+        {admin ? <>
+          <AppLink className={`ax-logo auth__logo auth__logo--desktop${theme === 'dark' ? '' : ' ax-logo--white'}`} href="/admin" aria-label="ApexAdmin"><LogoMark variant={theme === 'dark' ? 'color' : 'white'} /><span className="ax-logo__word">ApexAdmin</span></AppLink>
+          <AppLink className="ax-logo auth__logo auth__logo--mobile" href="/admin" aria-label="ApexAdmin"><LogoMark size={24} /><span className="ax-logo__word">ApexAdmin</span></AppLink>
+        </> : <>
+          <Logo className="auth__logo auth__logo--desktop" variant={theme === 'dark' ? 'color' : 'white'} size={28} href={links.home} label={homeLabel} />
+          <Logo className="auth__logo auth__logo--mobile" size={30} href={links.home} label={homeLabel} />
+        </>}
         <div className="auth__pitch">
-          <p className="auth__tagline">{t('common.tagline')}</p>
-          <p className="auth__tagline-sub">{t('common.taglineSub')}</p>
+          <p className="auth__tagline">{admin ? 'ApexAdmin' : t('common.tagline')}</p>
+          <p className="auth__tagline-sub">{t(admin ? 'adminAuth.tagline' : 'common.taglineSub')}</p>
         </div>
-        <p className="auth__copy">{t('common.copyright')}</p>
+        <p className="auth__copy">{admin ? '© ApexAdmin' : t('common.copyright')}</p>
       </aside>
       <div className="auth__main">
         <div className={back ? 'auth__top auth__top--with-back' : 'auth__top'}>
@@ -47,10 +61,10 @@ export function AuthLayout({
           </div>
         </div>
         <main className="auth__body">{children}</main>
-        {showLegalLinks ? (
+        {showLegalLinks && !admin ? (
           <footer className="auth__footer">
-            <a href={links.privacy}>{t('common.privacy')}</a>
-            <a href={links.offer}>{t('common.offer')}</a>
+            <AppLink href={links.privacy}>{t('common.privacy')}</AppLink>
+            <AppLink href={links.offer}>{t('common.offer')}</AppLink>
           </footer>
         ) : null}
       </div>
@@ -77,9 +91,9 @@ export function AuthNote({ text, link, href }: { text: string; link: string; hre
   return (
     <p className="auth__note">
       {text}{' '}
-      <a className="auth__link" href={href}>
+      <AppLink className="auth__link" href={href}>
         {link}
-      </a>
+      </AppLink>
     </p>
   );
 }
@@ -100,7 +114,7 @@ export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref
         <p className="auth__timer">{t('common.resendIn', { time })}</p>
       ) : (
         <p>
-          <a
+          <AppLink
             className="auth__link"
             href="#resend"
             onClick={(e) => {
@@ -111,14 +125,14 @@ export function ResendBlock({ seconds = 60, forceAvailable, onResend, changeHref
             }}
           >
             {t('common.resend')}
-          </a>
+          </AppLink>
         </p>
       )}
       <p>
         {wrongContactLabel ?? t('common.wrongEmail')}{' '}
-        <a className="auth__link" href={changeHref} onClick={onChangeContact ? (event) => { event.preventDefault(); if (!disabled) onChangeContact(); } : undefined}>
+        <AppLink className="auth__link" href={changeHref} onClick={onChangeContact ? (event) => { event.preventDefault(); if (!disabled) onChangeContact(); } : undefined}>
           {t('common.change')}
-        </a>
+        </AppLink>
       </p>
     </div>
   );

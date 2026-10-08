@@ -1,0 +1,13 @@
+{
+  "sections": { "overview": "Обзор", "campaigns": "Кампании", "moderation": "Модерация", "invoices": "Счета", "clients": "Клиенты", "stores": "Магазины", "equipment": "Оборудование", "tariffs": "Тарифы", "corporate": "Корпоративные заявки" },
+  "menu": "Меню ApexAdmin",
+  "mobileMenu": "Быстрая навигация ApexAdmin",
+  "more": "Ещё",
+  "closeMenu": "Закрыть меню",
+  "skip": "Перейти к содержимому",
+  "inDevelopment": "Раздел в разработке",
+  "accessNotConfigured": "Доступ к панели ещё не настроен",
+  "preview": "Предпросмотр каркаса · без подключения к БД",
+  "backOverview": "К обзору",
+  "notFound": { "title": "Страница не найдена · 404", "body": "Такой страницы в ApexAdmin нет. Выберите раздел в меню или вернитесь к обзору." }
+}

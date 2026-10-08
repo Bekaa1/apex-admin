@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
+import { adminReturnTo } from '../navigation/returnTo'
 
 export type VerificationChannel = 'email' | 'sms'
 export type VerificationPurpose = 'signup' | 'signin'
@@ -13,11 +14,16 @@ export interface VerificationState {
 export interface ResetPasswordState {
   contact: string
   channel: VerificationChannel
+  completed?: boolean
 }
 
 export function useAuthNavigate() {
   const navigate = useNavigate()
+  const { search } = useLocation()
   return useCallback((path: string, state: VerificationState | ResetPasswordState | null = null) => {
-    void navigate(path, { state })
-  }, [navigate])
+    const next = adminReturnTo(search)
+    const authPath = /^\/(?:login|signup|reset-password)(?:[/?]|$)/.test(path)
+    const target = next && authPath ? `${path}${path.includes('?') ? '&' : '?'}next=${encodeURIComponent(next)}` : path
+    void navigate(target, { state })
+  }, [navigate, search])
 }

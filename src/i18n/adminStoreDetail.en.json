@@ -1,0 +1,41 @@
+{
+  "title": "Store details",
+  "description": "Read only. Event dates use the Asia/Almaty time zone.",
+  "back": "Back to stores",
+  "basic": "Store information",
+  "records": "Store zones and equipment",
+  "dataSource": "Data comes from Apex and may differ from the current state of the equipment",
+  "syncUnknown": "Synchronization time is unknown",
+  "invalidId": "Invalid store ID. Open the details from the store list.",
+  "notFound": "Store not found or unavailable in Apex",
+  "notFoundBody": "The source returned no accessible record for this ID.",
+  "noData": "No data",
+  "partnerLoading": "Loading partner name…",
+  "partnerUnavailable": "The partner name is unavailable. The saved ID is shown.",
+  "zoneNamesUnavailable": "Some zone names are unavailable. Zone IDs are shown instead; the equipment remains in the list.",
+  "withoutZone": "Without a zone",
+  "resetTab": "Reset tab parameters",
+  "invalidTab": "The address contains an invalid tab, filter or page. Reset the tab parameters.",
+  "denied": "Access to store data denied",
+  "errorTitle": "Could not load data",
+  "errors": {
+    "denied": "The server denied access to this data. Access permissions need to be checked.",
+    "missing": "The data source is unavailable in the API. Server configuration is required.",
+    "invalid": "The server response does not match the expected format, store or page boundaries. Data has not been displayed.",
+    "unavailable": "Could not retrieve data. Please try again."
+  },
+  "tabs": { "zones": "Zones", "carts": "Carts", "beacons": "Beacons" },
+  "columns": {
+    "name": "Name", "description": "Description", "id": "ID",
+    "cartNumber": "Cart number", "status": "Status in Apex", "battery": "Battery",
+    "lastSeen": "Last seen (last_seen_at)", "lastPing": "Last ping (last_ping_at)",
+    "currentZone": "Current zone", "boxNumber": "Box number", "deviceIdentifier": "Device identifier", "zone": "Zone"
+  },
+  "pagination": { "zones": "Store zone pages", "carts": "Store cart pages", "beacons": "Store beacon pages" },
+  "empty": {
+    "zones": "The Apex source returned no accessible zones for this store.",
+    "carts": "The Apex source returned no accessible carts for this store.",
+    "beacons": "The Apex source returned no accessible beacons for this store.",
+    "withoutZone": "The Apex source returned no accessible beacons without a zone for this store."
+  }
+}

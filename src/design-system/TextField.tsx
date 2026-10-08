@@ -1,3 +1,4 @@
+import { AppLink } from './AppLink';
 import { useId, useState, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cx } from './cx';
 import { Icon } from './Icon';
@@ -60,9 +61,9 @@ export function TextField({ id, label, hint, error, trailing, labelAction, optio
 /** Link styled for TextField `labelAction`. */
 export function FieldAction({ href, children, onClick }: { href: string; children: ReactNode; onClick?: () => void }) {
   return (
-    <a className="ax-field__action" href={href} onClick={onClick}>
+    <AppLink className="ax-field__action" href={href} onClick={onClick}>
       {children}
-    </a>
+    </AppLink>
   );
 }
 

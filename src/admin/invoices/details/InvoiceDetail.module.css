@@ -1,0 +1,8 @@
+.link { color: var(--link); overflow-wrap: anywhere; text-underline-offset: 3px; }
+.link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.feedback { display: grid; gap: var(--space-4); min-width: 0; }
+.summary { display: grid; gap: var(--space-4); margin: 0; }
+.summary dt { color: var(--text-muted); font-size: 13px; margin-bottom: var(--space-1); }
+.summary dd { margin: 0; line-height: 1.6; overflow-wrap: anywhere; white-space: pre-wrap; }
+.summary .amount { font-weight: 700; font-size: 20px; }
+.identifier { display: block; color: var(--text-muted); font-size: 12px; }

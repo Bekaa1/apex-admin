@@ -1,4 +1,4 @@
-import { requireSupabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 // The landing video lives in the public Storage bucket `landing`, served through the Supabase CDN.
 // A new cut goes into a new version folder, so neither the CDN nor browsers keep showing the old one.
@@ -22,8 +22,10 @@ export interface HeroMedia {
   full: MediaSource[];
 }
 
-export function heroMedia(): HeroMedia {
-  const url = (file: string) => requireSupabase().storage.from(BUCKET).getPublicUrl(`${FOLDER}/${file}`).data.publicUrl;
+export function heroMedia(): HeroMedia | null {
+  if (!supabase) return null;
+  const storage = supabase.storage.from(BUCKET);
+  const url = (file: string) => storage.getPublicUrl(`${FOLDER}/${file}`).data.publicUrl;
   return {
     poster: { src: url('poster.jpg'), srcSet: `${url('poster-960.jpg')} 960w, ${url('poster.jpg')} 1920w` },
     loop: [

@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { Badge } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatNumber, pluralKey } from '../../../lib/format';
@@ -13,6 +13,7 @@ import { stageNote } from './rowView';
 /** One campaign: a 6-column card on wide content, a stacked card below 640px (campaigns.css). */
 export function CampaignRow({ card, period }: { card: CampaignCard; period: PlaysPeriod }) {
   const { t, lang } = useI18n();
+  const location = useLocation();
   const badge = STAGE_BADGE[card.stage.kind];
   const note = stageNote(card.stage, t, lang);
   const count = (key: string, n: number) => t(pluralKey(key, n, lang), { count: formatNumber(n, lang) });
@@ -27,7 +28,7 @@ export function CampaignRow({ card, period }: { card: CampaignCard; period: Play
       <div className="cmp-row__grid">
         <CampaignCover url={card.coverUrl} videoUrl={card.videoUrl} tone={card.coverTone} />
         <div className="cmp-row__main">
-          <Link className="cmp-row__name" to={CABINET_LINKS.campaign(card.id)}>
+          <Link className="cmp-row__name" to={CABINET_LINKS.campaign(card.id)} state={{ returnTo: location.pathname + location.search }}>
             {card.name}
           </Link>
           {meta.length ? (

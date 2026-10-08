@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
 import { buttonClassName, type ButtonSize, type ButtonVariant } from './buttonClassName';
 import { Icon, type IconName } from './Icon';
+import { AppLink } from './AppLink';
 
 export type { ButtonSize, ButtonVariant };
 
@@ -39,9 +40,9 @@ export function Button(props: ButtonProps) {
   if (rest.href !== undefined) {
     const { href, ...anchor } = rest as Omit<LinkButton, keyof ButtonOwnProps>;
     return (
-      <a {...anchor} className={cls} href={inactive ? undefined : href} aria-disabled={inactive || undefined} aria-busy={loading || undefined}>
+      <AppLink {...anchor} onClick={inactive ? (event) => event.preventDefault() : anchor.onClick} tabIndex={inactive ? -1 : anchor.tabIndex} className={cls} href={inactive ? undefined : href} aria-disabled={inactive || undefined} aria-busy={loading || undefined}>
         {inner}
-      </a>
+      </AppLink>
     );
   }
   const { type = 'button', ...button } = rest as Omit<NativeButton, keyof ButtonOwnProps>;

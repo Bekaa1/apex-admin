@@ -1,0 +1,53 @@
+{
+  "title": "Campaigns",
+  "description": "Campaigns from all advertisers that your account can access.",
+  "search": "Campaign number or name",
+  "searchHint": "An exact number (optionally with #) or part of the name. Special characters are treated as text.",
+  "statusFilter": "Status",
+  "statusHint": "Choose a suggestion or enter the exact server value. Leave blank for all statuses, including older ones.",
+  "apply": "Apply",
+  "reset": "Clear filters",
+  "refresh": "Refresh",
+  "noData": "No data",
+  "deleted": "Deleted",
+  "count": "Available for this query: {count}",
+  "countUnknown": "The total is unavailable. The next page is checked separately; use Previous and Next.",
+  "profilesUnavailable": "Some advertiser profiles are unavailable. User IDs are shown instead of company names; the campaign list remains available.",
+  "tariffsUnavailable": "Some plan names are unavailable. Their plan IDs are shown instead.",
+  "scope": "Time zone: Asia/Almaty. Amounts in KZT. Only records permitted by the server are shown; complete administrative access requires a permissions check.",
+  "pagination": "Campaign pages",
+  "page": "Page {page} · {size} records per page",
+  "previous": "Previous",
+  "next": "Next",
+  "firstPage": "Go to first page",
+  "errorTitle": "Could not load campaigns",
+  "deniedTitle": "Campaign access denied",
+  "errors": {
+    "denied": "The server denied campaign reads. Administrative access to the ads source is required.",
+    "missing": "The campaign source or required API fields are unavailable. The server contract needs to be checked.",
+    "invalid": "The server returned an invalid or incomplete page. Please try again.",
+    "unavailable": "Could not get a server response. Check your connection and try again."
+  },
+  "validation": {
+    "page": "Invalid page number in the URL. Clear the filters to return to the first page.",
+    "filters": "Invalid filter parameters. Use up to 256 characters without control characters or duplicate parameters."
+  },
+  "empty": { "title": "No campaigns found", "body": "The server returned no accessible campaigns. An empty response may also result from access restrictions." },
+  "noMatches": { "title": "No matches", "body": "Change the number, name or status, or clear the filters." },
+  "pageEmpty": { "title": "No campaigns on this page", "body": "Return to the previous or first page." },
+  "columns": {
+    "number": "Number",
+    "name": "Name",
+    "advertiser": "Advertiser / company",
+    "status": "Status",
+    "tariff": "Plan",
+    "budget": "Budget",
+    "paid": "Paid",
+    "spent": "Spent",
+    "created": "Created"
+  },
+  "detailTitle": "Campaign details",
+  "detailPending": "Full campaign details will be connected separately. The campaign list is available now.",
+  "invalidId": "Invalid campaign UUID. Return to the list and select a campaign.",
+  "back": "Back to campaigns"
+}

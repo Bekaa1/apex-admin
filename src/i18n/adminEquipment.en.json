@@ -1,0 +1,25 @@
+{
+  "title": "Equipment",
+  "description": "View the copy of equipment data stored in Apex. Event dates use the Asia/Almaty time zone.",
+  "tabs": "Equipment type", "store": "Store", "allStores": "All stores",
+  "chooseStore": "Choose store", "closeSearch": "Close store search",
+  "storeSearch": "Store name", "storeSearchHint": "Server search of the accessible store registry. Results are not limited to the current equipment page.",
+  "findStores": "Find stores", "noStores": "No accessible stores on this search page. Change the search or go to the previous page.",
+  "storeSearchError": "Could not load store options",
+  "selectedUnavailable": "The selected store name is unavailable. The ID filter is retained.",
+  "storesUnavailable": "Some store names are unavailable. IDs are shown instead; equipment remains in the list.",
+  "search": { "carts": "Cart number", "beacons": "Box number or device identifier" },
+  "searchHint": "Case-insensitive search for part of the value.",
+  "status": "Status in Apex", "anyStatus": "Any status",
+  "statusHint": "Exact, case-sensitive raw status. Leave empty for any status.",
+  "invalid": "Invalid tab, filter or page. Check the address parameters or reset the filters.",
+  "pagination": "Equipment pages", "denied": "Equipment access denied", "errorTitle": "Could not load equipment",
+  "errors": {
+    "denied": "The server denied access to equipment. Access permissions need to be checked.",
+    "missing": "The equipment source is unavailable in the API. Server configuration is required.",
+    "invalid": "The server response does not match the expected format, selected store or page boundaries. Data has not been displayed.",
+    "unavailable": "Could not retrieve data. Please try again."
+  },
+  "empty": { "title": "No accessible records", "body": "The Apex source returned no accessible equipment of this type." },
+  "noMatches": { "title": "No matches", "body": "Change the search or filters, or reset them." }
+}

@@ -20,7 +20,7 @@ export function SideNav() {
         </Link>
         <nav className="cab-nav" aria-label={t('cabinet.nav.label')}>
           <ul className="cab-nav__list">
-            {CABINET_SECTIONS.map((section) => (
+            {CABINET_SECTIONS.filter((section) => section.page).map((section) => (
               <li key={section.id}>
                 <NavLink className="cab-nav__item" to={cabinetUrl(section.path)} end={!section.path}>
                   <Icon name={section.icon} />

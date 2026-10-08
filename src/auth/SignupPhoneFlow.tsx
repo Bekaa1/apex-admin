@@ -1,3 +1,4 @@
+import { AppLink } from '../design-system/AppLink';
 import { useRef, useState, type FormEvent } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { Alert, Button, TextField } from '../design-system';
@@ -149,10 +150,10 @@ export function SignupPhoneFlow({ user }: { user: User }) {
         {sendError ? (
           <Alert tone="danger" title={t(sendError === 'taken' ? 'signup.errors.phoneTakenTitle' : sendError === 'ratelimit' ? 'signup.errors.rateLimitTitle' : 'signup.errors.phoneSendTitle')}>
             {t(sendError === 'taken' ? 'signup.errors.phoneTakenBody' : sendError === 'ratelimit' ? 'signup.errors.rateLimitBody' : 'signup.errors.unavailableBody')}
-            {sendError === 'taken' ? <> <a className="auth__link" href="/reset-password" onClick={(event) => {
+            {sendError === 'taken' ? <> <AppLink className="auth__link" href="/reset-password" onClick={(event) => {
               event.preventDefault();
               navigateAuth('/reset-password', { contact: normalizeKazakhstanPhone(phoneInput.contact) ?? phoneInput.contact, channel: 'sms' });
-            }}>{t('signup.errors.resetPassword')}</a></> : null}
+            }}>{t('signup.errors.resetPassword')}</AppLink></> : null}
           </Alert>
         ) : null}
         <Button type="submit" fullWidth loading={loading}>{t('signup.sendSms')}</Button>

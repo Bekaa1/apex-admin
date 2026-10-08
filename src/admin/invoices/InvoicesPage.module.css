@@ -1,0 +1,7 @@
+/* Scoped overrides over the existing campaign table, independent of chunk load order. */
+.filters.filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fullRow { grid-column: 1 / -1; }
+.table.table { min-width: 1280px; }
+.table.table th:first-child { width: 10%; }
+.table.table th:nth-child(2), .table.table th:nth-child(3) { width: 18%; }
+@media (max-width: 800px) { .filters.filters { grid-template-columns: minmax(0, 1fr); } }

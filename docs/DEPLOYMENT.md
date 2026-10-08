@@ -1,5 +1,7 @@
 # Apexmedia — сервер и деплой
 
+После объединения 8 октября 2026 года публичный сайт собирается через **`npm run build:public`** в **`dist/public`**. Админка собирается отдельно; весь `dist` публиковать нельзя. Актуальные режимы и env-файлы: [BUILD_MODES.md](BUILD_MODES.md). Сведения о сервере ниже — исторический снимок; в ходе merge новый деплой не выполнялся.
+
 [Обзор проекта](TECHNICAL_OVERVIEW.md) · [Справочник БД](DATABASE_SCHEMA.md)
 
 Состояние проверено при деплое **7 октября 2026 года**. Последний размещённый коммит на момент записи: `ae03ddde30c080fbbea8c994d5af8bd3c0ab6592` (`main`). Дата размещения: `2026-10-07T10:17:58Z`.
@@ -93,8 +95,8 @@ apexmedia.kz, http://31.130.153.154 {
 
 1. Убедиться, что рабочее дерево чистое, получить свежий `origin/main`, зафиксировать полный SHA. Не включать незакоммиченные правки в релиз, обозначенный SHA другого состояния.
 2. Проверить production env: нужен URL **Cloud Apex** и его публичный ключ. Секреты на сервер фронтенда не копировать.
-3. Выполнить `npm ci`, `npm run lint`, `npm run build`.
-4. Создать `dist/version.json` с SHA и UTC-временем сборки. Vite сам этот файл не генерирует.
+3. Выполнить `npm ci`, `npm run lint`, `npm run build:public`.
+4. Создать `dist/public/version.json` с SHA и UTC-временем сборки. Vite сам этот файл не генерирует.
 
 Пример PowerShell из корня проекта после успешной сборки:
 
@@ -105,12 +107,12 @@ $releaseVersion = @{
     builtAt = [DateTime]::UtcNow.ToString('o')
 } | ConvertTo-Json -Compress
 [IO.File]::WriteAllText(
-    (Join-Path (Get-Location) 'dist/version.json'),
+    (Join-Path (Get-Location) 'dist/public/version.json'),
     $releaseVersion,
     [Text.UTF8Encoding]::new($false)
 )
 $releaseArchive = Join-Path $env:TEMP "apex-admin-$releaseCommit.tgz"
-tar -czf $releaseArchive -C dist .
+tar -czf $releaseArchive -C dist/public .
 Get-FileHash -Algorithm SHA256 -LiteralPath $releaseArchive
 ```
 

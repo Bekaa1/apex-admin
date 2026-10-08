@@ -1,6 +1,7 @@
 import '../campaigns.css';
 import { useId } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { Link, useLocation, useSearchParams } from 'react-router';
+import { listReturnTo } from '../../../navigation/returnTo';
 import { Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { CABINET_LINKS } from '../../sections';
@@ -13,10 +14,11 @@ export function CorporatePage() {
   const { t } = useI18n();
   const titleId = useId();
   const [params] = useSearchParams();
+  const location = useLocation();
   const fromWizard = params.get('from') === 'wizard';
   return (
     <div className="cab-stack cmp-corp">
-      <Link className="cab-link cmp-back" to={fromWizard ? `${CABINET_LINKS.newCampaign}?step=2` : CABINET_LINKS.campaigns}>
+      <Link className="cab-link cmp-back" to={fromWizard ? `${CABINET_LINKS.newCampaign}?step=2` : listReturnTo(location.state, CABINET_LINKS.campaigns)} state={location.state}>
         <Icon name="arrow-left" size={18} />
         {fromWizard ? t('campaigns.corporate.backToTariffs') : t('campaigns.wizard.back')}
       </Link>

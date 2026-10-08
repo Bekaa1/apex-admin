@@ -1,3 +1,4 @@
+import { AppLink } from '../design-system/AppLink';
 import { useState, type FormEvent } from 'react';
 import { Alert, Button, Checkbox, PasswordField, TextField } from '../design-system';
 import { useI18n } from '../i18n/i18n';
@@ -59,7 +60,7 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
         {contactTaken ? (
           <Alert tone="warning" title={t('signup.errors.contactTakenTitle')}>
             {t('signup.errors.contactTakenBody')}{' '}
-            <a
+            <AppLink
               className="auth__link"
               href={links.resetEmail}
               onClick={(event) => {
@@ -69,7 +70,7 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
               }}
             >
               {t('signup.errors.resetPassword')}
-            </a>
+            </AppLink>
           </Alert>
         ) : rateLimited ? (
           <Alert tone="danger" title={t('signup.errors.rateLimitTitle')}>
@@ -123,8 +124,8 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
         />
         <Checkbox className="signup__terms" checked={terms} onChange={(e) => setTerms(e.target.checked)} error={termsError} disabled={loading}>
           {tRich('signup.terms', {
-            offer: (chunk) => <a href={`${links.offer}${returnToSignup}`}>{chunk}</a>,
-            privacy: (chunk) => <a href={`${links.privacy}${returnToSignup}`}>{chunk}</a>,
+            offer: (chunk) => <AppLink href={`${links.offer}${returnToSignup}`}>{chunk}</AppLink>,
+            privacy: (chunk) => <AppLink href={`${links.privacy}${returnToSignup}`}>{chunk}</AppLink>,
           })}
         </Checkbox>
         <Button type="submit" fullWidth loading={loading}>

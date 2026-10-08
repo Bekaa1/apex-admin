@@ -1,0 +1,9 @@
+{
+  "loginTitle": "Sign in to ApexAdmin",
+  "loginSubtitle": "Use your staff account email and password.",
+  "tagline": "Management panel for Apex staff.",
+  "email": "Email",
+  "notConfigured": "Connection is not configured",
+  "unconfirmed": "This account's email is not confirmed. Contact your administrator.",
+  "resetSubtitle": "Enter your account email. We will send a password recovery code."
+}

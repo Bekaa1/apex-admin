@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { Button, Checkbox, Icon, Timeline } from '../../../../design-system';
+import { Button, Icon, Timeline } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatMoney, formatNumber, pluralKey } from '../../../../lib/format';
 import { CABINET_LINKS } from '../../../sections';
@@ -7,6 +7,7 @@ import { ButtonLink } from '../../../ui/ButtonLink';
 import { campaignChanges, type CampaignChange, type MediaRef, type ZoneCount } from '../changes';
 import type { CatalogStore, EditedCampaign, StepId } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
+import { RulesCheckbox } from './RulesCheckbox';
 
 const FIELD_STEP: Record<CampaignChange['field'], StepId> = { name: 'media', description: 'media', video: 'media', cover: 'media', stores: 'stores', zones: 'zones' };
 
@@ -88,7 +89,7 @@ export function StepReview({ wizard, campaign }: { wizard: CampaignWizardState; 
   const changesId = useId();
   const budgetId = useId();
   const afterId = useId();
-  const { form, original, errors, dispatch, goTo } = wizard;
+  const { form, original, errors, goTo } = wizard;
   const changes = original ? campaignChanges(original, form, wizard.ctx) : [];
   const resumes = campaign.running || campaign.launched;
 
@@ -154,13 +155,7 @@ export function StepReview({ wizard, campaign }: { wizard: CampaignWizardState; 
           ]}
         />
       </section>
-      <Checkbox
-        checked={form.rulesAccepted}
-        error={errors.rules ? t('campaigns.wizard.budget.rulesError') : undefined}
-        onChange={(event) => dispatch({ type: 'rules', value: event.target.checked })}
-      >
-        {t('campaigns.wizard.budget.rules')}
-      </Checkbox>
+      <RulesCheckbox wizard={wizard} />
     </div>
   );
 }

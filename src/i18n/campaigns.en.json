@@ -408,7 +408,8 @@
         "launch": "Impressions start",
         "launchText": "Impressions start as soon as the moderator approves the campaign: the video is checked and the budget is paid."
       },
-      "rules": "The video meets the advertising rules",
+      "rules": "The video meets the <rules>advertising rules</rules>",
+      "rulesPdf": "The PDF opens in a new tab",
       "rulesError": "Confirm that the video meets the rules"
     },
     "review": {

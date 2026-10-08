@@ -16,6 +16,44 @@
 
 ---
 
+## 2026-10-08 — Правки: онлайн/офлайн, просмотр ролика, пауза, «Как это работает» на лендинге
+Ветка: `fix/cabinet-landing-edits` · PR: https://github.com/Bekaa1/apex-admin/pull/16
+«Аналитика» и лендинг — зона Bekaa1; правки по просьбе пользователя.
+
+**Что сделано**
+- **Онлайн зелёный, офлайн красный** (`--success` / `--danger`, тоны кита) — пользователь выбрал оба раздела:
+  - «Аналитика»: бейдж `StoreStatus` `offline` → `danger`, Meter парка при 0 онлайн → `danger`, точка «Другие статусы» → `--danger`;
+  - «Статистика»: иконки «Онлайн»/«Офлайн» в `CartsCard`, «Больше всего офлайн», точка в таблице магазинов при 0 онлайн. Порог «< 90%» остался `--warning`.
+- **Просмотр ролика** в мастере (шаг «Ролик и описание», новая и редактирование) и на карточке кампании: обложка — кнопка, ролик в нативном `<dialog>`.
+  - `cabinet/ui/VideoCover.tsx`: `play()` внутри клика (иначе Safari не даст звук), Esc и клик по фону закрывают, при закрытии пауза.
+  - Источник — `media.url` готового файла (публичный URL Storage) и `my_campaigns_stats.video_url`; постер — готовая обложка.
+- **«Как это работает»** перенесена на лендинг под блок с цифрами (`landing/HowItWorks.tsx`, lazy). Страница `/how-it-works` и пункт меню удалены — пользователь выбрал убрать пункт. Заголовок секции `h2`, внутри `h3`.
+- **Пауза кампании** — не сделана, ждём бэкенд (запрос ниже).
+
+**Решения**
+- Плеер лендинга не переиспользован: он про несколько источников героя и лежит в зоне лендинга, а общего места для лендинга и кабинета вне кита нет. Когда в ките появится Dialog, оба переводим на него.
+- Секция «Как это работает» грузится лениво: она ниже первого экрана и читает тарифы.
+
+**Пауза в Supabase (только чтение, 08.10)**
+- В `ad_status` есть `paused` («На паузе»); плеер берёт только `active` (`prepare_ad_playback` → `select_ad_for_zone`), так что пауза остановит показы.
+- Поставить паузу рекламодатель не может: RPC нет, `ads` для него только на чтение. Фронт статус `paused` уже показывает, но дату берёт из `start_date`.
+
+**Запрос бэкенд-разработчику: пауза кампании рекламодателем** (для карточки кампании, срочность средняя)
+- RPC `pause_campaign(p_id uuid)` и `resume_campaign(p_id uuid)`, `SECURITY DEFINER`, владелец — `user_id = auth.uid()`.
+  - `active → paused`, `paused → active`; возобновить только паузу, поставленную рекламодателем, и если бюджет не кончился.
+  - Ошибки кодом в `message`: `not_owner`, `invalid_status`, `budget_ended`.
+- `ads.paused_at timestamptz` и `ads.paused_by text` (`advertiser` / `admin`), оба в `my_campaigns_stats` — чтобы отличать паузу рекламодателя (в базе уже есть кампании в `paused`) и показывать «на паузе с …».
+- Подтвердить, что плеер в «Cart» тоже не показывает `paused`.
+- После правки делаем «Приостановить» / «Возобновить» на карточке кампании (дизайн паузы в Claude Design есть).
+
+**Файлы:** `src/cabinet/analytics/{AnalyticsShared,AnalyticsPage,StoreDetailsPage}.tsx`, `Analytics.module.css`, `src/cabinet/stats/{CartsCard,StoresTable}.tsx`, `stats.css`, `src/cabinet/ui/VideoCover.tsx`, `cabinet.css`, `src/cabinet/campaigns/wizard/steps/{MediaFile,StepMedia}.tsx`, `src/cabinet/campaigns/details/{DetailsMedia.tsx,model.ts,types.ts}`, `src/landing/{HowItWorks,Landing,PageParts,PublicLayout}.tsx`, `PublicPages.module.css`, `useOverHero.ts`, `src/routes.tsx`, `src/i18n/{cabinet,landing}.{ru,kk,en}.json`.
+
+**Проверки:** lint ✓ · build ✓ · визуально ✓ (лендинг 1440/375, светлая и тёмная; карточка и редактирование — ролик открывается и грузится; аналитика и `stats?demo=active`). В скрытой панели браузера первый `play()` прерывает энергосбережение Chrome для фоновых вкладок — в видимой вкладке играет.
+
+**Design gaps:** нет Dialog в ките (плеер повторяет плеер лендинга, фон `rgba(5, 6, 12, …)`); значок ▶ поверх обложки добавлен сверх дизайна.
+
+---
+
 ## 2026-10-07 — Лендинг: видео на первом экране
 Ветка: `feature/landing-video` · PR: https://github.com/Bekaa1/apex-admin/pull/15
 Образец — https://y.co. Лендинг — зона Bekaa1; изменения согласовать с ним.

@@ -1,8 +1,8 @@
 import { useId, useState } from 'react';
-import { Button, Disclosure, DisclosureGroup, Icon, type IconName } from '../design-system';
+import { Button, ChoiceCard, Disclosure, DisclosureGroup, Icon, type IconName } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 import { formatMoney } from '../lib/format';
-import { TARIFFS, termsOf } from '../cabinet/tariffs';
+import { TARIFFS, termsOf, type TariffCode } from '../cabinet/tariffs';
 import { useTariffTerms } from '../cabinet/useTariffTerms';
 import { PageHeading, StartBanner } from './PageParts';
 import styles from './PublicPages.module.css';
@@ -31,6 +31,7 @@ function ShelfIllustration() {
 function StepPreview({ step }: { step: number }) {
   const { t, lang } = useI18n();
   const tariffs = useTariffTerms();
+  const [plan, setPlan] = useState<TariffCode>('zones');
   const minimum = (code: (typeof TARIFFS)[number]['code']) => {
     const plan = tariffs.status === 'ready' ? termsOf(tariffs.terms, code) : null;
     return plan ? t('cabinet.tariffs.from', { amount: formatMoney(plan.minimum, lang) }) : '—';
@@ -38,7 +39,7 @@ function StepPreview({ step }: { step: number }) {
   return <div className={styles.stepPreview}>
     <p className={styles.eyebrow}>{t('public.how.example')}</p>
     {step === 0 ? <><div className={styles.videoPreview}><Icon name="play" size={42} /><span>0:07</span></div><div className={styles.previewRow}><Icon name="video" />promo.mp4<Icon name="check-circle" /></div><div className={styles.chips}><span>MP4 / MOV</span><span>16:9</span><span>1280 × 720+</span></div></> : null}
-    {step === 1 ? <div className={styles.previewPlans}>{TARIFFS.map((tariff) => <div key={tariff.code} className={tariff.code === 'zones' ? styles.selectedPreview : ''}><span><strong>{t(`cabinet.tariffs.${tariff.code}.name`)}</strong><small>{minimum(tariff.code)}</small></span><Icon name={tariff.code === 'zones' ? 'check-circle' : 'layers'} /></div>)}</div> : null}
+    {step === 1 ? <fieldset className={styles.previewChoices}><legend className="ax-sr">{t('public.how.steps.tariff.title')}</legend>{TARIFFS.map((tariff) => <ChoiceCard key={tariff.code} className={styles.previewChoice} name="how-tariff" value={tariff.code} checked={plan === tariff.code} onChange={() => setPlan(tariff.code)} title={t(`cabinet.tariffs.${tariff.code}.name`)}><small>{minimum(tariff.code)}</small></ChoiceCard>)}</fieldset> : null}
     {step === 2 ? <><div className={styles.previewSearch}><Icon name="search" />{t('public.stores.search')}</div><div className={styles.previewPlans}>{[1, 2, 3].map((number) => <div key={number} className={number < 3 ? styles.selectedPreview : ''}><Icon name="store" /><span>{t('public.how.exampleStore', { n: number })}</span><Icon name={number < 3 ? 'check-circle' : 'plus'} /></div>)}</div><Button href="/stores" variant="secondary" size="md" fullWidth>{t('public.how.browseStores')}</Button></> : null}
     {step === 3 ? <><div className={styles.zonePreview}><Icon name="shelf" size={80} /></div><div className={styles.chips}>{['drinks', 'snacks', 'household'].map((key, index) => <span className={index < 2 ? styles.selectedPreview : ''} key={key}>{index < 2 ? <Icon name="check" size={16} /> : null}{t(`home.steps.zones.${key}`)}</span>)}</div><p className={styles.previewNote}>{t('public.how.zonesNote')}</p></> : null}
     {step === 4 ? <><div className={styles.budgetPreview}><Icon name="wallet" size={32} /><span>{t('public.how.budgetLabel')}</span><strong>{formatMoney(1_000_000, lang)}</strong></div><div className={styles.previewRow}><Icon name="check-circle" />{t('public.how.budgetHint')}</div><div className={styles.previewSubmit}><Icon name="send" size={18} />{t('public.how.reviewAction')}</div></> : null}

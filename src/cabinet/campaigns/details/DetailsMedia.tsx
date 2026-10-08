@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
+import { VideoCover } from '../../ui/VideoCover';
 import { formatClock } from '../wizard/media';
 import type { CampaignDetails } from './types';
 
@@ -13,6 +14,8 @@ export function DetailsMedia({ details }: { details: CampaignDetails }) {
     media.durationSec ? t('campaigns.wizard.seconds', { n: Math.round(media.durationSec) }) : null,
     media.width && media.height ? `${media.width}×${media.height}` : null,
   ].filter(Boolean);
+  const coverClass = `cmp-cover cmp-cover--xl cab-thumb--${details.coverTone}`;
+  const time = media.durationSec ? <span className="cmp-cover__time">{formatClock(media.durationSec)}</span> : null;
 
   return (
     <section className="cab-card cmpd-card cmpd-card--media" aria-labelledby={titleId}>
@@ -20,10 +23,18 @@ export function DetailsMedia({ details }: { details: CampaignDetails }) {
         {t('campaigns.details.media.title')}
       </h2>
       <div className="cmpd-media">
-        <span className={`cmp-cover cmp-cover--xl cab-thumb--${details.coverTone}`} aria-hidden="true">
-          {details.coverUrl ? <img src={details.coverUrl} alt="" /> : <Icon name="play" size={28} />}
-          {media.durationSec ? <span className="cmp-cover__time">{formatClock(media.durationSec)}</span> : null}
-        </span>
+        {media.videoUrl ? (
+          <VideoCover src={media.videoUrl} poster={details.coverUrl ?? undefined} className={coverClass}>
+            {details.coverUrl ? <img src={details.coverUrl} alt="" /> : null}
+            <Icon name="play" size={28} />
+            {time}
+          </VideoCover>
+        ) : (
+          <span className={coverClass} aria-hidden="true">
+            {details.coverUrl ? <img src={details.coverUrl} alt="" /> : <Icon name="play" size={28} />}
+            {time}
+          </span>
+        )}
         <dl className="cmpd-facts">
           <div>
             <dt>{t('campaigns.details.media.video')}</dt>

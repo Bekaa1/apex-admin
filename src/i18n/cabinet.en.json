@@ -60,5 +60,10 @@
     "byAgreement": "By agreement",
     "pricePerPlay": "Price per impression",
     "perPlay": "{amount} per impression"
+  },
+  "video": {
+    "title": "Campaign video",
+    "watch": "Watch the video",
+    "close": "Close the video"
   }
 }

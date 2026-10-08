@@ -211,6 +211,18 @@
 .cmp-cover--sm { width: 72px; border-radius: var(--radius-sm); }
 .cmp-cover--md { width: 96px; border-radius: var(--radius-sm); }
 .cmp-cover--lg { width: 160px; border-radius: var(--radius-md); }
+/* A cover that opens the video (ui/VideoCover); the play mark stays above the cover image */
+.cab-cover-btn { padding: 0; border: 0; font: inherit; cursor: pointer; }
+.cab-cover-btn > .ax-icon { position: relative; box-sizing: content-box; padding: 10px; border-radius: var(--radius-full); background: rgba(5, 6, 12, 0.45); transition: background-color .15s ease; }
+.cab-cover-btn:hover > .ax-icon { background: rgba(5, 6, 12, 0.65); }
+.cab-cover-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cab-player { width: min(1280px, calc(100vw - 32px)); max-width: none; max-height: none; padding: var(--control-md) 0 0; border: 0; background: transparent; overflow: visible; }
+.cab-player::backdrop { background: rgba(5, 6, 12, 0.88); }
+.cab-player__video { display: block; width: 100%; max-height: calc(100dvh - 120px); aspect-ratio: 16 / 9; border-radius: var(--radius-lg); background: rgb(5, 6, 12); }
+.cab-player__close.ax-iconbtn { position: absolute; top: 0; right: 0; transform: translateY(-12px); border-color: color-mix(in oklab, var(--on-primary) 45%, transparent);
+  background: color-mix(in oklab, var(--on-primary) 14%, transparent); color: var(--on-primary); }
+.cab-player__close.ax-iconbtn:hover { background: color-mix(in oklab, var(--on-primary) 24%, transparent); }
+.cab-player__close.ax-iconbtn:focus-visible { outline-color: var(--on-primary); }
 .cmp-row__meta { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 0; font-size: 13px; line-height: 1.4; color: var(--text-muted); }
 .cmp-row__meta span:not(:last-child)::after { content: '·'; margin: 0 6px; color: var(--text-subtle); }
 .cmp-back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: var(--control-md); font-size: 15px; }

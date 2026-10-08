@@ -96,7 +96,7 @@ export interface CampaignDetails {
   canEdit: boolean;
   canTopUp: boolean;
   stats: DetailsStats | null;
-  media: { video: string | null; durationSec: number | null; width: number | null; height: number | null; cover: string | null; description: string };
+  media: { video: string | null; videoUrl: string | null; durationSec: number | null; width: number | null; height: number | null; cover: string | null; description: string };
   stores: DetailsStore[];
   budget: BudgetFigures & {
     /** Not launched yet: whether the budget is paid. */

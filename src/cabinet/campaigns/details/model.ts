@@ -135,6 +135,7 @@ export function buildCampaignDetails(source: CampaignDetailsSource, catalog: Sto
     stats,
     media: {
       video: source.files.video,
+      videoUrl: row.video_url || null,
       durationSec: row.video_duration_sec,
       width: source.files.width,
       height: source.files.height,

@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
     : 'Запускайте видеорекламу у полки в супермаркетах Казахстана.'
   return {
     cacheDir: `node_modules/.vite/${app}`,
+    server: app === 'public' ? { proxy: { '/api/chat/respond': 'http://127.0.0.1:8787' } } : undefined,
     plugins: [react(), {
       name: 'apex-app-metadata',
       transformIndexHtml: (html: string) => html

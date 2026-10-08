@@ -96,7 +96,7 @@ function fixture(options = {}) {
     removeChannel: async ch => { removed.push(ch); return 'ok'; },
   };
   const transport = new ChatTransport({ getClient: () => client, getStorage: () => store,
-    uuid: () => uuid(sequence++), subscribeTimeoutMs: 100 });
+    uuid: () => uuid(sequence++), subscribeTimeoutMs: 100, requestReply: options.requestReply });
   return { transport, client, calls, channels, removed, events, storage: store,
     signIns: () => signIns, authReads: () => reads, authListeners,
     setRows: value => { rows = value; }, setHandler: value => { handler = value; },
@@ -423,4 +423,35 @@ test('client isolation and import-only entry point contain no startup network wo
   assert.doesNotMatch(api, /chat_add_response|_chat_|\.from\(|\.insert\(|\.update\(/);
   const entry = readFileSync(path.join(root, 'src/chat/index.ts'), 'utf8');
   assert.doesNotMatch(entry, /chatTransport\.initialize\(/);
+});
+
+test('confirmed visitor send triggers reply in the background', async () => {
+  const gate = deferred(), requests = [];
+  const f = fixture({ requestReply: async (_client, sessionId, messageId) => {
+    requests.push({ sessionId, messageId }); await gate.promise;
+  } });
+  await f.transport.initialize();
+  const sentId = await f.transport.send(f.transport.prepareMessage('Synthetic question'));
+  assert.equal(requests.length, 1); assert.equal(requests[0].messageId, sentId);
+  assert.equal(f.transport.getSnapshot().replyPending, true);
+  gate.resolve(); await tick();
+  assert.equal(f.transport.getSnapshot().replyPending, false);
+  await f.transport.dispose();
+});
+
+test('reply retry reuses stored message ID without resending visitor text', async () => {
+  let attempts = 0; const ids = [];
+  const f = fixture({ requestReply: async (_client, _sessionId, id) => {
+    ids.push(id); if (++attempts === 1) throw new Error('Synthetic network failure');
+  } });
+  await f.transport.initialize();
+  await f.transport.send(f.transport.prepareMessage('Synthetic question'));
+  await tick();
+  assert.equal(f.transport.getSnapshot().replyError.code, 'response_unavailable');
+  assert.equal(f.transport.getSnapshot().messages.length, 1);
+  await f.transport.retryReplies();
+  assert.equal(ids.length, 2); assert.equal(ids[0], ids[1]);
+  assert.equal(f.calls.filter(call => call.name === 'chat_send_message').length, 1);
+  assert.equal(f.transport.getSnapshot().replyError, null);
+  await f.transport.dispose();
 });

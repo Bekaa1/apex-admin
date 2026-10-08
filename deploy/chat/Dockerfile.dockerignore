@@ -1,0 +1,13 @@
+**
+!package.json
+!package-lock.json
+!server
+!server/chat
+!server/chat/**
+!src
+!src/lib
+!src/lib/chat.database.types.ts
+!deploy
+!deploy/chat
+!deploy/chat/Dockerfile
+!deploy/chat/Dockerfile.dockerignore

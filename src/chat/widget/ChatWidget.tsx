@@ -80,6 +80,13 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
         </div>
         <button type="button" className={styles.close} aria-label={t('chat.close')} onClick={close}><Icon name="x" /></button>
       </header>
+      {connection.replyPending ? <p className={styles.empty} role="status">{t('chat.replyPending')}</p> : null}
+      {connection.replyError ? <div className={styles.error} role="status">
+        <Icon name="alert-circle" /><div><p>{t('chat.replyError')}</p>
+          <Button variant="ghost" size="md" disabled={connection.replyPending || !available}
+            onClick={() => void controller.retryReplies()}>{t('chat.retryReply')}</Button>
+        </div>
+      </div> : null}
       {showError ? <div className={styles.error} role="status">
         <Icon name="alert-circle" /><div><p>{t(`chat.${errorKey}`)}</p>
           <Button variant="ghost" size="md" loading={state.retrying} onClick={() => void controller.reconnect()}>{t('chat.retryConnection')}</Button>

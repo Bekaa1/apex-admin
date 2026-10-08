@@ -29,14 +29,14 @@ export function CartsCard({ carts, single }: { carts: CartsSummary; single: bool
       </div>
       <dl className="st-facts">
         <div>
-          <dt>
+          <dt className="is-online">
             <Icon name="wifi" size={16} />
             {t('stats.carts.online')}
           </dt>
           <dd>{formatNumber(carts.online, lang)}</dd>
         </div>
         <div>
-          <dt>
+          <dt className="is-offline">
             <Icon name="wifi-off" size={16} />
             {t('stats.carts.offline')}
           </dt>

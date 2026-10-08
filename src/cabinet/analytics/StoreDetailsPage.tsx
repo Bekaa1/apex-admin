@@ -88,7 +88,7 @@ export function StoreDetailsPage() {
           {online !== null && carts !== null ? (
             <>
               <div className={styles.fleetSummary}><strong>{carts ? Math.round(online / carts * 100) : '—'}{carts > 0 ? <span>%</span> : null}</strong><span>{t(carts ? 'analytics.fleet.connected' : 'analytics.status.noCarts')}</span></div>
-              <Meter value={carts ? online / carts * 100 : 0} label={t('analytics.fleetMeter', { online, total: carts })} tone={online ? 'success' : 'warning'} />
+              <Meter value={carts ? online / carts * 100 : 0} label={t('analytics.fleetMeter', { online, total: carts })} tone={online ? 'success' : 'danger'} />
               <dl className={styles.fleetLegend}>
                 <div><dt><span className={styles.onlineDot} />{t('analytics.fleet.online')}</dt><dd>{online}</dd></div>
                 <div><dt><span className={styles.offlineDot} />{t('analytics.fleet.offline')}</dt><dd>{carts - online}</dd></div>

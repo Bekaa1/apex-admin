@@ -124,7 +124,7 @@ export function AnalyticsPage() {
                       <td data-label={t('analytics.columns.carts')}>
                         <div className={styles.fleetValue}>
                           <strong>{store.online === null ? '—' : formatNumber(store.online, lang)} <span>/ {store.carts === null ? '—' : formatNumber(store.carts, lang)}</span></strong>
-                          {store.online !== null && store.carts !== null ? <Meter value={store.carts ? store.online / store.carts * 100 : 0} label={t('analytics.fleetMeter', { online: store.online, total: store.carts })} size="sm" tone={store.online ? 'success' : 'warning'} /> : <span className={styles.muted}>{t('analytics.noData')}</span>}
+                          {store.online !== null && store.carts !== null ? <Meter value={store.carts ? store.online / store.carts * 100 : 0} label={t('analytics.fleetMeter', { online: store.online, total: store.carts })} size="sm" tone={store.online ? 'success' : 'danger'} /> : <span className={styles.muted}>{t('analytics.noData')}</span>}
                         </div>
                       </td>
                       <td className={styles.numberCell} data-label={t('analytics.metrics.plays')}><strong>{store.plays === null ? '—' : formatCompactNumber(store.plays, lang)}</strong></td>

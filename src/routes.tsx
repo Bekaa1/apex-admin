@@ -31,7 +31,6 @@ export const routes: RouteObject[] = [
       { index: true, element: <Landing /> },
       { path: 'pricing', lazy: async () => ({ Component: (await import('./landing/PricingPage')).PricingPage }) },
       { path: 'stores', lazy: async () => ({ Component: (await import('./landing/StoresPage')).StoresPage }) },
-      { path: 'how-it-works', lazy: async () => ({ Component: (await import('./landing/HowItWorksPage')).HowItWorksPage }) },
     ],
   },
   { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow /> },

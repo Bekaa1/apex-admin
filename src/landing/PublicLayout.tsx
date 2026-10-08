@@ -8,7 +8,7 @@ import { CampaignLink } from './CampaignLink';
 import styles from './PublicLayout.module.css';
 import { useOverHero } from './useOverHero';
 
-const NAV = [{ path: '/how-it-works', key: 'how' }, { path: '/stores', key: 'stores' }, { path: '/pricing', key: 'pricing' }];
+const NAV = [{ path: '/stores', key: 'stores' }, { path: '/pricing', key: 'pricing' }];
 
 function Preferences() {
   const { t, lang, setLang } = useI18n();
@@ -63,7 +63,7 @@ export function PublicLayout() {
   const home = pathname === '/';
   const overHero = useOverHero(home);
   useEffect(() => {
-    const titleKey = pathname === '/pricing' ? 'pricing' : pathname === '/stores' ? 'stores' : pathname === '/how-it-works' ? 'how' : 'home';
+    const titleKey = pathname === '/pricing' ? 'pricing' : pathname === '/stores' ? 'stores' : 'home';
     document.title = `${t(`landing.nav.${titleKey}`)} · Apexmedia`;
   }, [pathname, t]);
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);

@@ -1,10 +1,13 @@
-import { useId, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useId, useMemo, useRef, useState } from 'react';
 import { Button } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 import { CampaignLink } from './CampaignLink';
 import { heroMedia } from './heroMedia';
 import { HeroVideo } from './HeroVideo';
 import { VideoDialog } from './VideoDialog';
+
+// Below the first screen and reads tariffs, so it loads after the hero.
+const HowItWorks = lazy(() => import('./HowItWorks').then((module) => ({ default: module.HowItWorks })));
 
 export function Landing() {
   const { t } = useI18n();
@@ -47,6 +50,9 @@ export function Landing() {
           {[1, 2, 3].map((n) => <div className="land__stat" key={n}><p className="land__stat-value">{t('landing.stats.s' + n + 'Value')}</p><p className="land__stat-label">{t('landing.stats.s' + n + 'Label')}</p></div>)}
         </div>
       </section>
+      <Suspense fallback={null}>
+        <HowItWorks />
+      </Suspense>
       <VideoDialog dialogRef={playerRef} videoRef={fullRef} sources={media.full} poster={media.poster.src} onClose={() => setWatching(false)} />
     </>
   );

@@ -16,6 +16,38 @@
 
 ---
 
+## 2026-10-08 — Пауза и возобновление кампании (бэкенд и фронт)
+Ветка: `fix/cabinet-landing-edits` (тот же PR) · PR: https://github.com/Bekaa1/apex-admin/pull/16
+Бэкендщика нет на месте — пользователь попросил сделать и бэкенд; миграцию применили после его явного подтверждения конкретного SQL.
+
+**Бэкенд** — миграция `20261008055933_campaign_pause_resume` (файл в `supabase/migrations/`):
+- `ads.paused_at`, `ads.paused_by` (`advertiser` | `admin`, check); триггер `trg_ads_pause_fields` (BEFORE UPDATE OF status): при входе в `paused` ставит время и `admin`, если `paused_by` не задан явно; при выходе очищает.
+- `pause_campaign(p_id)`: владелец, `active → paused`, `is_active = false`, `paused_by = 'advertiser'`.
+- `resume_campaign(p_id)`: владелец, только `paused` с `paused_by = 'advertiser'`; → `active`, без бюджета → `budget_ended`.
+- Ошибки как у остальных RPC: код в `message` (`not_authenticated`, `not_found`, `invalid_status`). EXECUTE только `authenticated` (у `anon`/`public` снят).
+- `my_campaigns_stats` пересоздана с теми же колонками + `paused_at`, `paused_by` в конце.
+- Существующие функции не менялись: `edit_campaign` и `extend_campaign` по-прежнему не принимают `paused` (на паузе «Пополнить» и «Редактировать» скрыты — сначала «Возобновить»). Уведомления `campaign_paused`/`campaign_resumed` уже шлёт `_ntf_on_ad`.
+- 48 старых кампаний в `paused` остались с `paused_by = null` — считаются паузой команды, рекламодатель их не возобновляет.
+- Проверено транзакцией с откатом (исключение в конце DO-блока): anon → 42501; пауза → `paused`/`advertiser`/время; повторная пауза → `invalid_status`; возобновление → `active`, поля очищены; чужая кампания → `not_found`; старая пауза → `invalid_status`; 2 уведомления. После — данные без изменений.
+
+**Фронт**
+- `design-system/Dialog.tsx` — диалог из кита v4.3 (макет «Мои кампании»: `ax-dialog`, на телефоне — шторка снизу), на нативном `<dialog>`.
+- `campaigns/pause/`: `useCampaignPause` (мутация + сброс кэша кампаний, главной и уведомлений), `PauseDialog` («Поставить «…» на паузу?» по макету `Hold-dialog`).
+- Стадия `paused` несёт `pausedAt` и `byAdvertiser` (`campaignStage.ts`); `paused_at`/`paused_by` добавлены в выборки списка, карточки и статистики.
+- Список: у идущей кампании в «⋯» «Поставить на паузу»; на своей паузе вместо главной кнопки «Возобновить», примечание «Вы остановили {дата}» (`List-hold`).
+- Карточка: «Возобновить» (primary), плашка «Кампания на паузе», заметка в статистике, пункт истории «Поставлена на паузу» (`Details-hold`); после возобновления — «Показы возобновлены» (`Details-resumed`). Пауза команды — плашка «Показы остановила команда Apexmedia…» без кнопки.
+- Тексты ru/kk/en (kk — из `KK-Details-hold`).
+- Демо: `demo-tea` — кампания на своей паузе (`/cabinet/campaigns?demo=active`, `/cabinet/campaigns/demo-tea?demo=active`).
+
+**Проверки:** lint ✓ · build ✓ · визуально ✓ на демо: список, меню, диалог (1440 и 375 тёмная — шторка), карточка на паузе, «Показы возобновлены». Живую паузу из интерфейса не проверяли: у тестового аккаунта нет идущей кампании; RPC проверены SQL-тестом выше.
+
+**Design gaps и вопросы**
+- По макету на паузе есть «Редактировать» и «Пополнить», но бэкенд их для `paused` не принимает — скрыты. Если нужно — добавить `paused` в `edit_campaign`/`extend_campaign` (бэкендщику решить, что делать с паузой после одобрения правок).
+- Текст для паузы командой Apexmedia в макете не нарисован — дописан.
+- Бэкендщику посмотреть миграцию и при желании перенести её в свой процесс.
+
+---
+
 ## 2026-10-08 — Правила размещения рекламы (PDF), повторная проверка паузы
 Ветка: `fix/cabinet-landing-edits` (тот же PR) · PR: https://github.com/Bekaa1/apex-admin/pull/16
 

@@ -27,7 +27,7 @@ export interface HomeSource {
   stores: StoreRow[];
 }
 
-export type CampaignAction = 'topUp' | 'stats' | 'open';
+export type CampaignAction = 'topUp' | 'stats' | 'open' | 'fix';
 
 export interface CampaignItem {
   id: string;
@@ -61,6 +61,8 @@ export interface HomeData {
   campaigns: CampaignItem[];
   /** The active campaign with the smallest share of budget left, if it is ≤ the low-budget threshold. */
   lowBudget: CampaignItem | null;
+  /** The newest campaign the moderator returned: it waits for «Исправить». */
+  rejected: CampaignItem | null;
 }
 
 export type HomeState = { status: 'loading' } | { status: 'error'; retry: () => void } | { status: 'ready'; data: HomeData };

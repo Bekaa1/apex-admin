@@ -18,6 +18,7 @@ function isHomeRow(row: CampaignStatsRow): row is HomeRow {
 }
 
 function actionFor(status: HomeStatus, needsMoney: boolean): CampaignAction {
+  if (status === 'rejected') return 'fix';
   if (needsMoney) return 'topUp';
   return NOT_STARTED.includes(status) ? 'open' : 'stats';
 }
@@ -82,5 +83,6 @@ export function buildHomeData(source: HomeSource): HomeData {
     cities: [...new Set(stores.map((s) => s.city).filter((c): c is string => Boolean(c)))].sort(),
     campaigns: [...items].sort((a, b) => rank(a) - rank(b)).slice(0, HOME_CAMPAIGNS_LIMIT),
     lowBudget,
+    rejected: items.find((i) => i.status === 'rejected') ?? null,
   };
 }

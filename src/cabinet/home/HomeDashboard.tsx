@@ -5,6 +5,7 @@ import { GuideSteps } from './GuideSteps';
 import { GuideTariffs } from './GuideTariffs';
 import { KpiTiles } from './KpiTiles';
 import { LowBudgetAlert } from './LowBudgetAlert';
+import { RejectedAlert } from './RejectedAlert';
 import { NextCampaignCard } from './NextCampaignCard';
 import { SupportCard } from './SupportCard';
 import type { TariffTerms } from '../tariffs';
@@ -26,6 +27,7 @@ export function HomeDashboard({ data, tariffTerms }: { data: HomeData; tariffTer
   return (
     <div className="cab-stack">
       <div className="cab-stack cab-stack--tight">
+        {data.rejected ? <RejectedAlert campaign={data.rejected} /> : null}
         {data.lowBudget ? <LowBudgetAlert campaign={data.lowBudget} /> : null}
         <KpiTiles data={data} />
         <CampaignsTable campaigns={data.campaigns} />

@@ -109,8 +109,8 @@ export function StepReview({ wizard, campaign }: { wizard: CampaignWizardState; 
           <div className={errors.changes ? 'cmp-nochanges is-invalid' : 'cmp-nochanges'}>
             <Icon name="info" size={20} />
             <div>
-              <p className="cmp-nochanges__title">{t('campaigns.edit.noChanges.title')}</p>
-              <p className="cab-small">{t('campaigns.edit.noChanges.text')}</p>
+              <p className="cmp-nochanges__title">{t(campaign.rejected ? 'campaigns.edit.noChanges.resubmitTitle' : 'campaigns.edit.noChanges.title')}</p>
+              <p className="cab-small">{t(campaign.rejected ? 'campaigns.edit.noChanges.resubmitText' : 'campaigns.edit.noChanges.text')}</p>
               {errors.changes ? (
                 <p className="ax-error" role="alert">
                   <Icon name="alert-circle" size={18} />

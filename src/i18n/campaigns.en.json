@@ -749,7 +749,9 @@
     "noChanges": {
       "title": "You haven’t changed anything yet",
       "text": "Change the video, description, stores or zones — and send it for review.",
-      "error": "Nothing to send: there are no changes"
+      "error": "Nothing to send: there are no changes",
+      "resubmitTitle": "You haven’t changed anything",
+      "resubmitText": "We’ll send the campaign for review as it is — the moderator will look at it again."
     },
     "budgetNote": "The budget doesn’t change in an edit.",
     "budgetNoteTopUp": "The budget doesn’t change in an edit. To add money, top up the campaign — no review needed.",
@@ -764,7 +766,10 @@
       "leadPaused": "We’ll check the changes to “{name}” within a working day and write to {email}. Impressions are paused until approval and then continue on their own.",
       "changed": "What changed",
       "plays": "Impressions",
-      "paused": "Paused until approval"
+      "paused": "Paused until approval",
+      "titleResent": "The campaign is under review again",
+      "leadResent": "The moderator will check “{name}” again within a working day and write to {email}.",
+      "unchanged": "Nothing — sent as it is"
     },
     "was": "Was",
     "now": "Now"

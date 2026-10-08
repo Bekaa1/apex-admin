@@ -10,6 +10,13 @@ import type { CampaignItem } from './types';
 
 function RowAction({ campaign }: { campaign: CampaignItem }) {
   const { t } = useI18n();
+  if (campaign.action === 'fix') {
+    return (
+      <ButtonLink to={CABINET_LINKS.campaignEdit(campaign.id)} variant="secondary" size="md" iconLeft="pencil">
+        {t('home.campaigns.fix')}
+      </ButtonLink>
+    );
+  }
   if (campaign.action === 'topUp') {
     return (
       <ButtonLink to={CABINET_LINKS.campaignTopUp(campaign.id)} variant="secondary" size="md">

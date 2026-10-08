@@ -70,6 +70,7 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
     catalog,
     zones: mode.kind === 'edit' ? mode.campaign.hasZones : (plan?.hasZones ?? null),
     original: mode.kind === 'edit' ? mode.original : null,
+    resubmit: mode.kind === 'edit' && mode.campaign.rejected,
   };
   const termsChange = staleTerms && plan && plan.code === staleTerms.code && plan.version !== staleTerms.version ? { was: staleTerms, now: plan } : null;
   const termsAgreed = !termsChange || agreedVersion === termsChange.now.version;

@@ -155,7 +155,7 @@ test('actual review UI shows four blocks, both safe previews and every failing c
 test('rejected comment, pending date, approved link and other-admin read-only states', () => {
   const rejected = stepFixture(record({ status: 'rejected', review_comment: 'Synthetic comment' })).render(); assert.match(JSON.stringify(rejected), /Synthetic comment/); assert.ok(button(rejected, 'Отправить владельцу'));
   const pending = stepFixture(submitted()).render(); assert.match(JSON.stringify(pending), /Asia\/Almaty/); assert.match(JSON.stringify(pending), /Заявка ожидает решения владельца/);
-  const approved = stepFixture(record({ status: 'approved', published_store_id: id })).render(); assert.equal(button(approved, 'Открыть магазин').props.href, '/admin/stores/' + id);
+  const approved = stepFixture(record({ status: 'approved', published_store_id: id })).render(); assert.equal(button(approved, 'Открыть супермаркет').props.href, '/admin/stores/' + id);
   const foreignInvalid = stepFixture(record({ is_mine: false, name: '', plan: null, zones: [] })).render();
   for (const tree of [pending, approved, stepFixture(record({ is_mine: false })).render(), foreignInvalid]) { assert.equal(button(tree, 'Отправить владельцу'), undefined); assert.equal(button(tree, 'Изменить'), undefined); }
   assert.equal(nodes(foreignInvalid).some(n => n.type === 'Button' && n.props.href?.startsWith('/admin/stores/new/')), false);

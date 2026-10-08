@@ -10,7 +10,7 @@ const EMPTY: HomeSource = { today: TODAY, campaigns: [], dailyPlays: [], extras:
 const CITIES = ['Алматы', 'Алматы', 'Алматы', 'Алматы', 'Алматы', 'Алматы', 'Алматы', 'Алматы', 'Алматы', 'Алматы', 'Астана', 'Астана', 'Астана', 'Астана'];
 
 function demoStores(): StoreRow[] {
-  return [{ id: 'demo-all', name: 'Все магазины', city: null }, ...CITIES.map((city, i) => ({ id: `demo-store-${i}`, name: `Магазин ${i + 1}`, city }))];
+  return [{ id: 'demo-all', name: 'Все магазины', city: null }, ...CITIES.map((city, i) => ({ id: `demo-store-${i}`, name: `Супермаркет ${i + 1}`, city }))];
 }
 
 const ACTIVE: Omit<HomeSource, 'stores'> = {

@@ -16,9 +16,16 @@ export function failure(error: unknown): RequestFailure {
   const kind = known.find(code => info.message === code || info.code === code);
   const field = FIELDS.find(name => info.hint === name);
   const hint = typeof info.hint === 'string' && /^(?:plan|source_file_name|version|width|height|elements|decorations|metadata|elements\.(?:id|kind|x|y|width|height|label|category)|zones(?:\.(?:client_id|name|color|description|sort_order))?|assignments(?:\.(?:element_id|zone_client_id))?)$/.test(info.hint) ? info.hint : undefined;
-  const details = info.code === 'P0001' && kind && typeof info.details === 'string' && safeDetails.has(`${kind}:${info.details.trim()}`) ? info.details.trim() : undefined;
+  const rawDetails = info.code === 'P0001' && kind && typeof info.details === 'string' && safeDetails.has(`${kind}:${info.details.trim()}`) ? info.details.trim() : undefined;
+  const details = rawDetails ? (detailLabels[rawDetails] ?? rawDetails) : undefined;
   return new RequestFailure(kind ?? (info.message === 'invalid_response' ? 'invalid_response' : 'unknown'), field, info.hint === 'comment' ? 'comment' : hint, details);
 }
+/** Preserve the backend's literal allowlist; apply the product wording only to display text. */
+const detailLabels: Readonly<Record<string, string>> = {
+  'Загрузите план магазина': 'Загрузите план супермаркета',
+  'Магазин по этой заявке уже существует': 'Супермаркет по этой заявке уже существует',
+  'У магазина нет опубликованного плана': 'У супермаркета нет опубликованного плана',
+};
 /** Only reviewed, literal user messages from the installed contract; never SQL or interpolated data. */
 const safeDetails = new Set([
   "invalid_plan:План должен быть JSON-объектом",

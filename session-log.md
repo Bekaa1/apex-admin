@@ -16,6 +16,28 @@
 
 ---
 
+## 2026-10-08 — Правила размещения рекламы (PDF), повторная проверка паузы
+Ветка: `fix/cabinet-landing-edits` (тот же PR) · PR: https://github.com/Bekaa1/apex-admin/pull/16
+
+**Что сделано**
+- В чекбоксе мастера («Бюджет и проверка» и «Проверка изменений») слова «правилам размещения рекламы» — ссылка на PDF: открывается в новой вкладке (`target="_blank"`), в просмотрщике браузера его можно скачать. Чекбокс вынесен в `wizard/steps/RulesCheckbox.tsx`, текст — `tRich` с тегом `<rules>` (как оферта при регистрации); клик по ссылке галочку не ставит.
+- PDF `public/legal/apexmedia-advertising-rules-1.0.pdf` (A4, 6 стр., 65 КБ) собран из `docs/ADVERTISING_RULES.md` скриптом `docs/advertising-rules-pdf.py` (reportlab): шрифты Geologica/Onest из `src/assets/fonts`, номера пунктов цветом бренда, таблица техтребований, кликабельные ссылки, «Стр. N из M», метаданные (заголовок, ТОО «Apex Technology»). Ссылка — константа `ADVERTISING_RULES_PDF` в `src/legal/documents.ts`.
+- Новая редакция → новый файл (`…-1.1.pdf`, `VERSION` в скрипте) и новая константа, чтобы кеш не держал старую.
+
+**Пауза — перепроверено 08.10 по словам бэкендщика «RLS есть и не блокирует»**
+- RPC паузы/возобновления нет (функций с pause/resume нет, миграций с паузой нет, Edge Functions — только `send-sms` и `phone-auth-test`).
+- На `ads` у рекламодателя только политика SELECT; UPDATE/ALL — только `admin_full_access_ads` (`is_apex_admin()` = `users.role = 'admin'`).
+- Значит, `update ads set status = 'paused'` от рекламодателя проходит **без ошибки, но меняет 0 строк** (RLS отфильтровывает строки), — похоже, это и приняли за «не блокирует». Проверять по ответу: `.update(...).select()` вернёт пустой массив.
+- Открывать рекламодателю UPDATE на `ads` нельзя: он сможет менять любые поля (бюджет, оплату, статус в обход модерации). Нужна RPC — запрос прежний (запись «Правки…» ниже): `pause_campaign(p_id)` / `resume_campaign(p_id)` с проверкой владельца и переходов, `paused_at`/`paused_by` в `my_campaigns_stats`. Триггер `_ntf_on_ad` уже шлёт `campaign_paused` / `campaign_resumed`.
+
+**Файлы:** `src/cabinet/campaigns/wizard/steps/{RulesCheckbox,StepBudget,StepReview}.tsx`, `src/legal/documents.ts`, `public/legal/apexmedia-advertising-rules-1.0.pdf`, `docs/advertising-rules-pdf.py`, `docs/TECHNICAL_OVERVIEW.md`, `src/i18n/campaigns.{ru,kk,en}.json`.
+
+**Проверки:** lint ✓ · build ✓ (PDF попадает в `dist/legal/`) · визуально ✓: ссылка в шаге проверки редактирования; PDF отдаётся (200, `application/pdf`); страницы PDF просмотрены. Встроенная панель PDF не показывает — проверял рендером страниц.
+
+**Вопросы:** правила только на русском — в kk/en ссылка ведёт на тот же русский PDF. Факт и версия согласия в `submit_campaign` по-прежнему не передаются.
+
+---
+
 ## 2026-10-08 — Обложка из первого кадра, уведомления
 Ветка: `fix/cabinet-landing-edits` (тот же PR) · PR: https://github.com/Bekaa1/apex-admin/pull/16
 

@@ -7,6 +7,7 @@
     "dev": "vite",
     "dev:public": "vite --mode public",
     "dev:admin": "vite --mode admin",
+    "dev:chat": "node --env-file-if-exists=.env.chat-server.local --experimental-strip-types server/chat/server.ts",
     "build": "npm run build:public",
     "build:public": "tsc -b && vite build --mode public",
     "build:admin": "tsc -b && vite build --mode admin",

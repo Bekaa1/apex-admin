@@ -14,6 +14,8 @@ export type ChatSnapshot = Readonly<{
   errorSource: 'connection' | 'history' | 'send' | null;
   historyLoaded: boolean;
   hasOlderMessages: boolean;
+  replyPending: boolean;
+  replyError: ChatError | null;
 }>;
 type Run = {
   client: ChatClient;
@@ -31,9 +33,10 @@ type Options = {
   getStorage?: () => ChatStorage;
   uuid?: () => string;
   subscribeTimeoutMs?: number;
+  requestReply?: (client: ChatClient, sessionId: string, messageId: string, signal: AbortSignal) => Promise<void>;
 };
 const emptySnapshot = (): ChatSnapshot => Object.freeze({ phase: 'idle', sessionId: null, messages: Object.freeze([]), error: null,
-  errorSource: null, historyLoaded: false, hasOlderMessages: false });
+  errorSource: null, historyLoaded: false, hasOlderMessages: false, replyPending: false, replyError: null });
 
 /** Headless, explicit lifecycle. Consumers own initialize/subscribe/dispose. */
 export class ChatTransport {
@@ -47,6 +50,8 @@ export class ChatTransport {
   private generation = 0;
   private readonly sending = new Map<string, Promise<string>>();
   private readonly bodies = new Map<string, string>();
+  private readonly replies = new Map<string, Promise<void>>();
+  private readonly failedReplies = new Map<string, string>();
 
   constructor(options: Options) {
     this.options = options;
@@ -82,6 +87,8 @@ export class ChatTransport {
     this.generation++;
     this.sending.clear();
     this.bodies.clear();
+    this.replies.clear();
+    this.failedReplies.clear();
     if (previous) {
       previous.controller.abort();
       previous.unsubscribeAuth?.();
@@ -174,7 +181,11 @@ export class ChatTransport {
         if (this.run !== run || run.controller.signal.aborted) return;
         try {
           const message = normalizeMessage(payload.new, run.sessionId!);
-          this.update({ messages: mergeMessages(this.snapshot.messages, [message]) });
+          if (message.sender === 'responder') {
+            for (const [id, key] of this.failedReplies) if (key === message.clientMessageId) this.failedReplies.delete(id);
+          }
+          this.update({ messages: mergeMessages(this.snapshot.messages, [message]),
+            ...(this.failedReplies.size === 0 ? { replyError: null } : {}) });
         } catch (error) { this.report(run, error); }
       }).subscribe(status => {
         if (this.run !== run || run.controller.signal.aborted) return;
@@ -255,6 +266,39 @@ export class ChatTransport {
     return Object.freeze({ sessionId: run.sessionId!, clientMessageId, body });
   }
 
+  private requestReply(run: Run, messageId: string, clientMessageId: string): Promise<void> {
+    if (!this.options.requestReply) return Promise.resolve();
+    const existing = this.replies.get(messageId);
+    if (existing) return existing;
+    this.failedReplies.delete(messageId);
+    const work = (async () => {
+      try {
+        await this.options.requestReply!(run.client, run.sessionId!, messageId, run.controller.signal);
+        this.assertCurrent(run);
+        try { await this.synchronize(run); } catch (error) { this.report(run, error); }
+      } catch {
+        if (this.run !== run || run.controller.signal.aborted) return;
+        // An answer delivered by Realtime proves success even if HTTP was interrupted.
+        const answered = this.snapshot.messages.some(row => row.sender === 'responder' && row.clientMessageId === clientMessageId);
+        if (!answered) this.failedReplies.set(messageId, clientMessageId);
+      } finally {
+        if (this.run === run) {
+          this.replies.delete(messageId);
+          this.update({ replyPending: this.replies.size > 0,
+            replyError: this.failedReplies.size ? new ChatError('response_unavailable') : null });
+        }
+      }
+    })();
+    this.replies.set(messageId, work);
+    this.update({ replyPending: true, replyError: this.failedReplies.size ? this.snapshot.replyError : null });
+    return work;
+  }
+
+  async retryReplies(): Promise<void> {
+    const run = this.currentRun();
+    await Promise.all([...this.failedReplies].map(([id, key]) => this.requestReply(run, id, key)));
+  }
+
   // Retain this prepared object in the caller until the result is known.
   // Retry send(message), not prepareMessage(text): only the latter creates a key.
   send(message: OutgoingChatMessage): Promise<string> {
@@ -276,6 +320,7 @@ export class ChatTransport {
         // RPC returns only UUID. Read the canonical timestamp/body; do not
         // fabricate a row or turn a confirmed send into a failed send if reading fails.
         try { await this.synchronize(run); } catch (error) { this.report(run, error); }
+        if (this.run === run && !run.controller.signal.aborted) void this.requestReply(run, id, message.clientMessageId);
         return id;
       } catch (error) { this.report(run, error, 'send'); throw toChatError(error); }
     })();

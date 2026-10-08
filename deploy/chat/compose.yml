@@ -1,0 +1,46 @@
+name: apex-chat
+services:
+  responder:
+    image: apex-chat-responder:${CHAT_RELEASE:?Set the main commit SHA}
+    build:
+      context: ../..
+      dockerfile: deploy/chat/Dockerfile
+    restart: unless-stopped
+    init: true
+    env_file:
+      - /opt/apex-chat/runtime.env
+    environment:
+      NODE_ENV: production
+      CHAT_SERVER_HOST: 0.0.0.0
+      CHAT_SERVER_PORT: "8787"
+      CHAT_ALLOWED_ORIGINS: https://apexmedia.kz
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 128
+    stop_grace_period: 15s
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 20s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "3"
+    networks:
+      proxy:
+        aliases:
+          - apex-chat-responder
+networks:
+  proxy:
+    external: true
+    name: supabase_default

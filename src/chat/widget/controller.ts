@@ -2,7 +2,8 @@ import type { ChatSnapshot, ChatTransport } from '../transport';
 import { compareMessages, messageBody, type ChatMessage, type OutgoingChatMessage } from '../model';
 import { toChatError, type ChatErrorCode } from '../errors';
 
-export type WidgetTransport = Pick<ChatTransport, 'subscribe' | 'getSnapshot' | 'initialize' | 'dispose' | 'prepareMessage' | 'send' | 'refreshHistory' | 'loadOlder'>;
+export type WidgetTransport = Pick<ChatTransport, 'subscribe' | 'getSnapshot' | 'initialize' | 'dispose' | 'prepareMessage' | 'send' | 'refreshHistory' | 'loadOlder'>
+  & Partial<Pick<ChatTransport, 'retryReplies'>>;
 type LocalMessage = { prepared: OutgoingChatMessage; createdAt: string; status: 'sending' | 'sent' | 'failed'; serverId?: string };
 export type DisplayMessage = { key: string; id?: string; clientMessageId: string; sender: 'visitor' | 'responder';
   body: string; createdAt: string; status?: LocalMessage['status'] };
@@ -106,6 +107,10 @@ export class ChatWidgetController {
       else await this.transport.initialize();
     } catch { /* Transport exposes a safe, classified error in its snapshot. */ }
     finally { if (generation === this.generation) this.update({ retrying: false }); }
+  };
+  retryReplies = async () => {
+    try { await this.transport.retryReplies?.(); }
+    catch { /* Transport exposes a safe response error; the visitor message is saved. */ }
   };
   sendDraft = async () => {
     if (this.state.sending || !['ready', 'reconnecting'].includes(this.state.connection.phase)) return;

@@ -25,5 +25,8 @@
   "connectError": "Unable to connect to chat. Please try again.",
   "historyError": "Unable to load history. Please try again.",
   "sendError": "Unable to send the message.",
+  "replyPending": "Preparing a reply…",
+  "replyError": "Your message was saved, but a reply has not arrived yet.",
+  "retryReply": "Request reply again",
   "invalidMessage": "Enter 1–4000 characters. Your message cannot contain only spaces."
 }

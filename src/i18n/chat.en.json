@@ -8,6 +8,8 @@
   "connection": { "idle": "Support chat", "connecting": "Connecting…", "ready": "Chat ready", "reconnecting": "Reconnecting…", "error": "Unable to connect" },
   "history": "Conversation history",
   "messages": "Messages",
+  "codeBlock": "Code block",
+  "table": "Message table",
   "you": "You",
   "support": "Apex support",
   "delivery": { "sending": "Sending…", "sent": "Sent", "failed": "Not sent" },
@@ -25,7 +27,7 @@
   "connectError": "Unable to connect to chat. Please try again.",
   "historyError": "Unable to load history. Please try again.",
   "sendError": "Unable to send the message.",
-  "replyPending": "Preparing a reply…",
+  "replyPending": "Support is typing…",
   "replyError": "Your message was saved, but a reply has not arrived yet.",
   "retryReply": "Request reply again",
   "invalidMessage": "Enter 1–4000 characters. Your message cannot contain only spaces."

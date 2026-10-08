@@ -49,7 +49,7 @@ export function LoginScreen({ admin = false, loading, emailCodeLoading, error, e
   const isPhoneInput = /^[+\d]/.test(contact.trim());
 
   return (
-    <AuthLayout admin={admin} showLegalLinks={false}>
+    <AuthLayout admin={admin} showHomeLink={!admin} showLegalLinks={false}>
       <form className="auth__form" noValidate onSubmit={submit}>
         <AuthHead title={t(admin ? 'adminAuth.loginTitle' : 'login.title')} subtitle={t(admin ? 'adminAuth.loginSubtitle' : 'login.subtitle')} />
 

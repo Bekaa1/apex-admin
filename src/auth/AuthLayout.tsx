@@ -8,11 +8,13 @@ import { useAuthLinks } from './links';
 export function AuthLayout({
   back,
   admin = false,
+  showHomeLink = false,
   showLegalLinks = true,
   children,
 }: {
   back?: { href: string; label: string; onClick?: () => void };
   admin?: boolean;
+  showHomeLink?: boolean;
   showLegalLinks?: boolean;
   children: ReactNode;
 }) {
@@ -49,13 +51,18 @@ export function AuthLayout({
         <p className="auth__copy">{admin ? '© ApexAdmin' : t('common.copyright')}</p>
       </aside>
       <div className="auth__main">
-        <div className={back ? 'auth__top auth__top--with-back' : 'auth__top'}>
+        <div className={`auth__top${back ? ' auth__top--with-back' : ''}${showHomeLink ? ' auth__top--with-home' : ''}`}>
           {back ? (
             <Button variant="ghost" size="md" iconLeft="arrow-left" href={back.href} onClick={back.onClick ? (event) => { event.preventDefault(); back.onClick?.(); } : undefined}>
               {back.label}
             </Button>
           ) : null}
           <div className="auth__controls">
+            {showHomeLink ? (
+              <Button href={links.home} variant="secondary" size="md" iconLeft="home" className="auth__home" aria-label={t('common.backToHome')} title={t('common.backToHome')}>
+                {t('common.backToHome')}
+              </Button>
+            ) : null}
             <SegmentedControl label={t('common.langLabel')} options={LANG_OPTIONS} value={lang} onChange={setLang} />
             <ThemeToggle labels={{ toDark: t('common.themeToDark'), toLight: t('common.themeToLight') }} />
           </div>

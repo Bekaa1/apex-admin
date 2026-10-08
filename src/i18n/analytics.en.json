@@ -1,7 +1,7 @@
 {
   "eyebrow": "Places for your advertising",
   "title": "Find the right store for your campaign",
-  "description": "Compare screen availability and ad playback activity. Explore each store before choosing where to advertise.",
+  "description": "Compare Smart cart availability and ad playback activity. Explore each store before choosing where to advertise.",
   "period": {
     "label": "Statistics period",
     "today": "Today",
@@ -17,7 +17,7 @@
   },
   "metrics": {
     "stores": "Stores",
-    "carts": "Carts with screens",
+    "carts": "Smart carts",
     "cartsHint": "Total at these locations",
     "online": "Reported online",
     "plays": "Plays in period",
@@ -36,8 +36,8 @@
   "sort": {
     "label": "Sort by",
     "plays": "Most ad plays",
-    "online": "Most carts online",
-    "carts": "Most carts",
+    "online": "Most Smart carts online",
+    "carts": "Most Smart carts",
     "name": "Store name"
   },
   "results": "Stores found: {count}",
@@ -48,13 +48,13 @@
   },
   "details": "View details",
   "openStore": "View details for {name}",
-  "fleetMeter": "{online} of {total} carts online",
+  "fleetMeter": "{online} of {total} Smart carts online",
   "noData": "No data",
   "status": {
     "online": "Online status reported",
     "offline": "No online status reported",
     "unknown": "Status unavailable",
-    "noCarts": "No carts yet"
+    "noCarts": "No Smart carts yet"
   },
   "empty": {
     "title": "No stores found",
@@ -63,7 +63,7 @@
   "back": "Back to stores",
   "overview": "Store overview",
   "overviewHint": "All ad plays at this store during the selected period.",
-  "ofCarts": "out of {total} carts",
+  "ofCarts": "out of {total} Smart carts",
   "incompleteDay": "Today is still in progress",
   "notFound": {
     "title": "Store not found",
@@ -82,12 +82,12 @@
     "date": "Date"
   },
   "fleet": {
-    "title": "Screens at this store",
-    "description": "Stored cart statuses for this location.",
-    "connected": "of carts reported online",
+    "title": "Smart carts at this store",
+    "description": "Stored Smart cart statuses for this location.",
+    "connected": "of Smart carts reported online",
     "online": "Online",
     "offline": "Other statuses",
-    "noData": "Cart status data is currently unavailable.",
+    "noData": "Smart cart status data is currently unavailable.",
     "totalHint": "Total at this store"
   },
   "zones": {

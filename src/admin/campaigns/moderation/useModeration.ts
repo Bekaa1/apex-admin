@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthSession } from '../../../auth/useAuthSession';
+import { permissionIssue, permissionKey } from '../../../auth/permissions';
 import { fetchCampaignDetail } from '../details/api';
 import type { CampaignDetail } from '../details/model';
 import { moderateCampaign } from './api';
@@ -14,15 +15,11 @@ export function useModeration(id: string) {
   const mutation = useMutation({ mutationFn: moderateCampaign, retry: false, networkMode: 'always', gcTime: 0 });
   const [state, setState] = useState(INITIAL_DECISION);
   const [controller] = useState(() => {
-    const roleKey = ['admin-access', session?.user.id, session?.expires_at];
+    const roleKey = permissionKey(session);
     const detailKey = ['admin', 'campaign-detail', session?.user.id, id];
     const recordKey = [...detailKey, 'record'];
     const shared = [['admin', 'campaigns'], ['admin', 'overview'], ['admin', 'audit']];
-    const authorize = () => {
-      if (!session || !session.expires_at || session.expires_at * 1000 <= Date.now()) return 'not_authenticated';
-      const role = client.getQueryState(roleKey);
-      return role?.data === true && role.status === 'success' && role.fetchStatus === 'idle' ? null : 'forbidden';
-    };
+    const authorize = () => permissionIssue(client, session, 'moderate');
     return createDecisionController({
       authorize,
       pending: () => {
@@ -32,7 +29,7 @@ export function useModeration(id: string) {
       send: decision => mutation.mutateAsync(decision),
       changed: setState,
       denied: () => {
-        client.setQueryData(roleKey, false);
+        client.setQueryData(roleKey, []);
         client.removeQueries({ queryKey: ['admin'] });
       },
       refresh: async () => {

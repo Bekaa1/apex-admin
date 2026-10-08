@@ -54,7 +54,7 @@ export function SignupScreen({ loading, contactTaken, passwordRejected, rateLimi
   };
 
   return (
-    <AuthLayout showLegalLinks={false}>
+    <AuthLayout showHomeLink showLegalLinks={false}>
       <form className="auth__form" noValidate onSubmit={submit}>
         <AuthHead badge={t('signup.step1')} title={t('signup.title')} subtitle={t('signup.subtitle')} />
         {contactTaken ? (

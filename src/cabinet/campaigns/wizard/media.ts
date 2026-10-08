@@ -1,15 +1,13 @@
 import type { MediaField, MediaMeta, MediaProblem } from './types';
 
-// Requirements from the design: MP4 or MOV, exactly 7 seconds, horizontal 16:9 from 1280×720, up to 50 MB; cover JPG or PNG.
+// MP4 or MOV, up to 7.9 seconds inclusive, horizontal 16:9 from 1280×720, up to 50 MB; cover JPG or PNG.
 export const VIDEO_ACCEPT = 'video/mp4,video/quicktime';
 export const IMAGE_ACCEPT = 'image/jpeg,image/png';
 export const MAX_FILE_MB = 50;
 const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
 const VIDEO = { types: ['video/mp4', 'video/quicktime'], extensions: ['mp4', 'mov'] };
 const IMAGE = { types: ['image/jpeg', 'image/png'], extensions: ['jpg', 'jpeg', 'png'] };
-export const DURATION_SEC = 7;
-// Encoders round the length to whole frames (7.007 s and the like).
-const DURATION_SLACK_SEC = 0.3;
+export const MAX_VIDEO_DURATION_SEC = 7.9;
 const MIN_WIDTH = 1280;
 const MIN_HEIGHT = 720;
 const RATIO = 16 / 9;
@@ -30,8 +28,8 @@ export function fileProblem(file: File, field: MediaField): MediaProblem | null 
 
 export function videoProblem(meta: MediaMeta): MediaProblem | null {
   const { durationSec, width, height } = meta;
-  if (durationSec === null || !width || !height) return 'unreadable';
-  if (Math.abs(durationSec - DURATION_SEC) > DURATION_SLACK_SEC) return 'duration';
+  if (durationSec === null || !Number.isFinite(durationSec) || durationSec <= 0 || !width || !height) return 'unreadable';
+  if (durationSec > MAX_VIDEO_DURATION_SEC) return 'duration';
   if (height >= width) return 'orientation';
   if (Math.abs(width / height - RATIO) / RATIO > RATIO_SLACK) return 'ratio';
   if (width < MIN_WIDTH || height < MIN_HEIGHT) return 'resolution';
@@ -99,6 +97,6 @@ export function captureFirstFrame(src: string): Promise<Blob | null> {
 
 /** «0:07» for the badge on the cover. */
 export function formatClock(seconds: number): string {
-  const whole = Math.round(seconds);
+  const whole = Math.floor(seconds);
   return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`;
 }

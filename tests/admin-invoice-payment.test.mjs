@@ -189,9 +189,9 @@ test('unmount and cache restoration retain attempt lock; late response does not 
 test('hook disables mutation retries and invalidates invoice/campaign/portions/overview caches after success', async () => {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } });
   const session = { user: { id: uuid(8) }, expires_at: Math.floor(Date.now() / 1000) + 3600 };
-  const roleKey = ['admin-access', session.user.id, session.expires_at];
+  const roleKey = ['apex-permissions', session.user.id, session.expires_at];
   const recordKey = ['admin', 'invoice-detail', session.user.id, row.id, 'record'];
-  client.setQueryData(roleKey, true); client.setQueryData(recordKey, row);
+  client.setQueryData(roleKey, ['accountant']); client.setQueryData(recordKey, row);
   const related = [['admin', 'invoices', session.user.id], ['admin', 'campaigns'], ['admin', 'overview'], ['admin', 'audit'],
     ...['record', 'invoices', 'portions'].map(kind => ['admin', 'campaign-detail', session.user.id, row.ad_id, kind])];
   related.forEach(key => client.setQueryData(key, 'old'));
@@ -207,6 +207,7 @@ test('hook disables mutation retries and invalidates invoice/campaign/portions/o
   const hook = load('src/admin/invoices/payment/usePayment.ts', {
     react: { useEffect: fn => fn(), useState: value => [typeof value === 'function' ? value() : value, () => {}] },
     '@tanstack/react-query': { useQueryClient: () => client, useMutation: value => { options = value; return { mutateAsync: value.mutationFn }; } },
+    '../../../auth/permissions': load('src/auth/permissions.ts', {}),
     '../../../auth/useAuthSession': { useAuthSession: () => ({ session }) },
     '../details/model': details, './api': { markInvoicePaid: async id => { assert.equal(id, row.id); sends++; } },
     './cache': cache, './controller': control, './model': model,
@@ -301,7 +302,7 @@ test('all invoice detail dictionaries have matching keys; new route remains belo
   const dicts = ['ru', 'kk', 'en'].map(lang => JSON.parse(readFileSync(new URL(`../src/i18n/adminInvoiceDetail.${lang}.json`, import.meta.url))));
   assert.deepEqual(keys(dicts[0]), keys(dicts[1])); assert.deepEqual(keys(dicts[0]), keys(dicts[2]));
   const routes = readFileSync(new URL('../src/routes/admin.tsx', import.meta.url), 'utf8');
-  assert.equal((routes.match(/element: <RequireAdmin/g) ?? []).length, 1);
+  assert.equal((routes.match(/element: <RequireAdmin\s/g) ?? []).length, 1);
   assert.ok(routes.indexOf("path: 'invoices/:id'") > routes.indexOf('element: <RequireAdmin'));
   assert.ok(routes.includes("import('../admin/invoices/details/InvoiceDetailPage')"));
 });

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Badge } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
+import { usePermissions } from '../../../auth/usePermissions';
 import { formatMoney, formatNumber } from '../../../lib/format';
 import { overviewDate } from '../../overview/model';
 import { fetchInvoices, fetchPortions } from './api';
@@ -57,6 +58,7 @@ function PortionList({ id }: { id: string }) {
 }
 export function FinanceDetails({ row }: { row: CampaignDetail }) {
   const { t, lang } = useI18n();
+  const { can } = usePermissions();
   const money = (value: number | null) => value === null ? t('adminCampaigns.noData') : formatMoney(value, lang);
   return <section className={styles.panel} aria-labelledby="campaign-finance">
     <h2 id="campaign-finance">{t('adminCampaignDetail.finance')}</h2>
@@ -65,6 +67,6 @@ export function FinanceDetails({ row }: { row: CampaignDetail }) {
       <DetailField label={t('adminCampaigns.columns.paid')}>{money(row.paid_amount)}</DetailField>
       <DetailField label={t('adminCampaigns.columns.spent')}>{money(row.spent_budget)}</DetailField>
     </dl>
-    <InvoiceList id={row.id} /><PortionList id={row.id} />
+    {can('invoices') ? <><InvoiceList id={row.id} /><PortionList id={row.id} /></> : null}
   </section>;
 }

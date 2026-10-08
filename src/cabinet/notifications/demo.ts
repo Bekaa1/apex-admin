@@ -22,6 +22,6 @@ export function demoNotifications(now = Date.now()): NotificationRow[] {
       action: 'open_campaign',
       data: { reasons: ['duration_7s', 'languages_kk_ru'] },
     }),
-    row('demo-ntf-4', 60 * 50, true, { type: 'welcome', severity: 'info', title: 'Добро пожаловать в Apex Media!', body: 'Создайте первую кампанию: ролик, магазины и бюджет.', action: 'create_campaign' }),
+    row('demo-ntf-4', 60 * 50, true, { type: 'welcome', severity: 'info', title: 'Добро пожаловать в Apex Media!', body: 'Создайте первую кампанию: ролик, супермаркеты и бюджет.', action: 'create_campaign' }),
   ];
 }

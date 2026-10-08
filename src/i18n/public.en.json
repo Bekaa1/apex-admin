@@ -19,25 +19,24 @@
     "title": "Choose how your brand meets the shopper",
     "text": "General rotation, shelf priority or video with sound. Find the format for your campaign.",
     "tag": { "standard": "Reach", "zones": "At the right shelf", "premium": "Zones + sound" },
-    "choose": "Choose plan",
     "discuss": "Discuss your campaign",
     "contractTitle": "Your price is fixed in the contract",
     "contractText": "Prices shown are minimum campaign budgets. The agreed price applies throughout the contract term. Terms for the next period are agreed using current rates, subject to your contract.",
     "faq": {
       "budget": { "q": "Is this a monthly price?", "a": "No. The cards show the minimum campaign budget. Your contract sets the placement period and final price." },
-      "zones": { "q": "How do zones differ from general rotation?", "a": "General rotation covers carts in your selected stores. A plan with zones adds priority at selected shelves when a shopper approaches them." },
+      "zones": { "q": "How do zones differ from general rotation?", "a": "General rotation covers Smart carts in your selected stores. A plan with zones adds priority at selected shelves when a shopper approaches them." },
       "renewal": { "q": "What happens if prices change?", "a": "The price agreed for your current contract term remains fixed. After that term, new placements or renewals are agreed at current rates, unless your contract states otherwise." }
     }
   },
   "stores": {
     "eyebrow": "Locations for your advertising",
     "title": "Closer to your shoppers",
-    "text": "Find a store, see its screen count and available zones. Add your chosen location to your next campaign.",
+    "text": "Find a store, see its Smart cart count and available zones. Add your chosen location to your next campaign.",
     "search": "Store name or address",
     "clear": "Clear search",
     "city": "City",
     "allCities": "All cities",
-    "screens": "Carts with screens",
+    "screens": "Smart carts",
     "zones": "Advertising zones",
     "showZones": "View zones",
     "loadingZones": "Loading zones…",
@@ -61,12 +60,12 @@
   "how": {
     "eyebrow": "From your video to the shopper",
     "title": "Advertising at the moment of choice",
-    "text": "A cart screen introduces your brand right in the store. Zone placements help show your video at the right shelf.",
+    "text": "A Smart cart introduces your brand right in the store. Zone placements help show your video at the right shelf.",
     "shelf": "Your product zone",
     "sceneCaption": "The right product. The right place. Your video.",
     "buyer": {
-      "approach": { "title": "A shopper reaches the shelf", "text": "The cart enters your selected area of the store." },
-      "watch": { "title": "Your video plays on screen", "text": "A short video presents the product right beside it." },
+      "approach": { "title": "A shopper reaches the shelf", "text": "The Smart cart enters your selected area of the store." },
+      "watch": { "title": "Your video plays on a Smart cart", "text": "A short video presents the product right beside it." },
       "count": { "title": "The system records a play", "text": "Completed plays are added to your campaign data." }
     },
     "forAdvertiser": "For advertisers",
@@ -80,7 +79,7 @@
     "budgetHint": "Minimum budget met",
     "reviewAction": "Submission for review",
     "steps": {
-      "video": { "title": "Upload your video", "text": "A 7-second video, a title and a description of your ad." },
+      "video": { "title": "Upload your video", "text": "A video up to 7.9 seconds long, a title and a description of your ad." },
       "tariff": { "title": "Choose your plan", "text": "Select the advertising format and minimum budget." },
       "stores": { "title": "Pick your stores", "text": "Find suitable locations by city and address." },
       "zones": { "title": "Choose your shelves", "text": "Add the product zones where you want your ad to play." },
@@ -92,9 +91,9 @@
       "results": { "title": "Track the results", "text": "Follow impressions and budget spending in your account." }
     },
     "faq": {
-      "video": { "q": "What are the video requirements?", "a": "A horizontal MP4 or MOV video, 7 seconds long, with a 16:9 aspect ratio, at least 1280 × 720 resolution and a file size up to 50 MB." },
+      "video": { "q": "What are the video requirements?", "a": "A horizontal MP4 or MOV video, up to 7.9 seconds long, with a 16:9 aspect ratio, at least 1280 × 720 resolution and a file size up to 50 MB." },
       "timing": { "q": "When will my ad start playing?", "a": "Your video first goes through review, usually within one business day. The start date depends on agreed dates, payment and the readiness of your materials." },
-      "impression": { "q": "What counts as an impression?", "a": "A completed playback of your video on a cart screen. This measures plays, not the number of unique shoppers." }
+      "impression": { "q": "What counts as an impression?", "a": "A completed playback of your video on a Smart cart. This measures plays, not the number of unique shoppers." }
     }
   }
 }

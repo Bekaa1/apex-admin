@@ -1,6 +1,8 @@
 import { useLocation, useParams, useSearchParams } from 'react-router';
 import { Alert, Button, Tabs } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
+import { usePermissions } from '../../../auth/usePermissions';
+import { PermissionDenied } from '../../../auth/RequirePermission';
 import { listReturnTo } from '../../../navigation/returnTo';
 import { overviewDate } from '../../overview/model';
 import { OverviewLoading } from '../../overview/OverviewState';
@@ -34,6 +36,7 @@ function ClientProfile({ row }: { row: ClientRow }) {
 
 function ClientContent({ id }: { id: string }) {
   const { t } = useI18n();
+  const { can } = usePermissions();
   const query = useClientProfile(id);
   const [params, setParams] = useSearchParams();
   const { state } = useLocation();
@@ -53,12 +56,12 @@ function ClientContent({ id }: { id: string }) {
   return <div className={styles.blocks}>
     <ClientProfile row={query.data} />
     <section className={styles.panel} aria-label={t('adminClientDetail.records')}>
-      <Tabs items={[{ value: 'campaigns', label: t('adminClientDetail.tabs.campaigns') }, { value: 'invoices', label: t('adminClientDetail.tabs.invoices') }]}
-        value={tab} onChange={next => setParams(clientTabParams(params, next), navigation)} label={t('adminClientDetail.records')} panelId="client-records" />
+      <Tabs items={[{ value: 'campaigns', label: t('adminClientDetail.tabs.campaigns') }, ...(can('invoices') ? [{ value: 'invoices', label: t('adminClientDetail.tabs.invoices') }] : [])]}
+        value={tab} onChange={next => { if (next === 'campaigns' || next === 'invoices') setParams(clientTabParams(params, next), navigation); }} label={t('adminClientDetail.records')} panelId="client-records" />
       <div className={local.tabPanel} id="client-records" role="tabpanel" aria-label={t(`adminClientDetail.tabs.${tab}`)} tabIndex={0}>
         {error ? <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={() => setParams(clientTabParams(params, tab, 1), navigation)}>{t('adminClients.firstPage')}</Button>}>{t('adminClientDetail.invalidPage')}</Alert>
           : tab === 'campaigns' ? <ClientCampaigns key={`${id}:campaigns`} id={id} page={page} onPage={onPage} />
-            : <ClientInvoices key={`${id}:invoices`} id={id} page={page} onPage={onPage} />}
+            : can('invoices') ? <ClientInvoices key={`${id}:invoices`} id={id} page={page} onPage={onPage} /> : <PermissionDenied />}
       </div>
     </section>
   </div>;

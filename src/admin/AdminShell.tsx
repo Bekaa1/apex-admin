@@ -3,7 +3,8 @@ import { Link, NavLink, useLocation } from 'react-router';
 import { Icon, IconButton, LANG_OPTIONS, LogoMark, SegmentedControl, ThemeToggle } from '../design-system';
 import { useI18n } from '../i18n/i18n';
 import { AdminNavigation } from './AdminNavigation';
-import { ADMIN_SECTIONS, adminSectionFor } from './sections';
+import { ADMIN_SECTIONS, adminSectionFor, visibleAdminSections } from './sections';
+import { usePermissions } from '../auth/usePermissions';
 import '../cabinet/cabinet.css';
 import styles from './AdminLayout.module.css';
 
@@ -11,13 +12,14 @@ import styles from './AdminLayout.module.css';
 export function AdminShell({ children, accountAction, preview = false }: { children: ReactNode; accountAction?: ReactNode; preview?: boolean }) {
   const { t, lang, setLang } = useI18n();
   const { pathname } = useLocation();
+  const { roles } = usePermissions();
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
   const dialogId = useId();
   const titleId = useId();
   const section = adminSectionFor(pathname);
-  const primaryTabs = ADMIN_SECTIONS.slice(0, 3);
+  const primaryTabs = (preview && import.meta.env.DEV ? ADMIN_SECTIONS : visibleAdminSections(roles)).slice(0, 3);
   const moreActive = Boolean(section && !primaryTabs.includes(section));
   useEffect(() => {
     const previous = document.title;
@@ -39,7 +41,7 @@ export function AdminShell({ children, accountAction, preview = false }: { child
     <a className={styles.skip} href="#admin-main" onClick={(event) => { event.preventDefault(); document.getElementById('admin-main')?.focus(); }}>{t('adminShell.skip')}</a>
     <aside className="cab__side"><div className="cab__side-inner">
       <Link className="ax-logo cab__logo" to="/admin" aria-label="ApexAdmin"><LogoMark size={28} /><span className="ax-logo__word">ApexAdmin</span></Link>
-      <AdminNavigation />
+      <AdminNavigation preview={preview} />
       {accountAction ? <div className="cab__side-bottom">{accountAction}</div> : null}
     </div></aside>
     <div className="cab__body">
@@ -68,7 +70,7 @@ export function AdminShell({ children, accountAction, preview = false }: { child
     <dialog ref={dialog} id={dialogId} aria-labelledby={titleId} className={styles.drawer}
       onClose={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}>
       <div className={styles.drawerHeader}><h2 id={titleId}>{t('adminShell.menu')}</h2><IconButton icon="x" label={t('adminShell.closeMenu')} onClick={close} /></div>
-      <AdminNavigation onNavigate={close} />
+      <AdminNavigation onNavigate={close} preview={preview} />
       {accountAction ? <div className={styles.drawerAction}>{accountAction}</div> : null}
     </dialog>
   </div>;

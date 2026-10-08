@@ -1,6 +1,8 @@
 import { Alert, Button, Checkbox, Tabs } from '../../../design-system';
 import { useLocation, useSearchParams } from 'react-router';
 import { useI18n } from '../../../i18n/i18n';
+import { usePermissions } from '../../../auth/usePermissions';
+import { PermissionDenied } from '../../../auth/RequirePermission';
 import { formatNumber } from '../../../lib/format';
 import { OverviewLoading } from '../../overview/OverviewState';
 import { PAGE_SIZE } from '../model';
@@ -38,18 +40,23 @@ function RecordResults({ id, selection, onPage }: { id: string; selection: Store
   </div>;
 }
 
-export function StoreRecords({ id }: { id: string }) {
+export function StoreRecords({ id, partner = false }: { id: string; partner?: boolean }) {
   const { t } = useI18n();
+  const { can } = usePermissions();
   const [params, setParams] = useSearchParams();
   const { state } = useLocation();
   const navigation = { state, preventScrollReset: true };
-  const selection = readTabSelection(params);
+  const initial = new URLSearchParams(params);
+  if (partner && !initial.has('tab')) initial.set('tab', 'carts');
+  const selection = readTabSelection(initial);
+  const tabs = partner ? ['carts'] as const : can('equipment') ? ['zones', 'carts', 'beacons'] as const : ['zones'] as const;
+  const allowed = tabs.some(tab => tab === selection.tab);
   return <section className={styles.panel} aria-label={t('adminStoreDetail.records')}>
-    <Tabs items={(['zones', 'carts', 'beacons'] as const).map(value => ({ value, label: t(`adminStoreDetail.tabs.${value}`) }))}
+    <Tabs items={tabs.map(value => ({ value, label: t(`adminStoreDetail.tabs.${value}`) }))}
       value={selection.tab} onChange={tab => setParams(tabParams(params, tab), navigation)} label={t('adminStoreDetail.records')} panelId="store-records" />
-    {selection.tab === 'beacons' ? <Checkbox checked={selection.withoutZone} onChange={event => setParams(beaconFilterParams(params, event.target.checked), navigation)}>{t('adminStoreDetail.withoutZone')}</Checkbox> : null}
+    {allowed && selection.tab === 'beacons' ? <Checkbox checked={selection.withoutZone} onChange={event => setParams(beaconFilterParams(params, event.target.checked), navigation)}>{t('adminStoreDetail.withoutZone')}</Checkbox> : null}
     <div className={local.tabPanel} role="tabpanel" id="store-records" tabIndex={0} aria-label={t(`adminStoreDetail.tabs.${selection.tab}`)}>
-      {selection.error ? <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={() => setParams(resetTabParams(params, selection.tab), navigation)}>{t('adminStoreDetail.resetTab')}</Button>}>{t('adminStoreDetail.invalidTab')}</Alert>
+      {!allowed ? <PermissionDenied /> : selection.error ? <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={() => setParams(resetTabParams(params, selection.tab), navigation)}>{t('adminStoreDetail.resetTab')}</Button>}>{t('adminStoreDetail.invalidTab')}</Alert>
         : <RecordResults key={`${id}:${selection.tab}`} id={id} selection={selection} onPage={page => setParams(tabParams(params, selection.tab, page), navigation)} />}
     </div>
   </section>;

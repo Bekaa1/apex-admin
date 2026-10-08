@@ -157,9 +157,9 @@ test('real cache gets factual status and invalidates lists/overview; slow auxili
   for (const finalStatus of ['active', 'awaiting_payment', 'budget_ended']) {
     const client = new QueryClient();
     const session = { user: { id: uuid(10) }, expires_at: Math.floor(Date.now() / 1000) + 3600 };
-    const roleKey = ['admin-access', session.user.id, session.expires_at];
+    const roleKey = ['apex-permissions', session.user.id, session.expires_at];
     const detailKey = ['admin', 'campaign-detail', session.user.id, uuid(1), 'record'];
-    client.setQueryData(roleKey, true); client.setQueryData(detailKey, { status: 'pending' });
+    client.setQueryData(roleKey, ['moderator']); client.setQueryData(detailKey, { status: 'pending' });
     for (const key of [['admin', 'campaigns', 'all'], ['admin', 'campaigns', 'moderation'], ['admin', 'overview'], ['admin', 'campaign-detail', session.user.id, uuid(1), 'invoices']]) client.setQueryData(key, 'old');
     let options, reads = 0;
     let backgroundReads = 0;
@@ -167,7 +167,8 @@ test('real cache gets factual status and invalidates lists/overview; slow auxili
     const { useModeration } = load('src/admin/campaigns/moderation/useModeration.ts', {
       react: { useEffect: fn => fn(), useState: value => [typeof value === 'function' ? value() : value, () => {}] },
       '@tanstack/react-query': { useQueryClient: () => client, useMutation: opts => { options = opts; return { mutateAsync: opts.mutationFn }; } },
-      '../../../auth/useAuthSession': { useAuthSession: () => ({ session }) },
+      '../../../auth/permissions': load('src/auth/permissions.ts', {}),
+    '../../../auth/useAuthSession': { useAuthSession: () => ({ session }) },
       '../details/api': { fetchCampaignDetail: async () => { reads++; return { status: finalStatus }; } },
       './api': { moderateCampaign: async () => {} },
       './model': model,

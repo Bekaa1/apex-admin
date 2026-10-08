@@ -164,6 +164,7 @@ test('shared tables preserve zero battery, unknown status, string box numbers an
     'react-router': { Link: ({ to, children }) => createElement('a', { href: to }, children) },
     '../../../design-system': { Badge: ({ children }) => createElement('span', null, children) },
     '../../../i18n/i18n': { useI18n: () => ({ lang: 'ru', t: key => key === 'adminStoreDetail.noData' ? 'Нет данных' : key }) },
+    '../../../auth/usePermissions': { usePermissions: () => ({ can: () => false }) },
     '../../../lib/format': { formatNumber: String }, '../../overview/model': { overviewDate: (_date, _lang, fallback) => fallback },
     '../model': storeModel, '../../campaigns/details/CampaignDetail.module.css': {}, './StoreDetail.module.css': {},
   });

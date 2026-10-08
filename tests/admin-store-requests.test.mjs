@@ -165,7 +165,7 @@ test('table/cards escape text, render nullable fallbacks, owner comments and cor
 test('unique protected route, adjacent menu item, return from wizard and completed success link', () => {
   const routes = read('src/routes/admin.tsx'); const rootIndex = routes.indexOf("path: '/admin', element: <RequireAdmin"); const listIndex = routes.indexOf("path: 'store-requests'");
   assert.ok(listIndex > rootIndex && listIndex < routes.indexOf("path: '*', element: <AdminNotFound")); assert.equal(routes.split("path: 'store-requests'").length - 1, 1);
-  const sections = load('src/admin/sections.ts'); assert.equal(sections.adminSectionFor('/admin/store-requests').labelKey, 'adminStoreRequests.title');
+  const sections = load('src/admin/sections.ts', { '../auth/permissions': load('src/auth/permissions.ts') }); assert.equal(sections.adminSectionFor('/admin/store-requests').labelKey, 'adminStoreRequests.title');
   assert.equal(sections.ADMIN_SECTIONS.findIndex(s => s.path === '/admin/store-requests'), sections.ADMIN_SECTIONS.findIndex(s => s.path === '/admin/stores') + 1);
   for (const path of ['StoreRequestPage.tsx', 'StoreRequestForm.tsx']) assert.match(read('src/admin/stores/onboarding/' + path), /href=\{STORE_REQUEST_LIST\}/);
   assert.match(read('src/admin/stores/onboarding/review/StoreReviewStep.tsx'), /backTo = STORE_REQUEST_LIST/);

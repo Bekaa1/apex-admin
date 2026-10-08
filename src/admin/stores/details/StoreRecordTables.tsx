@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Badge } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
+import { usePermissions } from '../../../auth/usePermissions';
 import { formatNumber } from '../../../lib/format';
 import { overviewDate } from '../../overview/model';
 import { storeDetailPath } from '../model';
@@ -16,7 +17,7 @@ function TableFrame({ tab, columns, children }: { tab: StoreTab; columns: string
   return <div className={styles.tableWrap} role="region" aria-label={label} tabIndex={0}>
     <table className={`${styles.table} ${local.recordsTable} ${local[tab]} ${columns.includes('store') ? local.withStores : ''}`}>
       <caption className={styles.srOnly}>{label}</caption>
-      <thead><tr>{columns.map(key => <th key={key} scope="col">{t(key === 'store' ? 'adminEquipment.store' : `adminStoreDetail.columns.${key}`)}</th>)}</tr></thead>
+      <thead><tr>{columns.map(key => <th key={key} scope="col">{t(key === 'store' ? 'adminEquipment.store' : key === 'route' ? 'roles.route' : `adminStoreDetail.columns.${key}`)}</th>)}</tr></thead>
       <tbody>{children}</tbody>
     </table>
   </div>;
@@ -49,8 +50,9 @@ function StoreValue({ id, names }: { id: string | null; names: Readonly<Record<s
 
 export function CartTable({ rows, stores }: { rows: CartItem[]; stores?: Readonly<Record<string, string>> }) {
   const { t, lang } = useI18n();
+  const { can } = usePermissions();
   const noData = t('adminStoreDetail.noData');
-  return <TableFrame tab="carts" columns={['cartNumber', ...(stores ? ['store'] : []), 'status', 'battery', 'lastSeen', 'lastPing', 'currentZone']}>
+  return <TableFrame tab="carts" columns={['cartNumber', ...(stores ? ['store'] : []), 'status', 'battery', 'lastSeen', 'lastPing', 'currentZone', ...(can('cartRoute') ? ['route'] : [])]}>
     {rows.map(row => <tr key={row.id}>
       <td>{row.cart_number?.trim() || (row.display_id === null ? noData : String(row.display_id))}</td>
       {stores ? <td><StoreValue id={row.store_id} names={stores} /></td> : null}
@@ -58,6 +60,7 @@ export function CartTable({ rows, stores }: { rows: CartItem[]; stores?: Readonl
       <td>{row.battery_level === null ? noData : `${formatNumber(row.battery_level, lang)}%`}</td>
       <td>{overviewDate(row.last_seen_at, lang, noData)}</td><td>{overviewDate(row.last_ping_at, lang, noData)}</td>
       <td><ZoneValue id={row.current_zone_id} name={row.zoneName} /></td>
+      {can('cartRoute') ? <td><Link to={`/admin/cart-routes/${row.id}`}>{t('roles.route')}</Link></td> : null}
     </tr>)}
   </TableFrame>;
 }

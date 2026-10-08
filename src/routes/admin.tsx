@@ -1,6 +1,8 @@
 import { Navigate, type RouteObject } from 'react-router';
 import { RequireAdmin } from '../auth/RequireAdmin';
 import { RequireStoreOwner } from '../auth/RequireStoreOwner';
+import { RequireAdminSection } from '../auth/RequirePermission';
+import { adminRoutePermission } from '../auth/permissions';
 import { AdminLayout } from '../admin/AdminLayout';
 import { AdminNotFound, AdminPlaceholder } from '../admin/AdminPlaceholder';
 import { ADMIN_SECTIONS } from '../admin/sections';
@@ -10,12 +12,17 @@ import { LoginFlow } from '../auth/AuthFlows';
 import { SessionLoading } from '../auth/RequireSession';
 import { DEFAULT_AUTH_LINKS } from '../auth/links';
 
+function withPermission(route: RouteObject): RouteObject {
+  return { ...route, handle: { adminPermission: adminRoutePermission(`/admin/${route.path ?? ''}`), adminHome: route.index === true, admin404: route.path === '*' },
+    ...(route.children ? { children: route.children.map(withPermission) } : {}) } as RouteObject;
+}
+
 const applicationRoutes: RouteObject[] = [
   { path: '/', element: <Navigate to="/admin" replace /> },
   { path: '/access-denied', element: <AccessDenied /> },
   {
     path: '/admin', element: <RequireAdmin />, children: [
-      { element: <AdminLayout />, children: [
+      { element: <AdminLayout />, children: [{ element: <RequireAdminSection />, children: [
         { index: true, lazy: async () => ({ Component: (await import('../admin/overview/OverviewPage')).OverviewPage }) },
         { path: 'campaigns', lazy: async () => ({ Component: (await import('../admin/campaigns/CampaignsPage')).CampaignsPage }) },
         { path: 'moderation', lazy: async () => ({ Component: (await import('../admin/campaigns/CampaignsPage')).ModerationPage }) },
@@ -37,11 +44,17 @@ const applicationRoutes: RouteObject[] = [
         { path: 'tariffs', lazy: async () => ({ Component: (await import('../admin/tariffs/TariffsPage')).TariffsPage }) },
         { path: 'media', lazy: async () => ({ Component: (await import('../admin/media/MediaPage')).MediaPage }) },
         { path: 'audit', lazy: async () => ({ Component: (await import('../admin/audit/AuditPage')).AuditPage }) },
+        { path: 'team', lazy: async () => ({ Component: (await import('../admin/team/TeamPage')).TeamPage }) },
+        { path: 'cart-routes/:id', lazy: async () => ({ Component: (await import('../admin/roles/CartRoutePage')).CartRoutePage }) },
+        { path: 'partner/stores', lazy: async () => ({ Component: (await import('../admin/partner/PartnerPage')).PartnerStoresPage }) },
+        { path: 'partner/stores/:id', lazy: async () => ({ Component: (await import('../admin/partner/PartnerPage')).PartnerStorePage }) },
+        { path: 'partner/campaigns', lazy: async () => ({ Component: (await import('../admin/partner/PartnerPage')).PartnerCampaignsPage }) },
+        { path: 'partner/equipment', lazy: async () => ({ Component: (await import('../admin/partner/PartnerPage')).PartnerEquipmentPage }) },
         { path: 'corporate-requests', lazy: async () => ({ Component: (await import('../admin/corporate-requests/CorporateRequestsPage')).CorporateRequestsPage }) },
         { path: 'corporate-requests/:id', lazy: async () => ({ Component: (await import('../admin/corporate-requests/CorporateRequestPage')).CorporateRequestPage }) },
         ...ADMIN_SECTIONS.filter((section) => section.placeholder).map((section) => ({ path: section.path.slice('/admin/'.length), element: <AdminPlaceholder titleKey={section.labelKey} /> })),
         { path: '*', element: <AdminNotFound /> },
-      ] },
+      ].map(withPermission) }] },
     ],
   },
   { path: DEFAULT_AUTH_LINKS.login, element: <LoginFlow admin /> },

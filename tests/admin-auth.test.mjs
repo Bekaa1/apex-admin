@@ -21,16 +21,48 @@ function loadTs(file, modules = {}, globals = {}) {
   return exports;
 }
 const access = loadTs('src/auth/adminAccess.ts');
+const permissions = loadTs('src/auth/permissions.ts');
+test('role matrix denies financial/admin actions to moderator and ordinary users', () => {
+  for (const role of ['client', 'manager', 'director', 'marketer', 'moderator']) {
+    assert.equal(permissions.can([role], 'invoices'), false);
+    assert.equal(permissions.can([role], 'team'), false);
+  }
+  assert.equal(permissions.can(['moderator'], 'moderate'), true);
+  assert.equal(permissions.can(['accountant'], 'moderate'), false);
+  assert.equal(permissions.can(['accountant'], 'invoices'), true);
+  assert.equal(permissions.can(['moderator', 'accountant'], 'invoices'), true);
+  for (const role of ['admin', 'owner']) assert.equal(permissions.can([role], 'team'), true);
+  assert.equal(permissions.can(permissions.parseRoles(['unknown']), 'panel'), false);
+  for (const value of [true, false, null, {}, ['admin', 1]]) assert.throws(() => permissions.parseRoles(value));
+});
+
+test('matched route permissions protect invoices and unknown routes before children mount', () => {
+  let handles = [], roles = ['moderator'];
+  const { RequireAdminSection } = loadTs('src/auth/RequirePermission.tsx', {
+    'react-router': { Navigate: 'Navigate', Outlet: 'Outlet', useMatches: () => handles.map(handle => ({ handle })) },
+    '../design-system': { Alert: 'Alert', Button: 'Button' },
+    '../i18n/i18n': { useI18n: () => ({ t: key => key }) },
+    './permissions': permissions,
+    './usePermissions': { usePermissions: () => ({ roles, can: permission => permissions.can(roles, permission) }) },
+  });
+  handles = [{ adminPermission: 'invoices' }];
+  assert.equal(RequireAdminSection().type.name, 'PermissionDenied');
+  roles = ['accountant']; assert.equal(RequireAdminSection().type, 'Outlet');
+  handles = []; assert.equal(RequireAdminSection().type.name, 'PermissionDenied');
+  handles = [{ admin404: true }]; assert.equal(RequireAdminSection().type, 'Outlet');
+  handles = [{ adminHome: true }]; roles = ['director'];
+  assert.equal(RequireAdminSection().props.to, '/admin/partner/stores');
+});
 const session = (id = 'synthetic-a', expiresAt = 200) => ({ user: { id }, expires_at: expiresAt });
-function guard(auth, query = {}, configured = true, rpcResult = { data: true, error: null }) {
+function guard(auth, query = {}, configured = true, rpcResult = { data: ['admin'], error: null }) {
   let options;
   let rpcCalls = 0;
   const client = { rpc: (name) => {
-    assert.equal(name, 'is_apex_admin'); rpcCalls++;
+    assert.equal(name, 'my_roles'); rpcCalls++;
     return { abortSignal: (signal) => { assert.ok(signal); return Promise.resolve(rpcResult); } };
   } };
   const { RequireAdmin } = loadTs('src/auth/RequireAdmin.tsx', {
-    '@tanstack/react-query': { useQuery: (value) => { options = value; return { isPending: false, isFetching: false, isError: false, data: undefined, ...query }; } },
+    '@tanstack/react-query': { useQueryClient: () => new QueryClient(), useQuery: (value) => { options = value; return { isPending: false, isFetching: false, isError: false, data: undefined, ...query }; } },
     'react-router': { Navigate: 'Navigate', Outlet: 'Outlet' },
     '../design-system': { Alert: 'Alert', Button: 'Button', Skeleton: 'Skeleton' },
     '../i18n/i18n': { useI18n: () => ({ t: (key) => key }) },
@@ -38,7 +70,9 @@ function guard(auth, query = {}, configured = true, rpcResult = { data: true, er
     '../navigation/RouteState': { RouteFrame: 'RouteFrame' },
     './useAuthSession': { useAuthSession: () => auth },
     './adminAccess': access,
-  });
+    './permissions': permissions,
+    './usePermissions': { PermissionsContext: { Provider: 'PermissionsProvider' } },
+  }, { AbortSignal });
   return { element: RequireAdmin(), options, rpcCalls: () => rpcCalls };
 }
 test('RequireAdmin: no session redirects to login without role request', () => {
@@ -52,16 +86,20 @@ test('RequireAdmin: session loading and pending/refetching role never render Out
   for (const [auth, query] of [
     [{ status: 'loading', session: null }, {}],
     [{ status: 'ready', session: session() }, { isPending: true }],
-    [{ status: 'ready', session: session() }, { isFetching: true, data: true }],
+    [{ status: 'ready', session: session() }, { isFetching: true, data: ['admin'] }],
   ]) {
     const result = guard(auth, query);
     assert.equal(result.element.type, 'RouteFrame');
     assert.equal(result.element.props.children.props.role, 'status');
   }
 });
-test('RequireAdmin: only literal true opens Outlet', () => {
-  assert.equal(guard({ status: 'ready', session: session() }, { data: true }).element.type, 'Outlet');
-  for (const data of [false, null, undefined, 'true', 1, {}, []]) {
+test('RequireAdmin: only recognized panel roles open Outlet; clients and unknown roles stay denied', () => {
+  for (const role of ['admin', 'owner', 'accountant', 'moderator', 'manager', 'director', 'marketer']) {
+    const element = guard({ status: 'ready', session: session() }, { data: [role] }).element;
+    assert.equal(element.type, 'PermissionsProvider');
+    assert.equal(element.props.children.type, 'Outlet');
+  }
+  for (const data of [null, undefined, [], ['client'], ['unknown']]) {
     const result = guard({ status: 'ready', session: session() }, { data });
     assert.equal(result.element.type, 'Navigate');
     assert.equal(result.element.props.to, '/access-denied');
@@ -69,15 +107,15 @@ test('RequireAdmin: only literal true opens Outlet', () => {
 });
 test('RequireAdmin: error hides cached success and offers retry', () => {
   let retries = 0;
-  const result = guard({ status: 'ready', session: session() }, { isError: true, data: true, refetch: () => { retries++; } });
+  const result = guard({ status: 'ready', session: session() }, { isError: true, data: ['admin'], refetch: () => { retries++; } });
   assert.equal(result.element.type, 'RouteFrame');
   const button = result.element.props.children.find((child) => child.type === 'Button');
   button.props.onClick();
   assert.equal(retries, 1);
-  assert.equal(guard({ status: 'error', session: null }, { data: true }).element.type, 'RouteFrame');
+  assert.equal(guard({ status: 'error', session: null }, { data: ['admin'] }).element.type, 'RouteFrame');
 });
 test('RequireAdmin: missing environment closes access and disables RPC', () => {
-  const result = guard({ status: 'ready', session: session() }, { data: true }, false);
+  const result = guard({ status: 'ready', session: session() }, { data: ['admin'] }, false);
   assert.equal(result.element.type, 'RouteFrame');
   assert.equal(result.element.props.children.props.title, 'adminAuth.notConfigured');
   assert.equal(result.options.enabled, false);
@@ -87,10 +125,10 @@ test('RequireAdmin: existing RPC uses signal, no automatic retry, key includes c
   assert.equal(result.options.enabled, true);
   assert.equal(result.options.retry, false);
   assert.equal(result.options.gcTime, 0);
-  assert.equal(JSON.stringify(result.options.queryKey), JSON.stringify(['admin-access', 'synthetic-a', 200]));
-  assert.equal(await result.options.queryFn({ signal: new AbortController().signal }), true);
+  assert.equal(JSON.stringify(result.options.queryKey), JSON.stringify(['apex-permissions', 'synthetic-a', 200]));
+  assert.equal(JSON.stringify(await result.options.queryFn({ signal: new AbortController().signal })), '["admin"]');
   const bad = guard({ status: 'ready', session: session() }, {}, true, { data: 'true', error: null });
-  assert.equal(await bad.options.queryFn({ signal: new AbortController().signal }), false);
+  await assert.rejects(bad.options.queryFn({ signal: new AbortController().signal }), /Invalid permissions response/);
   const missing = guard({ status: 'ready', session: session() }, {}, true, { data: null, error: { code: 'PGRST202' } });
   await assert.rejects(missing.options.queryFn({ signal: new AbortController().signal }), (error) => error.code === 'PGRST202');
 });

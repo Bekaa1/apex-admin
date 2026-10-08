@@ -170,29 +170,29 @@ function decisionFixture({ value = record(), owner = true, decide, readBack } = 
 }
 test('actual owner UI forces read-only preview even for own draft, exposes revision/assignments, hides decisions for nonowner', () => {
   for (const fixture of [decisionFixture({ owner: false }), decisionFixture({ value: rejected() }), decisionFixture({ value: record({ status: 'inactive', is_mine: true }) })]) {
-    const tree = fixture.render(); assert.equal(button(tree, 'Одобрить и создать магазин'), undefined); assert.equal(button(tree, 'Отклонить'), undefined);
+    const tree = fixture.render(); assert.equal(button(tree, 'Одобрить и создать супермаркет'), undefined); assert.equal(button(tree, 'Отклонить'), undefined);
     assert.equal(nodes(tree).find(n => n.type === 'Summary').props.readOnly, true);
   }
-  const tree = decisionFixture().render(); assert.ok(button(tree, 'Одобрить и создать магазин')); assert.ok(nodes(tree).some(n => n.props?.id === 'owner-assignments'));
+  const tree = decisionFixture().render(); assert.ok(button(tree, 'Одобрить и создать супермаркет')); assert.ok(nodes(tree).some(n => n.props?.id === 'owner-assignments'));
 });
 test('actual UI double confirmation causes one call; success removes queue row and invalidates related lists', async () => {
   let calls = 0, finish;
   const fixture = decisionFixture({ decide: () => { calls++; return new Promise(resolve => { finish = resolve; }); } });
-  let tree = fixture.render(); button(tree, 'Одобрить и создать магазин').props.onClick(); tree = fixture.render();
+  let tree = fixture.render(); button(tree, 'Одобрить и создать супермаркет').props.onClick(); tree = fixture.render();
   const dialog = nodes(tree).find(n => n.type === 'Dialog'); dialog.props.onConfirm(); dialog.props.onConfirm();
   assert.equal(calls, 1); assert.equal(fixture.options.retry, false); tree = fixture.render(); assert.equal(button(tree, 'Отклонить').props.disabled, true);
   assert.equal(nodes(tree).find(n => n.type === 'Summary').props.externalBusy, true);
   finish({ record: approved(), outcome: 'approved', reason: 'success' }); await tick(); tree = fixture.render();
-  assert.equal(button(tree, 'Одобрить и создать магазин'), undefined); assert.equal(fixture.queue.rows.length, 1); assert.equal(fixture.queue.rows[0].id, id(2));
+  assert.equal(button(tree, 'Одобрить и создать супермаркет'), undefined); assert.equal(fixture.queue.rows.length, 1); assert.equal(fixture.queue.rows[0].id, id(2));
   assert.deepEqual(fixture.invalidations.map(x => x.queryKey[1]), ['store-owner-queue', 'store-requests', 'stores']);
 });
 test('unresolved UI blocks decision buttons, preserves comment and exposes read-only recheck', async () => {
   const fixture = decisionFixture({ decide: async () => { throw new errors.RequestFailure('unresolved'); } });
   let tree = fixture.render(); button(tree, 'Отклонить').props.onClick(); tree = fixture.render(); nodes(tree).find(n => n.type === 'Dialog').props.onComment('Synthetic comment');
   tree = fixture.render(); nodes(tree).find(n => n.type === 'Dialog').props.onConfirm(); await tick(); tree = fixture.render();
-  assert.equal(button(tree, 'Одобрить и создать магазин').props.disabled, true); assert.equal(button(tree, 'Отклонить').props.disabled, true);
+  assert.equal(button(tree, 'Одобрить и создать супермаркет').props.disabled, true); assert.equal(button(tree, 'Отклонить').props.disabled, true);
   const recheck = nodes(tree).find(n => n.type === 'Button' && n.props.children === translator()('adminStoreRequest.recheck')); assert.ok(recheck); recheck.props.onClick(); await tick();
-  assert.equal(button(fixture.render(), 'Одобрить и создать магазин'), undefined);
+  assert.equal(button(fixture.render(), 'Одобрить и создать супермаркет'), undefined);
 });
 test('actual rejection dialog requires comment, has production warning, locks both actions and uses native modal focus', () => {
   const { DecisionDialog } = load(root + 'DecisionDialog.tsx', { react: { useEffect() {}, useId: () => 'id', useRef: () => ({ current: null }) }, '../../../design-system': { Button: 'Button' }, '../../../i18n/i18n': { useI18n: () => ({ t: translator() }) }, './model': model, './Owner.module.css': {} });

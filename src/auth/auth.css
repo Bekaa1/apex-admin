@@ -24,6 +24,10 @@
 .auth__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-3); }
 .auth__top--with-back { justify-content: space-between; }
 .auth__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+/* Match the centered form's left edge while keeping language/theme controls on the right. */
+.auth__top--with-home { padding-inline-start: max(0px, calc((100% - var(--form-max)) / 2)); }
+.auth__top--with-home .auth__controls { flex: 1; }
+.auth__home { margin-inline-end: auto; }
 .auth__body { flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-9) 0; }
 .auth__form { width: 100%; max-width: var(--form-max); display: flex; flex-direction: column; gap: var(--space-6); }
 .signup__terms .ax-check > span { flex: 1; min-width: 0; }
@@ -67,6 +71,11 @@
   .auth__top--with-back + .auth__body { grid-row: 3; }
   .auth__footer { grid-column: 1 / -1; grid-row: 3; }
   .auth__top--with-back ~ .auth__footer { grid-row: 4; }
+  .auth__top--with-home { grid-column: 1 / -1; grid-row: 2; }
+  .auth__top--with-home + .auth__body { grid-row: 3; }
+  .auth__top--with-home ~ .auth__footer { grid-row: 4; }
+  .auth__home { width: var(--control-md); padding-inline: 0; flex-shrink: 0; }
+  .auth__home > span { display: none; }
   .auth__title { font-size: 30px; }
   .auth__footer { justify-content: flex-start; }
 }

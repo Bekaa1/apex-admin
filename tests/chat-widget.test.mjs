@@ -147,11 +147,11 @@ test('all protected/auth paths and trees without public pages hide the widget, i
   assert.ok(routes.includes('handle: { publicChat: true }'));
 });
 
-test('rendering remains plain text and accessible; responsive bounds and translations are present', () => {
+test('rendering remains safe Markdown and accessible; responsive bounds and translations are present', () => {
   const view = read('src/chat/widget/ChatWidget.tsx'), css = read('src/chat/widget/ChatWidget.module.css');
   assert.doesNotMatch(view, /dangerouslySetInnerHTML|innerHTML|chat_add_response|\.rpc\(|\.insert\(/);
   for (const text of ['role="dialog"', 'aria-live="polite"', 'aria-expanded=', 'htmlFor="apex-chat-input"', 'maxLength={4000}', "event.key === 'Escape'", 'launcher.current?.focus()', 'shouldSendOnEnter']) assert.ok(view.includes(text));
-  assert.ok(css.includes('100dvh')); assert.ok(css.includes('max-width: 600px')); assert.ok(css.includes('white-space: pre-wrap')); assert.ok(css.includes(':focus-visible'));
+  assert.ok(css.includes('100dvh')); assert.ok(css.includes('max-width: 600px')); assert.ok(read('src/chat/widget/ChatMarkdown.tsx').includes('skipHtml')); assert.ok(read('src/chat/widget/ChatMarkdown.tsx').includes('remarkBreaks'));  assert.ok(css.includes(':focus-visible'));
   const keys = object => Object.entries(object).flatMap(([key, value]) => typeof value === 'object' ? keys(value).map(n => `${key}.${n}`) : [key]).sort();
   const dictionaries = ['ru', 'kk', 'en'].map(lang => JSON.parse(read(`src/i18n/chat.${lang}.json`)));
   assert.deepEqual(keys(dictionaries[0]), keys(dictionaries[1])); assert.deepEqual(keys(dictionaries[0]), keys(dictionaries[2]));

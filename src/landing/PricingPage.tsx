@@ -12,7 +12,7 @@ import styles from './PublicPages.module.css';
 export function PricingPage() {
   const { t, lang } = useI18n();
   const tariffs = useTariffTerms();
-  // Picking a plan here works like the wizard's plan step; «Стандарт + Зоны» is the suggested one.
+  // Picking a plan highlights it like the wizard's plan step; «Стандарт + Зоны» is the suggested one.
   const [selected, setSelected] = useState<TariffCode>('zones');
   // Prices come from the `tariffs` table; plans off sale are hidden, «—» while the terms load.
   const terms = tariffs.status === 'ready' ? tariffs.terms : null;
@@ -38,7 +38,7 @@ export function PricingPage() {
           <p className={styles.planDescription}>{t(`cabinet.tariffs.${tariff.code}.text`)}</p>
           <div className={styles.price}><span>{t('cabinet.tariffs.pricePerPlay')}</span><strong>{tariff.plan ? formatPrice(tariff.plan.pricePerPlay, lang) : '—'}</strong></div>
           <div className={styles.price}><span>{t('cabinet.tariffs.minimum')}</span><strong>{tariff.plan ? t('cabinet.tariffs.from', { amount: formatMoney(tariff.plan.minimum, lang) }) : '—'}</strong></div>
-          <CampaignLink tariff={tariff.code} variant={selected === tariff.code ? 'primary' : 'secondary'} fullWidth className={styles.planCta}>{t('public.pricing.choose')}</CampaignLink>
+          <CampaignLink tariff={tariff.code} variant="primary" fullWidth className={styles.planCta} aria-label={`${t('cabinet.tariffs.buy')}: ${t(`cabinet.tariffs.${tariff.code}.name`)}`}>{t('cabinet.tariffs.buy')}</CampaignLink>
           <ul className={styles.features}>{TARIFF_FEATURES.slice(0, 3).map((feature, index) => <li key={feature} className={index < tariff.level ? styles.included : styles.excluded}><Icon name={index < tariff.level ? 'check-circle' : 'minus'} size={18} /><span><span className="ax-sr">{t(index < tariff.level ? 'cabinet.tariffs.has' : 'cabinet.tariffs.hasNot')} </span>{t(`cabinet.tariffs.feature.${feature}`)}</span></li>)}</ul>
         </ChoiceCard>)}
       </div>

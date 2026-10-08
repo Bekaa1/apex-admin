@@ -1,5 +1,5 @@
 {
-  "sections": { "overview": "Обзор", "campaigns": "Кампании", "moderation": "Модерация", "invoices": "Счета", "clients": "Клиенты", "stores": "Магазины", "equipment": "Оборудование", "tariffs": "Тарифы", "corporate": "Корпоративные заявки" },
+  "sections": { "overview": "Обзор", "campaigns": "Кампании", "moderation": "Модерация", "invoices": "Счета", "clients": "Клиенты", "stores": "Супермаркеты", "equipment": "Оборудование", "tariffs": "Тарифы", "corporate": "Корпоративные заявки" },
   "menu": "Меню ApexAdmin",
   "mobileMenu": "Быстрая навигация ApexAdmin",
   "more": "Ещё",

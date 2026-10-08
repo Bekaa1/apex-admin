@@ -3,7 +3,7 @@
   "description": "Действующие и архивные условия тарифов. Даты обновления указаны по времени Asia/Almaty.",
   "historyNote": "Условия оплаченных счетов и порций бюджета хранятся отдельно и могут отличаться от текущего тарифа",
   "columns": { "name": "Название", "code": "Код", "price": "Цена показа", "minimum": "Минимальная сумма", "version": "Версия", "purchase": "Покупка", "archive": "Архивность", "updated": "Обновлён", "details": "Параметры" },
-  "parameters": { "can_select_store": "Выбор магазина", "can_select_zone": "Выбор зоны", "has_sound": "Звук", "exclusive_zone": "Эксклюзивность зоны", "more_plays": "Повышенное число показов", "badge": "Метка", "sort_order": "Порядок сортировки" },
+  "parameters": { "can_select_store": "Выбор супермаркета", "can_select_zone": "Выбор зоны", "has_sound": "Звук", "exclusive_zone": "Эксклюзивность зоны", "more_plays": "Повышенное число показов", "badge": "Метка", "sort_order": "Порядок сортировки" },
   "archiveFilter": "Архивность", "purchaseFilter": "Доступность покупки",
   "active": "Действующие", "archived": "Архивные", "all": "Все",
   "purchase": { "yes": "Доступна", "no": "Недоступна" },

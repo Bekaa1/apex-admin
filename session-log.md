@@ -17,7 +17,7 @@
 ---
 
 ## 2026-10-08 — Отказ модерации: повторная отправка и главная
-Ветка: `fix/cabinet-landing-edits` (тот же PR) · PR: https://github.com/Bekaa1/apex-admin/pull/16
+Ветка: `fix/rejected-resubmit` · PR: https://github.com/Bekaa1/apex-admin/pull/17 (в #16 не попало — его смёрджили раньше)
 
 **Что было до этого.** Отказ уже был сделан по макетам `Main`, `Details-rejected`, `Wizard-1-fix`:
 - причины и комментарий в списке и на карточке;

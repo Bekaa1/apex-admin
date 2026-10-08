@@ -29,9 +29,9 @@ const ACTIVE: Omit<HomeSource, 'stores'> = {
     { ad_id: 'demo-ad-2', play_date: '2026-09-25', plays: 7_646 },
   ],
   extras: [
-    { id: 'demo-ad-1', content_url: null, store_id: 'demo-all', tariff: 'Стандарт + Зоны' },
-    { id: 'demo-ad-2', content_url: null, store_id: 'demo-all', tariff: 'Стандарт' },
-    { id: 'demo-ad-3', content_url: null, store_id: 'demo-store-0', tariff: 'Премиум' },
+    { id: 'demo-ad-1', content_url: null, video_url: null, store_id: 'demo-all', tariff: 'Стандарт + Зоны' },
+    { id: 'demo-ad-2', content_url: null, video_url: null, store_id: 'demo-all', tariff: 'Стандарт' },
+    { id: 'demo-ad-3', content_url: null, video_url: null, store_id: 'demo-store-0', tariff: 'Премиум' },
   ],
 };
 

@@ -25,7 +25,7 @@ export function CampaignRow({ card, period }: { card: CampaignCard; period: Play
   return (
     <li className="cab-card cmp-row">
       <div className="cmp-row__grid">
-        <CampaignCover url={card.coverUrl} tone={card.coverTone} />
+        <CampaignCover url={card.coverUrl} videoUrl={card.videoUrl} tone={card.coverTone} />
         <div className="cmp-row__main">
           <Link className="cmp-row__name" to={CABINET_LINKS.campaign(card.id)}>
             {card.name}

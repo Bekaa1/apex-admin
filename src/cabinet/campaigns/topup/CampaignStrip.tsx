@@ -1,7 +1,8 @@
-import { Badge, Icon, Meter } from '../../../design-system';
+import { Badge, Meter } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatMoney, formatNumber, pluralKey } from '../../../lib/format';
 import { STAGE_BADGE } from '../../campaignStage';
+import { CampaignCover } from '../../ui/CampaignCover';
 import type { TopUpCampaign } from './model';
 
 /** The campaign being topped up: cover, name, status and what is left of the budget. */
@@ -13,9 +14,7 @@ export function CampaignStrip({ campaign }: { campaign: TopUpCampaign }) {
   const tone = money.ended ? 'danger' : money.low ? 'warning' : undefined;
   return (
     <div className="cmpt-camp">
-      <span className={`cmp-cover cmp-cover--md cab-thumb--${campaign.coverTone}`} aria-hidden="true">
-        {campaign.coverUrl ? <img src={campaign.coverUrl} alt="" /> : <Icon name="play" size={16} />}
-      </span>
+      <CampaignCover url={campaign.coverUrl} videoUrl={campaign.videoUrl} tone={campaign.coverTone} />
       <div className="cmpt-camp__main">
         <div className="cmpt-camp__title">
           <strong>{campaign.name}</strong>

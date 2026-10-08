@@ -31,7 +31,7 @@ function rpcError(error: PostgrestError): Error {
 }
 
 const CAMPAIGN_COLUMNS =
-  'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend';
+  'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, video_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend';
 
 /** Everything the campaigns list shows, read in parallel. The my_* views return only the signed-in advertiser's rows. */
 export async function fetchCampaignsSource(signal: AbortSignal): Promise<CampaignsSource> {

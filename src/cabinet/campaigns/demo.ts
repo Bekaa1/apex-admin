@@ -8,7 +8,7 @@ const TODAY = '2026-10-06';
 
 const EMPTY_ROW: CampaignStatsRow = {
   ad_id: null, title: null, name: null, status: null, budget: null, spent_budget: null, remaining_budget: null, total_plays: null,
-  start_date: null, end_date: null, created_at: null, tariff_code: null, store_count: null, cart_count: null, content_url: null,
+  start_date: null, end_date: null, created_at: null, tariff_code: null, store_count: null, cart_count: null, content_url: null, video_url: null,
   paid_amount: null, unpaid_amount: null, invoice_sent_to: null, rejection_reasons: null, moderator_comment: null, submitted_at: null, tariff_can_extend: true,
 };
 

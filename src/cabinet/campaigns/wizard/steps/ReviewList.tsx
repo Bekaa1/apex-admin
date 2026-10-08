@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Button, Icon } from '../../../../design-system';
+import { Button } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatMoney, formatNumber, formatPrice, pluralKey } from '../../../../lib/format';
 import { termsOf } from '../../../tariffs';
+import { CampaignCover } from '../../../ui/CampaignCover';
 import { formatClock } from '../media';
 import { selectedStores, selectedZones, summarize } from '../summary';
 import type { StepId, WizardCatalog } from '../types';
@@ -45,10 +46,9 @@ export function ReviewList({ wizard, catalog }: { wizard: CampaignWizardState; c
     <div className="cmp-review">
       <Item label={t('campaigns.steps.media')} step="media" onEdit={goTo}>
         <div className="cmp-review__media">
-          <span className="cmp-cover cmp-cover--lg cab-thumb--1" aria-hidden="true">
-            {cover ? <img src={cover.url} alt="" /> : <Icon name="play" size={22} />}
+          <CampaignCover url={cover?.url ?? null} videoUrl={video?.url} tone={1} size="lg">
             {seconds ? <span className="cmp-cover__time">{formatClock(seconds)}</span> : null}
-          </span>
+          </CampaignCover>
           <div className="cmp-review__text">
             <strong>{form.name.trim()}</strong>
             {form.description.trim() ? <p>{form.description.trim()}</p> : null}

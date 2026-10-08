@@ -3,7 +3,7 @@ import { allRows, requireSupabase } from '../../lib/supabase';
 import type { StatsSource } from './types';
 
 const CAMPAIGN_COLUMNS =
-  'ad_id, title, name, status, start_date, end_date, submitted_at, budget, spent_budget, remaining_budget, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, price_per_play, tariff_code, tariff_can_extend, store_count, cart_count, online_cart_count, content_url';
+  'ad_id, title, name, status, start_date, end_date, submitted_at, budget, spent_budget, remaining_budget, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, price_per_play, tariff_code, tariff_can_extend, store_count, cart_count, online_cart_count, content_url, video_url';
 
 /**
  * Own campaigns with all their daily plays, chosen stores and zones, and the store catalog, read in parallel; the my_* views

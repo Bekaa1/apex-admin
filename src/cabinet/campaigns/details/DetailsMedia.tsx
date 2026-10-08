@@ -1,6 +1,6 @@
 import { useId } from 'react';
-import { Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
+import { CampaignCover } from '../../ui/CampaignCover';
 import { VideoCover } from '../../ui/VideoCover';
 import { formatClock } from '../wizard/media';
 import type { CampaignDetails } from './types';
@@ -14,7 +14,6 @@ export function DetailsMedia({ details }: { details: CampaignDetails }) {
     media.durationSec ? t('campaigns.wizard.seconds', { n: Math.round(media.durationSec) }) : null,
     media.width && media.height ? `${media.width}×${media.height}` : null,
   ].filter(Boolean);
-  const coverClass = `cmp-cover cmp-cover--xl cab-thumb--${details.coverTone}`;
   const time = media.durationSec ? <span className="cmp-cover__time">{formatClock(media.durationSec)}</span> : null;
 
   return (
@@ -24,16 +23,13 @@ export function DetailsMedia({ details }: { details: CampaignDetails }) {
       </h2>
       <div className="cmpd-media">
         {media.videoUrl ? (
-          <VideoCover src={media.videoUrl} poster={details.coverUrl ?? undefined} className={coverClass}>
-            {details.coverUrl ? <img src={details.coverUrl} alt="" /> : null}
-            <Icon name="play" size={28} />
+          <VideoCover src={media.videoUrl} cover={details.coverUrl} tone={details.coverTone} size="xl">
             {time}
           </VideoCover>
         ) : (
-          <span className={coverClass} aria-hidden="true">
-            {details.coverUrl ? <img src={details.coverUrl} alt="" /> : <Icon name="play" size={28} />}
+          <CampaignCover url={details.coverUrl} tone={details.coverTone} size="xl">
             {time}
-          </span>
+          </CampaignCover>
         )}
         <dl className="cmpd-facts">
           <div>

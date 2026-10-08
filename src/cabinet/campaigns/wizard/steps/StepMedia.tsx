@@ -41,14 +41,7 @@ function MediaInput({ field, wizard }: { field: MediaField; wizard: CampaignWiza
           onFile={pick}
         />
       ) : (
-        <MediaFile
-          kind={field}
-          media={media}
-          accept={config.accept}
-          poster={field === 'video' && wizard.form.cover.status === 'ready' ? wizard.form.cover.url : undefined}
-          onFile={pick}
-          onRemove={() => wizard.media.remove(field)}
-        />
+        <MediaFile kind={field} media={media} accept={config.accept} onFile={pick} onRemove={() => wizard.media.remove(field)} />
       )}
       {error === 'required' || error === 'uploading' ? (
         <p className="ax-error">

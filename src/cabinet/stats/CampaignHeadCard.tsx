@@ -24,7 +24,7 @@ export function CampaignHeadCard({ head }: { head: CampaignHead }) {
   const total = formatMoney(budget.budget, lang);
   return (
     <section className="cab-card st-head" aria-labelledby={titleId}>
-      <CampaignCover url={head.coverUrl} tone={head.coverTone} size="lg" />
+      <CampaignCover url={head.coverUrl} videoUrl={head.videoUrl} tone={head.coverTone} size="lg" />
       <div className="st-head__main">
         <div className="st-head__title">
           <h2 className="cab-h2" id={titleId}>

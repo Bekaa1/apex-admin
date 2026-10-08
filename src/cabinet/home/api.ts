@@ -28,7 +28,7 @@ export async function fetchHomeSource(userId: string, signal: AbortSignal): Prom
       .abortSignal(signal)),
     allRows((from, to) => sb
       .from('ads')
-      .select('id, content_url, store_id', { count: 'exact' })
+      .select('id, content_url, video_url, store_id', { count: 'exact' })
       .eq('user_id', userId)
       .order('id')
       .range(from, to)

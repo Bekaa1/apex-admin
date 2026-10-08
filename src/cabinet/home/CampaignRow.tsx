@@ -5,6 +5,7 @@ import { formatCompactNumber, formatMoney } from '../../lib/format';
 import { STATUS_TONE, statusLabelKey } from '../campaignStatus';
 import { CABINET_LINKS } from '../sections';
 import { ButtonLink } from '../ui/ButtonLink';
+import { CoverMedia } from '../ui/CampaignCover';
 import type { CampaignItem } from './types';
 
 function RowAction({ campaign }: { campaign: CampaignItem }) {
@@ -34,8 +35,9 @@ export function CampaignRow({ campaign, index }: { campaign: CampaignItem; index
     <tr>
       <td className="cab-table__main">
         <div className="cab-cell-campaign">
-          <span className={campaign.coverUrl ? 'cab-thumb' : `cab-thumb cab-thumb--${(index % 3) + 1}`} aria-hidden="true">
-            {campaign.coverUrl ? <img src={campaign.coverUrl} alt="" /> : <Icon name="play" size={14} />}
+          <span className={`cab-thumb cab-thumb--${(index % 3) + 1}`} aria-hidden="true">
+            <CoverMedia url={campaign.coverUrl} videoUrl={campaign.videoUrl} />
+            {campaign.coverUrl ? null : <Icon name="play" size={14} />}
           </span>
           <span className="cab-table__name">
             <Link to={CABINET_LINKS.campaign(campaign.id)}>{campaign.name}</Link>

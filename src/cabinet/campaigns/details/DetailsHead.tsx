@@ -1,10 +1,11 @@
 import { useId } from 'react';
 import { useNavigate } from 'react-router';
-import { Badge, Icon, Menu } from '../../../design-system';
+import { Badge, Menu } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatDayMonth, formatNumber, pluralKey } from '../../../lib/format';
 import { STAGE_BADGE } from '../../campaignStage';
 import { ButtonLink } from '../../ui/ButtonLink';
+import { CampaignCover } from '../../ui/CampaignCover';
 import { campaignAction, moreActionKinds, type CampaignActionKind } from '../list/rowView';
 import { formatClock } from '../wizard/media';
 import type { CampaignDetails } from './types';
@@ -57,10 +58,9 @@ export function DetailsHead({ details }: { details: CampaignDetails }) {
 
   return (
     <section className="cab-card cmpd-head" aria-labelledby={titleId}>
-      <span className={`cmp-cover cmp-cover--lg cab-thumb--${details.coverTone}`} aria-hidden="true">
-        {details.coverUrl ? <img src={details.coverUrl} alt="" /> : <Icon name="play" size={22} />}
+      <CampaignCover url={details.coverUrl} videoUrl={details.media.videoUrl} tone={details.coverTone} size="lg">
         {details.media.durationSec ? <span className="cmp-cover__time">{formatClock(details.media.durationSec)}</span> : null}
-      </span>
+      </CampaignCover>
       <div className="cmpd-head__main">
         <div className="cmpd-head__title">
           <h2 className="cab-h2" id={titleId}>

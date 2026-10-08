@@ -28,6 +28,7 @@ export interface TopUpCampaign {
   id: string;
   name: string;
   coverUrl: string | null;
+  videoUrl: string | null;
   coverTone: 1 | 2 | 3;
   tariff: TariffCode | 'corporate' | null;
   storesCount: number | null;
@@ -63,6 +64,7 @@ export function buildTopUp(source: CampaignDetailsSource): TopUpModel | null {
     id: row.ad_id,
     name: row.title || row.name || '—',
     coverUrl: row.content_url || null,
+    videoUrl: row.video_url || null,
     coverTone: coverTone(row.ad_id),
     tariff: tariffOf(row.tariff_code),
     storesCount: row.store_count,

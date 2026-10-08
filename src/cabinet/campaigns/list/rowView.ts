@@ -19,8 +19,10 @@ export function stageNote(stage: CampaignStage, t: Translate, lang: Lang): strin
       return t('campaigns.row.note.approved');
     case 'rejected':
       return t('campaigns.row.note.rejected');
-    case 'active':
     case 'paused':
+      if (stage.pausedAt) return t(stage.byAdvertiser ? 'campaigns.row.note.pausedByYou' : 'campaigns.row.note.pausedSince', { date: formatDayMonth(stage.pausedAt, lang) });
+      return stage.since ? t('campaigns.row.note.since', { date: formatDayMonth(stage.since, lang) }) : null;
+    case 'active':
       return stage.since ? t('campaigns.row.note.since', { date: formatDayMonth(stage.since, lang) }) : null;
     case 'hoursEnded':
     case 'noBudget':

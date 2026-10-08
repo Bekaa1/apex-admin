@@ -78,7 +78,9 @@
       "since": "Since {date}",
       "stopped": "Impressions stopped",
       "period": "{from} — {to}",
-      "changes": "Checking the changes"
+      "changes": "Checking the changes",
+      "pausedByYou": "You paused it on {date}",
+      "pausedSince": "Paused since {date}"
     },
     "budgetNotSet": "No budget set",
     "notPaid": "Not paid yet",
@@ -100,7 +102,8 @@
       "stats": "Statistics",
       "topUp": "Top up",
       "repeat": "Repeat",
-      "edit": "Edit"
+      "edit": "Edit",
+      "resume": "Resume"
     },
     "beforeLaunch": "Before launch",
     "timeline": {
@@ -127,7 +130,8 @@
       "stats": "Statistics",
       "edit": "Edit",
       "topUp": "Top up",
-      "repeat": "Repeat the campaign"
+      "repeat": "Repeat the campaign",
+      "pause": "Pause"
     }
   },
   "empty": {
@@ -551,6 +555,12 @@
         "title": "The budget ran out — impressions stopped",
         "text": "Top up the budget and impressions continue with the same video. No review needed.",
         "textManager": "The campaign’s plan is no longer sold. To continue impressions, message your manager."
+      },
+      "paused": {
+        "title": "Campaign paused",
+        "text": "You paused plays on {date} — the budget is kept, {amount} left. Resume any time, no review needed.",
+        "textNoDate": "You paused plays — the budget is kept, {amount} left. Resume any time, no review needed.",
+        "byTeam": "The Apexmedia team paused the plays. Your manager will explain why and help resume the campaign."
       }
     },
     "stats": {
@@ -570,7 +580,8 @@
       },
       "pausedNote": "Impressions are paused since {date} while we check the changes.",
       "emptyTitle": "Statistics appear after the launch",
-      "emptyText": "We’ll show impressions, spending and carts as soon as impressions start."
+      "emptyText": "We’ll show impressions, spending and carts as soon as impressions start.",
+      "holdNote": "Paused since {date} — no new plays."
     },
     "media": {
       "title": "Video and description",
@@ -617,11 +628,16 @@
       "started": "Impressions started",
       "changesSent": "Changes sent for review",
       "budgetEnded": "The budget ran out",
-      "finished": "Campaign finished"
+      "finished": "Campaign finished",
+      "paused": "Paused"
     },
     "help": {
       "title": "Any questions?",
       "text": "A manager will help with the budget, stores, zones and the video."
+    },
+    "resumed": {
+      "title": "Plays resumed",
+      "text": "The campaign runs again with the same video, stores and zones."
     }
   },
   "topUp": {
@@ -771,5 +787,20 @@
       "other": "{count} impressions"
     },
     "about": "≈ {plays} at {price}"
+  },
+  "pause": {
+    "title": "Pause “{name}”?",
+    "stops": "Plays stop right away.",
+    "budget": "The budget stays: {amount} left, it doesn't expire.",
+    "resume": "Resume any time — no review, with the same video and settings.",
+    "cancel": "Cancel",
+    "confirm": "Pause",
+    "close": "Close",
+    "errors": {
+      "invalid_status": "The campaign status has changed — refresh the page.",
+      "not_found": "Campaign not found. Go back to the campaign list.",
+      "pause": "Couldn't pause the campaign. Try again.",
+      "resume": "Couldn't resume plays. Try again."
+    }
   }
 }

@@ -92,6 +92,8 @@ function campaignRow(c: DemoCampaign): StatsCampaignRow {
     online_cart_count: c.stores.reduce((sum, index) => sum + STORES[index][4], 0),
     content_url: null,
     video_url: null,
+    paused_at: null,
+    paused_by: null,
   };
 }
 

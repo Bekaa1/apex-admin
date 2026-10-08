@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router';
-import { Menu, Meter } from '../../../design-system';
+import { Button, Menu, Meter, type MenuItem } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatCompactNumber, formatMoney } from '../../../lib/format';
 import { ButtonLink } from '../../ui/ButtonLink';
+import { PauseDialog } from '../pause/PauseDialog';
+import { useCampaignPause } from '../pause/useCampaignPause';
 import type { CampaignCard, PlaysPeriod } from '../types';
 import { campaignAction, mainActionKind, moreActionKinds, type CampaignActionKind } from './rowView';
 
@@ -86,27 +88,38 @@ const BUTTON_LOOK: Record<CampaignActionKind, { variant: 'secondary' | 'ghost'; 
 export function ActionCell({ card }: { card: CampaignCard }) {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const pause = useCampaignPause(card.id, card.stage);
   const main = mainActionKind(card);
   const action = campaignAction(main, card.id);
   const look = BUTTON_LOOK[main];
-  const more = moreActionKinds(card, [main]).map((kind) => campaignAction(kind, card.id));
+  // «Возобновить» takes the place of the main button, which then goes to the menu.
+  const more = moreActionKinds(card, pause.canResume ? [] : [main]).map((kind) => campaignAction(kind, card.id));
+  const items: MenuItem[] = more.map((item) => ({ key: item.kind, label: t(`campaigns.row.menu.${item.kind}`), icon: item.icon, onSelect: () => navigate(item.to) }));
+  if (pause.canPause) items.push({ key: 'pause', label: t('campaigns.row.menu.pause'), icon: 'pause', onSelect: pause.askPause });
   return (
     <div className="cmp-row__action">
-      <ButtonLink
-        to={action.to}
-        variant={look.variant}
-        size="md"
-        iconLeft={look.arrow ? undefined : action.icon}
-        iconRight={look.arrow ? 'arrow-right' : undefined}
-      >
-        {t(action.labelKey)}
-      </ButtonLink>
-      {more.length ? (
-        <Menu
-          label={t('campaigns.row.more', { name: card.name })}
-          items={more.map((item) => ({ key: item.kind, label: t(`campaigns.row.menu.${item.kind}`), icon: item.icon, onSelect: () => navigate(item.to) }))}
-        />
+      {pause.canResume ? (
+        <Button variant="secondary" size="md" iconLeft="play" loading={pause.pending} onClick={pause.resume}>
+          {t('campaigns.row.actions.resume')}
+        </Button>
+      ) : (
+        <ButtonLink
+          to={action.to}
+          variant={look.variant}
+          size="md"
+          iconLeft={look.arrow ? undefined : action.icon}
+          iconRight={look.arrow ? 'arrow-right' : undefined}
+        >
+          {t(action.labelKey)}
+        </ButtonLink>
+      )}
+      {items.length ? <Menu label={t('campaigns.row.more', { name: card.name })} items={items} /> : null}
+      {pause.errorKey && !pause.confirmOpen ? (
+        <p className="ax-error cmp-row__action-error" role="alert">
+          {t(pause.errorKey)}
+        </p>
       ) : null}
+      {pause.canPause ? <PauseDialog name={card.name} left={card.budget.left} pause={pause} /> : null}
     </div>
   );
 }

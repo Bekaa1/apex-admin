@@ -9,7 +9,18 @@ type StatsRow = Database['public']['Views']['my_campaigns_stats']['Row'];
 /** The `my_campaigns_stats` fields the stage depends on. */
 export type StageRow = Pick<
   StatsRow,
-  'status' | 'start_date' | 'end_date' | 'submitted_at' | 'budget' | 'paid_amount' | 'unpaid_amount' | 'invoice_sent_to' | 'rejection_reasons' | 'moderator_comment'
+  | 'status'
+  | 'start_date'
+  | 'end_date'
+  | 'submitted_at'
+  | 'budget'
+  | 'paid_amount'
+  | 'unpaid_amount'
+  | 'invoice_sent_to'
+  | 'rejection_reasons'
+  | 'moderator_comment'
+  | 'paused_at'
+  | 'paused_by'
 >;
 
 export interface Moderation {
@@ -26,7 +37,8 @@ export type CampaignStage =
   | { kind: 'awaitingPayment'; invoice: { amount: number; sentTo: string } | null }
   | { kind: 'rejected'; paid: boolean | null; moderation: Moderation | null }
   | { kind: 'active'; since: string | null; low: boolean }
-  | { kind: 'paused'; since: string | null }
+  /** `byAdvertiser`: they paused it themselves and may resume it (`resume_campaign`); otherwise the Apexmedia team did. */
+  | { kind: 'paused'; since: string | null; pausedAt: string | null; byAdvertiser: boolean }
   | { kind: 'hoursEnded' }
   | { kind: 'noBudget' }
   | { kind: 'finished'; from: string | null; to: string | null };
@@ -61,7 +73,7 @@ export function stageOf(row: StageRow, money: BudgetFigures): CampaignStage | nu
     case 'active':
       return money.ended ? { kind: 'noBudget' } : { kind: 'active', since: row.start_date, low: money.low };
     case 'paused':
-      return money.ended ? { kind: 'noBudget' } : { kind: 'paused', since: row.start_date };
+      return money.ended ? { kind: 'noBudget' } : { kind: 'paused', since: row.start_date, pausedAt: row.paused_at, byAdvertiser: row.paused_by === 'advertiser' };
     case 'hours_ended':
       return { kind: 'hoursEnded' };
     case 'budget_ended':

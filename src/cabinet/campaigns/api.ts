@@ -31,7 +31,7 @@ function rpcError(error: PostgrestError): Error {
 }
 
 const CAMPAIGN_COLUMNS =
-  'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, video_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend';
+  'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, video_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend, paused_at, paused_by';
 
 /** Everything the campaigns list shows, read in parallel. The my_* views return only the signed-in advertiser's rows. */
 export async function fetchCampaignsSource(signal: AbortSignal): Promise<CampaignsSource> {
@@ -67,7 +67,7 @@ export async function fetchCampaignDetails(campaignId: string, signal: AbortSign
     sb
       .from('my_campaigns_stats')
       .select(
-        'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend, moderated_at, description, video_url, video_duration_sec, price_per_play, plays_count, tariff_version, tariff_min_amount, tariff_current_price',
+        'ad_id, title, name, status, budget, spent_budget, remaining_budget, total_plays, start_date, end_date, created_at, tariff_code, store_count, cart_count, content_url, paid_amount, unpaid_amount, invoice_sent_to, rejection_reasons, moderator_comment, submitted_at, tariff_can_extend, moderated_at, description, video_url, video_duration_sec, price_per_play, plays_count, tariff_version, tariff_min_amount, tariff_current_price, paused_at, paused_by',
       )
       .eq('ad_id', campaignId)
       .abortSignal(signal)
@@ -230,6 +230,14 @@ export async function submitCampaign(submission: CampaignSubmission): Promise<st
 /** «Редактировать» and «Исправить»: the campaign goes back to moderation and stops showing until approved. The plan and the budget stay. */
 export async function editCampaign(campaignId: string, content: CampaignEdit): Promise<string> {
   const { data, error } = await requireSupabase().rpc('edit_campaign', { p_id: campaignId, p: contentPayload(content) });
+  if (error) throw rpcError(error);
+  return data;
+}
+
+/** «Поставить на паузу» and «Возобновить»: no moderation, the video, stores and budget stay. Returns the new status; a resume without budget left gives `budget_ended`. */
+export async function setCampaignPaused(campaignId: string, paused: boolean): Promise<string> {
+  const sb = requireSupabase();
+  const { data, error } = paused ? await sb.rpc('pause_campaign', { p_id: campaignId }) : await sb.rpc('resume_campaign', { p_id: campaignId });
   if (error) throw rpcError(error);
   return data;
 }

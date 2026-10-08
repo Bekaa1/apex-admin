@@ -68,7 +68,7 @@ export interface DetailsStore {
   zones: string[];
 }
 
-export type HistoryKind = 'created' | 'sent' | 'approved' | 'rejected' | 'paid' | 'toppedUp' | 'invoice' | 'started' | 'changesSent' | 'budgetEnded' | 'finished';
+export type HistoryKind = 'created' | 'sent' | 'approved' | 'rejected' | 'paid' | 'toppedUp' | 'invoice' | 'started' | 'changesSent' | 'paused' | 'budgetEnded' | 'finished';
 
 export interface HistoryEvent {
   key: string;

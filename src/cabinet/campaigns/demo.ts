@@ -10,6 +10,7 @@ const EMPTY_ROW: CampaignStatsRow = {
   ad_id: null, title: null, name: null, status: null, budget: null, spent_budget: null, remaining_budget: null, total_plays: null,
   start_date: null, end_date: null, created_at: null, tariff_code: null, store_count: null, cart_count: null, content_url: null, video_url: null,
   paid_amount: null, unpaid_amount: null, invoice_sent_to: null, rejection_reasons: null, moderator_comment: null, submitted_at: null, tariff_can_extend: true,
+  paused_at: null, paused_by: null,
 };
 
 const ROWS: Partial<CampaignStatsRow>[] = [
@@ -29,6 +30,10 @@ const ROWS: Partial<CampaignStatsRow>[] = [
     total_plays: 21_400, start_date: '2026-09-12T00:00:00+05:00', submitted_at: '2026-10-06T08:00:00Z', created_at: '2026-09-10T09:00:00Z',
   },
   { ad_id: 'demo-milk', name: 'Молочная неделя', status: 'budget_ended', tariff_code: 'zones', store_count: 3, cart_count: 150, budget: 500_000, spent_budget: 500_000, total_plays: 15_300, start_date: '2026-08-24T00:00:00+05:00', created_at: '2026-08-20T09:00:00Z' },
+  {
+    ad_id: 'demo-tea', name: 'Чай к осени', status: 'paused', paused_by: 'advertiser', paused_at: '2026-10-04T10:00:00Z', tariff_code: 'standard', store_count: 4, cart_count: 190,
+    budget: 700_000, spent_budget: 420_000, paid_amount: 700_000, total_plays: 28_000, start_date: '2026-09-15T00:00:00+05:00', created_at: '2026-09-12T09:00:00Z',
+  },
   { ad_id: 'demo-lemonade', name: 'Летний лимонад', status: 'active', tariff_code: 'zones', store_count: 6, cart_count: 312, budget: 1_000_000, spent_budget: 880_000, total_plays: 52_300, start_date: '2026-08-01T00:00:00+05:00', created_at: '2026-07-28T09:00:00Z' },
   {
     ad_id: 'demo-festival', name: 'Летний фестиваль', status: 'completed', tariff_code: 'premium', store_count: 12, cart_count: 590, budget: 2_000_000, spent_budget: 2_000_000,

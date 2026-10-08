@@ -17,6 +17,7 @@ const EXTRA: Record<string, { file: string; description: string; changedTerms?: 
   'demo-snacks': { file: 'football-snacks-final.mp4', description: 'Чипсы и орешки к матчу: 2 пачки по цене одной по выходным.' },
   // Changed terms: the last invoice was at 10 ₸ a play and version 1, the plan is at 12 ₸ and version 2 now.
   'demo-milk': { file: 'dairy-week.mp4', description: 'Неделя молочных продуктов: кефир и творог со скидкой 20%.', changedTerms: true },
+  'demo-tea': { file: 'autumn-tea.mp4', description: 'Чёрный и зелёный чай — второй пакет за полцены.' },
   'demo-lemonade': { file: 'summer-lemonade.mp4', description: 'Новый вкус «Тархун» — попробуйте со скидкой 15% до конца октября.' },
   'demo-festival': { file: 'summer-fest.mp4', description: 'Летний фестиваль вкусов: напитки, снеки и мороженое со скидкой.' },
 };

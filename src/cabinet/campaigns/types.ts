@@ -35,6 +35,8 @@ export type CampaignStatsRow = Pick<
   | 'moderator_comment'
   | 'submitted_at'
   | 'tariff_can_extend'
+  | 'paused_at'
+  | 'paused_by'
 >;
 
 export interface CampaignsSource {

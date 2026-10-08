@@ -11,7 +11,7 @@ interface NowCardProps {
   icon: IconName;
   title: string;
   text: string;
-  steps: { label: string; items: TimelineItem[] };
+  steps?: { label: string; items: TimelineItem[] };
 }
 
 function NowCard({ tone, icon, title, text, steps }: NowCardProps) {
@@ -25,12 +25,14 @@ function NowCard({ tone, icon, title, text, steps }: NowCardProps) {
           {title}
         </h2>
         <p className="cmpd-now__text">{text}</p>
-        <Timeline
-          orientation="horizontal"
-          label={steps.label}
-          items={steps.items}
-          stateLabels={{ done: t('campaigns.row.stepState.done'), current: t('campaigns.row.stepState.current'), todo: t('campaigns.row.stepState.todo') }}
-        />
+        {steps ? (
+          <Timeline
+            orientation="horizontal"
+            label={steps.label}
+            items={steps.items}
+            stateLabels={{ done: t('campaigns.row.stepState.done'), current: t('campaigns.row.stepState.current'), todo: t('campaigns.row.stepState.todo') }}
+          />
+        ) : null}
       </div>
     </section>
   );
@@ -64,6 +66,16 @@ export function DetailsNow({ details }: { details: CampaignDetails }) {
           }}
         />
       );
+    case 'paused': {
+      const left = formatMoney(details.budget.left, lang);
+      let text = t('campaigns.details.now.paused.byTeam');
+      if (stage.byAdvertiser) {
+        text = stage.pausedAt
+          ? t('campaigns.details.now.paused.text', { date: formatDayMonth(stage.pausedAt, lang), amount: left })
+          : t('campaigns.details.now.paused.textNoDate', { amount: left });
+      }
+      return <NowCard tone="info" icon="pause" title={t('campaigns.details.now.paused.title')} text={text} />;
+    }
     case 'changesReview':
       return (
         <NowCard

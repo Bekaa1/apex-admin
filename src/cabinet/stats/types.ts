@@ -36,6 +36,8 @@ export type StatsCampaignRow = Pick<
   | 'online_cart_count'
   | 'content_url'
   | 'video_url'
+  | 'paused_at'
+  | 'paused_by'
 >;
 
 /** `my_campaign_locations`: stores and shelf zones chosen in a campaign. */

@@ -14,15 +14,15 @@
     "titleBefore": "Your video plays ",
     "titleAccent": "right at the shelf",
     "titleAfter": " with your product",
-    "text": "Screens on shopping carts start your ad when a shopper reaches the right shelf. Pick stores on the map and zones — drinks, snacks, household goods — and pay per impression.",
+    "text": "Smart carts start your ad when a shopper reaches the right shelf. Pick stores on the map and zones — drinks, snacks, household goods — and pay per impression.",
     "ctaPrimary": "Launch a campaign",
     "watch": "Watch the video",
     "watchLength": "2 min"
   },
   "stats": {
     "s1Value": "200+",
-    "s1Label": "screens already in stores",
-    "s2Value": "7 sec",
+    "s1Label": "Smart carts already in stores",
+    "s2Value": "up to 7.9 sec",
     "s2Label": "per video",
     "s3Value": "By shelf",
     "s3Label": "choose zones inside the store"
@@ -34,7 +34,7 @@
     "play": "Play the background video"
   },
   "figure": {
-    "alt": "A tablet on a cart handle plays a video when the shopper reaches the shelf",
+    "alt": "A Smart cart plays a video when the shopper reaches the shelf",
     "adBadge": "Ad · 7 sec",
     "adTitle": "[Your video]",
     "chip1Title": "Shopper at the shelf",

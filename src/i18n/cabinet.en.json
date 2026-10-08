@@ -31,9 +31,10 @@
     "awaiting_payment": "Awaiting payment"
   },
   "tariffs": {
+    "buy": "Buy",
     "standard": {
       "name": "Standard",
-      "text": "The video plays in the general rotation on all carts of the selected stores."
+      "text": "The video plays in the general rotation on all Smart carts of the selected stores."
     },
     "zones": {
       "name": "Standard + Zones",
@@ -48,7 +49,7 @@
       "text": "An exclusive contract for your brand: reach, formats and budget are agreed individually."
     },
     "feature": {
-      "allCarts": "All carts of the selected stores",
+      "allCarts": "All Smart carts of the selected stores",
       "zonePriority": "Priority in shelf zones",
       "sound": "Video with sound",
       "brandOnly": "Only your brand in the zone"

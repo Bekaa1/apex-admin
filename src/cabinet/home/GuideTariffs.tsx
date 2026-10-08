@@ -2,10 +2,12 @@ import type { ReactNode } from 'react';
 import { Icon } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
 import { formatMoney, formatPrice } from '../../lib/format';
-import { CORPORATE_LEVEL, TARIFFS, TARIFF_FEATURES, TARIFF_LEVELS, termsOf, type TariffTerms } from '../tariffs';
+import { campaignIntentHref } from '../../lib/campaignIntent';
+import { CORPORATE_LEVEL, TARIFFS, TARIFF_FEATURES, TARIFF_LEVELS, termsOf, type TariffCode, type TariffTerms } from '../tariffs';
+import { ButtonLink } from '../ui/ButtonLink';
 
 interface TariffCardProps {
-  code: string;
+  code: TariffCode | 'corporate';
   level: number;
   /** null for the corporate plan: its price is agreed with a manager. */
   price: ReactNode | null;
@@ -48,6 +50,14 @@ function TariffCard({ code, level, price, minLabel, min }: TariffCardProps) {
         <span>{minLabel}</span>
         <strong>{min}</strong>
       </div>
+      <ButtonLink
+        to={campaignIntentHref({ tariff: code === 'corporate' ? undefined : code })}
+        variant="primary"
+        fullWidth
+        aria-label={`${t('cabinet.tariffs.buy')}: ${t(`cabinet.tariffs.${code}.name`)}`}
+      >
+        {t('cabinet.tariffs.buy')}
+      </ButtonLink>
     </li>
   );
 }

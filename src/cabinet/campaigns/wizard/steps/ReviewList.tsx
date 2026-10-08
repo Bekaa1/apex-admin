@@ -53,7 +53,7 @@ export function ReviewList({ wizard, catalog }: { wizard: CampaignWizardState; c
             <strong>{form.name.trim()}</strong>
             {form.description.trim() ? <p>{form.description.trim()}</p> : null}
             <span className="cmp-review__meta">
-              {[video?.fileName, seconds ? t('campaigns.wizard.seconds', { n: Math.round(seconds) }) : null, t(cover ? 'campaigns.wizard.budget.withCover' : 'campaigns.wizard.budget.withoutCover')]
+              {[video?.fileName, seconds ? t('campaigns.wizard.seconds', { n: formatNumber(seconds, lang) }) : null, t(cover ? 'campaigns.wizard.budget.withCover' : 'campaigns.wizard.budget.withoutCover')]
                 .filter(Boolean)
                 .join(' · ')}
             </span>

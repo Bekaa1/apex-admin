@@ -11,7 +11,7 @@ import { useInvoiceDetailQuery } from './useInvoiceDetail';
 import styles from '../../campaigns/details/CampaignDetail.module.css';
 import local from './InvoiceDetail.module.css';
 
-export function InvoiceFields({ row, canOpen, onOpen }: { row: InvoiceDetail; canOpen: boolean; onOpen: (summary: PaymentSummary) => void }) {
+export function InvoiceFields({ row, canOpen, onOpen, onCancel }: { row: InvoiceDetail; canOpen: boolean; onOpen: (summary: PaymentSummary) => void; onCancel: (summary: PaymentSummary) => void }) {
   const { t, lang } = useI18n();
   const names = useInvoiceDetailQuery(row.id, ['names', row.user_id, row.ad_id], signal => fetchInvoiceNames([row.user_id], [row.ad_id], signal));
   const available = !names.isError && !names.isPending ? names.data : undefined;
@@ -44,6 +44,7 @@ export function InvoiceFields({ row, canOpen, onOpen }: { row: InvoiceDetail; ca
       : <p className={styles.muted}>{t(row.file_url?.trim() ? 'adminInvoiceDetail.invalidFile' : 'adminInvoiceDetail.noFile')}</p>}</div>
     {row.status === 'unpaid' ? <div className={styles.actions}>
       <Button size="md" disabled={!canOpen || !canReviewPayment(row)} onClick={() => onOpen({ id: row.id, number: row.number, amount: row.amount, user_id: row.user_id, ad_id: row.ad_id, client, campaign })}>{t('adminInvoiceDetail.pay')}</Button>
+      <Button size="md" variant="danger" disabled={!canOpen || !canReviewPayment(row)} onClick={() => onCancel({ id: row.id, number: row.number, amount: row.amount, user_id: row.user_id, ad_id: row.ad_id, client, campaign })}>{t('roles.cancelInvoice')}</Button>
       {!canReviewPayment(row) ? <p className={styles.muted}>{t('adminInvoiceDetail.incomplete')}</p> : null}
     </div> : null}
   </section>;

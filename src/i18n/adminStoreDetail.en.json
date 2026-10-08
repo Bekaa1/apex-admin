@@ -24,17 +24,17 @@
     "invalid": "The server response does not match the expected format, store or page boundaries. Data has not been displayed.",
     "unavailable": "Could not retrieve data. Please try again."
   },
-  "tabs": { "zones": "Zones", "carts": "Carts", "beacons": "Beacons" },
+  "tabs": { "zones": "Zones", "carts": "Smart carts", "beacons": "Beacons" },
   "columns": {
     "name": "Name", "description": "Description", "id": "ID",
-    "cartNumber": "Cart number", "status": "Status in Apex", "battery": "Battery",
+    "cartNumber": "Smart cart number", "status": "Status in Apex", "battery": "Battery",
     "lastSeen": "Last seen (last_seen_at)", "lastPing": "Last ping (last_ping_at)",
     "currentZone": "Current zone", "boxNumber": "Box number", "deviceIdentifier": "Device identifier", "zone": "Zone"
   },
-  "pagination": { "zones": "Store zone pages", "carts": "Store cart pages", "beacons": "Store beacon pages" },
+  "pagination": { "zones": "Store zone pages", "carts": "Store Smart cart pages", "beacons": "Store beacon pages" },
   "empty": {
     "zones": "The Apex source returned no accessible zones for this store.",
-    "carts": "The Apex source returned no accessible carts for this store.",
+    "carts": "The Apex source returned no accessible Smart carts for this store.",
     "beacons": "The Apex source returned no accessible beacons for this store.",
     "withoutZone": "The Apex source returned no accessible beacons without a zone for this store."
   }

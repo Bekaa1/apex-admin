@@ -130,7 +130,11 @@ export class ChatResponder {
         headers: { Authorization: `Bearer ${this.config.openRouterKey}`, 'Content-Type': 'application/json',
           'X-OpenRouter-Title': 'Apex Support' },
         body: JSON.stringify({ model: this.config.model,
-          messages: [{ role: 'system', content: `${supportPrompt}\n\n${pricing}` }, ...history],
+          messages: [
+            { role: 'system', content: supportPrompt },
+            { role: 'system', content: `Канал: веб-чат сайта. Верни текст ответа в Markdown. Передача менеджеру в этом канале недоступна.\n\n${pricing}` },
+            ...history,
+          ],
           max_tokens: 600, temperature: 0.3, stream: false }),
       });
     } catch { throw new ReplyError('generation_unavailable'); }

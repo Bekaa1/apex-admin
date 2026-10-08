@@ -16,7 +16,7 @@ function ChangeItem({ change, onEdit }: { change: CampaignChange; onEdit: (step:
   const count = (key: string, n: number) => t(pluralKey(key, n, lang), { count: formatNumber(n, lang) });
   const label = t(`campaigns.edit.fields.${change.field}`);
   const media = (ref: MediaRef | null) =>
-    ref ? [ref.fileName, ref.durationSec ? t('campaigns.wizard.seconds', { n: Math.round(ref.durationSec) }) : null].filter(Boolean).join(' · ') : t('campaigns.edit.values.noVideo');
+    ref ? [ref.fileName, ref.durationSec ? t('campaigns.wizard.seconds', { n: formatNumber(ref.durationSec, lang) }) : null].filter(Boolean).join(' · ') : t('campaigns.edit.values.noVideo');
   const zones = (value: ZoneCount) =>
     `${count('campaigns.wizard.zones.selectedCount', value.count)} · ${t('campaigns.wizard.summary.zonesIn', { count: formatNumber(value.storesWithZones, lang), total: formatNumber(value.stores, lang) })}`;
   const stores = (list: CatalogStore[]) => list.map((store) => [store.name, store.address].filter(Boolean).join(', ')).join('; ');

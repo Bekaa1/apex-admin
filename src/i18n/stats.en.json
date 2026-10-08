@@ -28,10 +28,10 @@
     "spent": "Spent",
     "price": "Cost per impression",
     "priceAverage": "average for the period",
-    "cartsOnline": "Carts online",
+    "cartsOnline": "Smart carts online",
     "cartsOf": " of {total}",
     "onlineNow": "{pct} online now",
-    "carts": "Carts",
+    "carts": "Smart carts",
     "cartsWere": "were in the campaign",
     "cartsWereAll": "were in the campaigns",
     "vs": {
@@ -104,23 +104,23 @@
   "stores": {
     "title": "By store",
     "lead": {
-      "one": "{count} store with impressions in the period. Compare impressions per cart to see where the video works best.",
-      "other": "{count} stores with impressions in the period. Compare impressions per cart to see where the video works best."
+      "one": "{count} store with impressions in the period. Compare impressions per Smart cart to see where the video works best.",
+      "other": "{count} stores with impressions in the period. Compare impressions per Smart cart to see where the video works best."
     },
     "columns": {
       "store": "Store",
       "plays": "Impressions",
       "share": "Share of impressions",
-      "perCart": "Per cart",
-      "online": "Carts online"
+      "perCart": "Per Smart cart",
+      "online": "Smart carts online"
     },
     "onlineOf": "{online} of {total}",
     "showAll": "Show all ({count})"
   },
   "carts": {
-    "title": "Carts",
-    "lead": "Cart screens in the stores of your campaigns.",
-    "leadCampaign": "Cart screens in the stores of this campaign.",
+    "title": "Smart carts",
+    "lead": "Smart carts in the stores of your campaigns.",
+    "leadCampaign": "Smart carts in the stores of this campaign.",
     "now": "of {total} online now",
     "meterLabel": "{pct} online now",
     "online": "Online",
@@ -128,7 +128,7 @@
     "worked": "Showed your video in the period",
     "worst": "Most offline",
     "worstCount": "{count} offline",
-    "note": "Offline means the screen is off, out of battery or without connection. The video doesn’t play on such carts."
+    "note": "Offline means the Smart cart is off, out of battery or without connection. The video doesn’t play on such Smart carts."
   },
   "zones": {
     "title": "Impressions at the shelf",
@@ -173,8 +173,8 @@
       "other": "{count} stores"
     },
     "carts": {
-      "one": "{count} cart",
-      "other": "{count} carts"
+      "one": "{count} Smart cart",
+      "other": "{count} Smart carts"
     },
     "topUp": "Top up"
   },
@@ -187,7 +187,7 @@
     "points": {
       "days": "Impressions and spending by day, week and month",
       "stores": "Impressions in every store",
-      "carts": "How many carts are online",
+      "carts": "How many Smart carts are online",
       "shelves": "Impressions at the shelf and by hour"
     }
   },

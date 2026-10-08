@@ -819,6 +819,8 @@ export type Database = {
           content_url: string | null
           cover_original_filename: string | null
           created_at: string | null
+          daily_limit_reached_on: string | null
+          daily_play_limit: number | null
           description: string | null
           display_id: number
           earned_points: number | null
@@ -868,6 +870,8 @@ export type Database = {
           content_url?: string | null
           cover_original_filename?: string | null
           created_at?: string | null
+          daily_limit_reached_on?: string | null
+          daily_play_limit?: number | null
           description?: string | null
           display_id?: number
           earned_points?: number | null
@@ -917,6 +921,8 @@ export type Database = {
           content_url?: string | null
           cover_original_filename?: string | null
           created_at?: string | null
+          daily_limit_reached_on?: string | null
+          daily_play_limit?: number | null
           description?: string | null
           display_id?: number
           earned_points?: number | null
@@ -1592,6 +1598,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      campaign_media_rules: {
+        Row: {
+          aspect_h: number
+          aspect_w: number
+          cover_formats: string[]
+          id: number
+          max_duration_sec: number
+          max_size_mb: number
+          min_duration_sec: number
+          min_height: number
+          min_width: number
+          updated_at: string
+          updated_by: string | null
+          video_formats: string[]
+        }
+        Insert: {
+          aspect_h?: number
+          aspect_w?: number
+          cover_formats?: string[]
+          id?: number
+          max_duration_sec?: number
+          max_size_mb?: number
+          min_duration_sec?: number
+          min_height?: number
+          min_width?: number
+          updated_at?: string
+          updated_by?: string | null
+          video_formats?: string[]
+        }
+        Update: {
+          aspect_h?: number
+          aspect_w?: number
+          cover_formats?: string[]
+          id?: number
+          max_duration_sec?: number
+          max_size_mb?: number
+          min_duration_sec?: number
+          min_height?: number
+          min_width?: number
+          updated_at?: string
+          updated_by?: string | null
+          video_formats?: string[]
+        }
+        Relationships: []
       }
       cartplayer_playback_sessions: {
         Row: {
@@ -3588,6 +3639,47 @@ export type Database = {
           },
         ]
       }
+      tariff_history: {
+        Row: {
+          action: string
+          changed_at: string
+          changed_by: string | null
+          id: number
+          new_values: Json
+          old_values: Json | null
+          tariff_id: string
+          version: number | null
+        }
+        Insert: {
+          action: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: never
+          new_values: Json
+          old_values?: Json | null
+          tariff_id: string
+          version?: number | null
+        }
+        Update: {
+          action?: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: never
+          new_values?: Json
+          old_values?: Json | null
+          tariff_id?: string
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tariff_history_tariff_id_fkey"
+            columns: ["tariff_id"]
+            isOneToOne: false
+            referencedRelation: "tariffs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tariffs: {
         Row: {
           badge: string | null
@@ -3599,6 +3691,7 @@ export type Database = {
           has_sound: boolean
           id: string
           is_archived: boolean
+          max_daily_plays: number | null
           min_amount: number
           more_plays: boolean
           name: string
@@ -3618,6 +3711,7 @@ export type Database = {
           has_sound?: boolean
           id?: string
           is_archived?: boolean
+          max_daily_plays?: number | null
           min_amount: number
           more_plays?: boolean
           name: string
@@ -3637,6 +3731,7 @@ export type Database = {
           has_sound?: boolean
           id?: string
           is_archived?: boolean
+          max_daily_plays?: number | null
           min_amount?: number
           more_plays?: boolean
           name?: string
@@ -3647,6 +3742,69 @@ export type Database = {
           version?: number
         }
         Relationships: []
+      }
+      user_role_events: {
+        Row: {
+          action: string
+          actor: string | null
+          created_at: string
+          id: number
+          role: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          created_at?: string
+          id?: never
+          role: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          created_at?: string
+          id?: never
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          granted_at: string
+          granted_by: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "partner_team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_store_access: {
         Row: {
@@ -5068,6 +5226,15 @@ export type Database = {
       }
     }
     Functions: {
+      _ad_effective_daily_limit: { Args: { p_ad: string }; Returns: number }
+      _ad_over_daily_limit: {
+        Args: { p_ad: string; p_played_at: string }
+        Returns: boolean
+      }
+      _ad_plays_on_day: {
+        Args: { p_ad: string; p_day: string }
+        Returns: number
+      }
       _campaign_err: {
         Args: { p_code: string; p_detail: string; p_field: string }
         Returns: undefined
@@ -5093,6 +5260,7 @@ export type Database = {
         Args: { p_request_id: string }
         Returns: boolean
       }
+      _fmt_num: { Args: { p: number }; Returns: string }
       _ntf_ad_label: {
         Args: { a: Database["public"]["Tables"]["ads"]["Row"] }
         Returns: string
@@ -5293,6 +5461,7 @@ export type Database = {
           size_bytes: number
         }[]
       }
+      admin_cancel_invoice: { Args: { p_invoice_id: string }; Returns: string }
       admin_create_store_request: {
         Args: {
           p_address?: string
@@ -5303,6 +5472,17 @@ export type Database = {
           p_timezone?: string
         }
         Returns: string
+      }
+      admin_list_staff: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          is_admin: boolean
+          phone: string
+          roles: string[]
+          user_id: string
+        }[]
       }
       admin_list_store_requests: {
         Args: { p_status?: string }
@@ -5327,6 +5507,19 @@ export type Database = {
           zone_count: number
         }[]
       }
+      admin_list_team: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          is_admin: boolean
+          partner_id: string
+          partner_name: string
+          phone: string
+          roles: string[]
+          user_id: string
+        }[]
+      }
       admin_mark_invoice_paid: {
         Args: { p_invoice_id: string }
         Returns: string
@@ -5349,6 +5542,11 @@ export type Database = {
         }
         Returns: number
       }
+      admin_save_partner: {
+        // SQL contract accepts NULL to create a new partner.
+        Args: { p_id: string | null; p_legal_name?: string; p_name: string }
+        Returns: string
+      }
       admin_save_store_plan: {
         Args: {
           p_expected_revision: number
@@ -5358,9 +5556,74 @@ export type Database = {
         }
         Returns: number
       }
+      admin_save_tariff: {
+        Args: { p: Json; p_id: string }
+        Returns: {
+          badge: string | null
+          can_select_store: boolean
+          can_select_zone: boolean
+          code: string | null
+          created_at: string
+          exclusive_zone: boolean
+          has_sound: boolean
+          id: string
+          is_archived: boolean
+          max_daily_plays: number | null
+          min_amount: number
+          more_plays: boolean
+          name: string
+          price_per_play: number
+          purchasable: boolean
+          sort_order: number
+          updated_at: string
+          version: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tariffs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      admin_set_campaign_paused: {
+        Args: { p_id: string; p_paused: boolean }
+        Returns: string
+      }
+      admin_set_media_rules: { Args: { p: Json }; Returns: Json }
+      admin_set_partner_member: {
+        Args: { p_partner_id: string | null; p_role: string | null; p_user_id: string }
+        Returns: undefined
+      }
+      admin_set_store_partner: {
+        Args: { p_partner_id: string | null; p_store_id: string }
+        Returns: undefined
+      }
+      admin_set_user_role: {
+        Args: { p_grant: boolean; p_role: string; p_user_id: string }
+        Returns: string[]
+      }
       admin_submit_store_request: {
         Args: { p_expected_revision: number; p_id: string }
         Returns: number
+      }
+      admin_tariff_history: {
+        Args: { p_limit?: number; p_tariff_id?: string }
+        Returns: {
+          action: string
+          changed_at: string
+          changed_by: string | null
+          id: number
+          new_values: Json
+          old_values: Json | null
+          tariff_id: string
+          version: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "tariff_history"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       admin_update_store_request: {
         Args: {
@@ -5373,6 +5636,17 @@ export type Database = {
           p_timezone?: string
         }
         Returns: number
+      }
+      cart_route: {
+        Args: { p_cart_id: string; p_from?: string; p_to?: string }
+        Returns: {
+          entered_at: string
+          left_at: string
+          plays: number
+          zone_icon: string
+          zone_id: string
+          zone_name: string
+        }[]
       }
       catalog_stores: {
         Args: never
@@ -5559,6 +5833,7 @@ export type Database = {
       get_email_by_phone: { Args: { p_phone: string }; Returns: string }
       get_store_plan: { Args: { p_store_id: string }; Returns: Json }
       get_store_request: { Args: { p_id: string }; Returns: Json }
+      get_video_requirements: { Args: never; Returns: Json }
       gettransactionid: { Args: never; Returns: unknown }
       handle_beacon_detected: {
         Args: {
@@ -5568,6 +5843,7 @@ export type Database = {
         }
         Returns: string
       }
+      has_role: { Args: { p_role: string }; Returns: boolean }
       is_apex_admin: { Args: never; Returns: boolean }
       is_apex_store_owner: { Args: never; Returns: boolean }
       longtransactionsenabled: { Args: never; Returns: boolean }
@@ -5587,6 +5863,7 @@ export type Database = {
           weekday: number
         }[]
       }
+      my_roles: { Args: never; Returns: string[] }
       my_unread_notifications_count: { Args: never; Returns: number }
       owner_approve_store_request: {
         Args: { p_expected_revision: number; p_id: string }
@@ -5675,6 +5952,10 @@ export type Database = {
       select_ad_for_zone: {
         Args: { p_store_id: string; p_zone_id: string }
         Returns: string
+      }
+      set_campaign_daily_limit: {
+        Args: { p_id: string; p_limit: number }
+        Returns: Json
       }
       st_3dclosestpoint: {
         Args: { geom1: unknown; geom2: unknown }

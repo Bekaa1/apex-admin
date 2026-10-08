@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
@@ -22,7 +22,7 @@ from reportlab.platypus import KeepTogether, ListFlowable, ListItem, Paragraph, 
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'docs' / 'ADVERTISING_RULES.md'
-VERSION = '1.0'
+VERSION = '1.1'
 OUTPUT = ROOT / 'public' / 'legal' / f'apexmedia-advertising-rules-{VERSION}.pdf'
 FONTS = ROOT / 'src' / 'assets' / 'fonts'
 
@@ -35,36 +35,35 @@ SOFT = colors.HexColor('#e6eafe')
 
 for name, file in {
     'Onest': 'Onest-400Regular.ttf',
-    'Onest-SemiBold': 'Onest-600SemiBold.ttf',
     'Geologica-SemiBold': 'Geologica-600SemiBold.ttf',
     'Geologica-Bold': 'Geologica-700Bold.ttf',
 }.items():
     pdfmetrics.registerFont(TTFont(name, str(FONTS / file)))
-pdfmetrics.registerFontFamily('Onest', normal='Onest', bold='Onest-SemiBold', italic='Onest', boldItalic='Onest-SemiBold')
+pdfmetrics.registerFontFamily('Onest', normal='Onest', bold='Onest', italic='Onest', boldItalic='Onest')
 
-BODY = ParagraphStyle('body', fontName='Onest', fontSize=10, leading=15, textColor=TEXT, alignment=TA_LEFT, spaceAfter=6)
+BODY = ParagraphStyle('body', fontName='Onest', fontSize=10, leading=15, textColor=TEXT, alignment=TA_JUSTIFY, spaceAfter=6)
 STYLES = {
     'brand': ParagraphStyle('brand', fontName='Geologica-Bold', fontSize=13, leading=16, textColor=BRAND, spaceAfter=18),
     'title': ParagraphStyle('title', fontName='Geologica-Bold', fontSize=24, leading=29, textColor=TEXT, spaceAfter=6),
-    'edition': ParagraphStyle('edition', parent=BODY, textColor=MUTED, spaceAfter=14),
+    'edition': ParagraphStyle('edition', parent=BODY, textColor=MUTED, alignment=TA_LEFT, spaceAfter=14),
     'h2': ParagraphStyle('h2', fontName='Geologica-SemiBold', fontSize=14, leading=18, textColor=TEXT, spaceBefore=12, spaceAfter=7),
     'body': BODY,
     'item': ParagraphStyle('item', parent=BODY, spaceAfter=2),
-    'cell': ParagraphStyle('cell', parent=BODY, fontSize=9.5, leading=13.5, spaceAfter=0),
-    'head': ParagraphStyle('head', parent=BODY, fontName='Onest-SemiBold', fontSize=9.5, leading=13.5, spaceAfter=0),
+    'cell': ParagraphStyle('cell', parent=BODY, fontSize=9.5, leading=13.5, alignment=TA_LEFT, spaceAfter=0),
+    'head': ParagraphStyle('head', parent=BODY, fontSize=9.5, leading=13.5, alignment=TA_LEFT, spaceAfter=0),
 }
 
 
 def inline(text: str) -> str:
-    """Markdown bold and links → reportlab markup."""
+    """Keep inline text regular; only heading styles use bold. Preserve links."""
     text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-    text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
     return re.sub(r'\[([^\]]+)\]\(([^)]+)\)', rf'<a href="\2" color="{BRAND.hexval()}"><u>\1</u></a>', text)
 
 
 def clause(text: str) -> str:
     """«1.1.» at the start of a paragraph in the brand colour."""
-    return re.sub(r'^(\d+\.\d+\.)', rf'<font name="Onest-SemiBold" color="{BRAND.hexval()}">\1</font>', text)
+    return re.sub(r'^(\d+\.\d+\.)', rf'<font name="Onest" color="{BRAND.hexval()}">\1</font>', text)
 
 
 def table(rows: list[list[str]]) -> Table:

@@ -16,7 +16,7 @@
   },
   "stepsLabel": "Campaign creation steps",
   "rules": {
-    "duration_7s": "The video is exactly 7 seconds, horizontal 16:9",
+    "duration_7s": "The video is no longer than 7.9 seconds, horizontal 16:9",
     "languages_kk_ru": "Text in the video is in Kazakh and Russian",
     "prohibited": "No prohibited ads: alcohol, tobacco and vapes, gambling and betting",
     "claims": "“The best”, “No. 1” and the like — only with proof",
@@ -68,8 +68,8 @@
       "other": "{count} stores"
     },
     "carts": {
-      "one": "{count} cart",
-      "other": "{count} carts"
+      "one": "{count} Smart cart",
+      "other": "{count} Smart carts"
     },
     "note": {
       "review": "Usually within 24 hours",
@@ -136,12 +136,12 @@
   },
   "empty": {
     "title": "Your campaigns will be here",
-    "lead": "Create the first one — it takes about 10 minutes. You’ll need a 7-second video and a budget from {amount}.",
+    "lead": "Create the first one — it takes about 10 minutes. You’ll need a video up to 7.9 seconds long and a budget from {amount}.",
     "how": "How it works",
     "prepTitle": "What to prepare",
     "prep": {
       "video": {
-        "title": "A 7-second video",
+        "title": "A video up to 7.9 seconds long",
         "text": "MP4 or MOV, horizontal, up to 50 MB. Text in Kazakh and Russian."
       },
       "cover": {
@@ -154,7 +154,7 @@
         "textNoAmount": "The minimum depends on the plan. Payment by invoice."
       }
     },
-    "leadNoAmount": "Create the first one — it takes about 10 minutes. You’ll need a 7-second video and a budget of at least the plan minimum."
+    "leadNoAmount": "Create the first one — it takes about 10 minutes. You’ll need a video up to 7.9 seconds long and a budget of at least the plan minimum."
   },
   "notFound": {
     "titleQuery": "Nothing found for “{query}”",
@@ -193,7 +193,7 @@
         "invalid_name": "Check the name: 1 to 80 characters.",
         "invalid_description": "The description is longer than 300 characters — shorten it.",
         "invalid_tariff": "This plan can’t be bought right now. Choose another one.",
-        "invalid_video": "The video didn’t pass the check. Upload it again: MP4 or MOV, 7 seconds, 16:9, from 1280×720, up to 50 MB.",
+        "invalid_video": "The video didn’t pass the check. Upload it again: MP4 or MOV, up to 7.9 seconds, 16:9, from 1280×720, up to 50 MB.",
         "invalid_cover": "The cover didn’t pass the check. Upload a JPG or PNG again or remove it.",
         "invalid_stores": "One of the stores isn’t available now. Check your choice on the “Stores” step.",
         "invalid_zones": "Choose at least one zone in each store on the “Shelf zones” step.",
@@ -246,7 +246,7 @@
       },
       "stores": {
         "title": "Where the video is seen more often",
-        "text": "The fewer campaigns a store has, the more often your video plays. More carts — more shoppers see the ad."
+        "text": "The fewer campaigns a store has, the more often your video plays. More Smart carts — more shoppers see the ad."
       },
       "zones": {
         "title": "How zones work",
@@ -280,7 +280,9 @@
       "descriptionHint": "Helps the moderator check the video faster.",
       "video": "Video",
       "videoDrop": "Drag the video here or choose a file",
-      "videoRules": "MP4 or MOV · exactly 7 seconds · horizontal 16:9, from 1280×720 · up to 50 MB",
+      "videoRules": "Format: MP4 or MOV · up to {max} seconds inclusive · horizontal 16:9, from 1280×720 · up to 50 MB",
+      "durationTitle": "The video is too long",
+      "dismissError": "Got it",
       "cover": "Cover",
       "coverDrop": "Drag an image or choose a file",
       "coverHint": "JPG or PNG, 16:9. Shown in the campaign list and reports. Without a cover we show the first frame of the video.",
@@ -302,8 +304,8 @@
         "coverType": "A JPG or PNG image is needed",
         "size": "The file is larger than 50 MB. Compress it and upload it again.",
         "duration": {
-          "one": "The video is {count} second long — it must be exactly 7. Trim it and upload it again.",
-          "other": "The video is {count} seconds long — it must be exactly 7. Trim it and upload it again."
+          "one": "The video is {count} second long. The maximum is {max} seconds inclusive. Shorten it and choose the file again.",
+          "other": "The video is {count} seconds long. The maximum is {max} seconds inclusive. Shorten it and choose the file again."
         },
         "orientation": "The video is vertical — a horizontal 16:9 one is needed. Re-export it and upload it again.",
         "ratio": "The video is not 16:9. Re-export it in 16:9 and upload it again.",
@@ -334,7 +336,7 @@
     },
     "stores": {
       "title": "Choose stores",
-      "lead": "The video plays on every cart of the chosen stores.",
+      "lead": "The video plays on every Smart cart of the chosen stores.",
       "search": "Name or address",
       "city": "City",
       "allCities": "All cities",
@@ -347,7 +349,7 @@
       "head": {
         "store": "Store",
         "city": "City",
-        "carts": "Carts",
+        "carts": "Smart carts",
         "load": "Campaigns now",
         "zones": "Shelf zones"
       },
@@ -364,7 +366,7 @@
     },
     "zones": {
       "title": "Shelf zones",
-      "lead": "The video starts when a shopper with a cart comes to the chosen shelves. Zones are chosen in each store separately.",
+      "lead": "The video starts when a shopper with a Smart cart comes to the chosen shelves. Zones are chosen in each store separately.",
       "quickTitle": "Quick selection",
       "quickText": {
         "one": "Tick zones — we’ll apply them to the chosen store. You can adjust it later.",
@@ -571,7 +573,7 @@
       "deltaContext": "vs the previous 30 days",
       "spent": "Spent in total",
       "price": "Average price per impression",
-      "carts": "Carts",
+      "carts": "Smart carts",
       "chartLabel": "Impressions by day",
       "chartHint": "Left and right arrows move between columns",
       "playsUnit": {
@@ -580,7 +582,7 @@
       },
       "pausedNote": "Impressions are paused since {date} while we check the changes.",
       "emptyTitle": "Statistics appear after the launch",
-      "emptyText": "We’ll show impressions, spending and carts as soon as impressions start.",
+      "emptyText": "We’ll show impressions, spending and Smart carts as soon as impressions start.",
       "holdNote": "Paused since {date} — no new plays."
     },
     "media": {
@@ -595,13 +597,13 @@
       "title": "Stores",
       "titleZones": "Stores and zones",
       "cartsUnit": {
-        "one": "cart",
-        "other": "carts"
+        "one": "Smart cart",
+        "other": "Smart carts"
       },
       "none": "The campaign’s stores are unavailable right now.",
       "all": "Show all ({count})",
       "less": "Show less",
-      "noZones": "Plan without zones: the video plays in the shared rotation on every cart."
+      "noZones": "Plan without zones: the video plays in the shared rotation on every Smart cart."
     },
     "budget": {
       "title": "Budget",

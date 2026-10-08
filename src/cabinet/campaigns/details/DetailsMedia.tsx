@@ -1,17 +1,18 @@
 import { useId } from 'react';
 import { useI18n } from '../../../i18n/i18n';
+import { formatNumber } from '../../../lib/format';
 import { CampaignCover } from '../../ui/CampaignCover';
 import { VideoCover } from '../../ui/VideoCover';
 import { formatClock } from '../wizard/media';
 import type { CampaignDetails } from './types';
 
 export function DetailsMedia({ details }: { details: CampaignDetails }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const titleId = useId();
   const { media } = details;
   const video = [
     media.video,
-    media.durationSec ? t('campaigns.wizard.seconds', { n: Math.round(media.durationSec) }) : null,
+    media.durationSec ? t('campaigns.wizard.seconds', { n: formatNumber(media.durationSec, lang) }) : null,
     media.width && media.height ? `${media.width}×${media.height}` : null,
   ].filter(Boolean);
   const time = media.durationSec ? <span className="cmp-cover__time">{formatClock(media.durationSec)}</span> : null;

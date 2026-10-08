@@ -13,13 +13,12 @@ function responseError(error: { code?: string } | null, status: number) {
   if (error) throw new ClientReadError(status === 401 || status === 403 || error.code === '42501' ? 'denied'
     : ['42P01', '42703', 'PGRST204', 'PGRST205'].includes(error.code ?? '') ? 'missing' : 'unavailable');
 }
-/** Prepared users adapter, not an approved all-client source. Before enabling access,
- * reconcile this source and client-selection rule with the confirmed backend contract.
- * No invented role values; no balance/is_active fields. Never exported without the gate.
+/** The supplied staff_roles_v2 contract grants staff SELECT on users and defines
+ * clients as Пользователь without a partner. No balance/is_active fields.
  */
 function pageQuery(filters: ClientFilters, count: boolean) {
   let query = requireSupabase().from('users')
-    .select(PROFILE_COLUMNS, count ? { count: 'exact' } : undefined);
+    .select(PROFILE_COLUMNS, count ? { count: 'exact' } : undefined).eq('role', 'Пользователь').is('partner_id', null);
   if (filters.search !== '') query = query.or(clientSearchFilter(filters.search));
   const number = displayNumber(filters.displayId);
   if (number === undefined) throw new ClientReadError('invalid');
@@ -27,13 +26,13 @@ function pageQuery(filters: ClientFilters, count: boolean) {
   return query.order('created_at', { ascending: false, nullsFirst: false }).order('id', { ascending: false });
 }
 
-/** Same unconfirmed source as the list: never bypass its access/scope gate for a card. */
+/** Cards use the same source and client scope as the list. */
 export async function fetchClientProfile(id: string, signal: AbortSignal): Promise<ClientRow | null> {
   if (!clientsAccessConfigured()) throw new ClientReadError('unconfigured');
   if (!isClientId(id)) throw new ClientReadError('invalid');
   try {
     const { data, error, status } = await requireSupabase().from('users').select(PROFILE_COLUMNS)
-      .eq('id', id).abortSignal(signal).maybeSingle();
+      .eq('id', id).eq('role', 'Пользователь').is('partner_id', null).abortSignal(signal).maybeSingle();
     responseError(error, status);
     if (data === null) return null;
     if (!isClientRow(data) || data.id.toLowerCase() !== id.toLowerCase()) throw new ClientReadError('invalid');

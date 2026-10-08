@@ -125,6 +125,7 @@ test('table shows missing code, independent flags and safe expandable parameters
     },
     '../../i18n/i18n': { useI18n: () => ({ t, lang: 'ru' }) }, '../campaigns/details/model': prices,
     '../overview/model': { overviewDate: value => value }, './model': model,
+    './TariffHistory': { TariffHistory: () => null },
     '../corporate-requests/CorporateRequestsPage.module.css': {}, './TariffsPage.module.css': {},
   });
   const record = row('t', { name: '<b>Tariff</b>', badge: '<script>unsafe</script>', is_archived: true, purchasable: false });

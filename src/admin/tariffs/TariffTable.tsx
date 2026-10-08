@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n/i18n';
 import { unitPrice } from '../campaigns/details/model';
 import { overviewDate } from '../overview/model';
 import { BOOLEAN_FIELDS, type TariffRow } from './model';
+import { TariffHistory } from './TariffHistory';
 import shared from '../corporate-requests/CorporateRequestsPage.module.css';
 import styles from './TariffsPage.module.css';
 
@@ -32,6 +33,7 @@ function TariffEntry({ row }: { row: TariffRow }) {
           <div><dt>{t('adminTariffs.parameters.badge')}</dt><dd>{row.badge?.trim() || unknown}</dd></div>
           <div><dt>{t('adminTariffs.parameters.sort_order')}</dt><dd>{String(row.sort_order)}</dd></div>
         </dl>
+        {expanded ? <TariffHistory id={row.id} /> : null}
       </div>
     </td></tr>
   </>;

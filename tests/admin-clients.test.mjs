@@ -23,6 +23,7 @@ function load(file, modules = {}) {
 const plain = value => JSON.parse(JSON.stringify(value));
 const model = load('src/admin/clients/model.ts');
 const access = load('src/admin/clients/access.ts');
+const closedAccess = { clientsAccessConfigured: () => false };
 const selection = (search = '') => model.readClientSelection(new URLSearchParams(search));
 const fixture = n => ({ id: '00000000-0000-4000-8000-' + String(n).padStart(12, '0'), display_id: n,
   full_name: `Synthetic ${n}`, display_name: null, company_name: null, bin: null, email: null, phone: null, created_at: null });
@@ -31,22 +32,22 @@ function apiFixture(responses = [], configured = true) {
   const client = { from(table) {
     calls.push(['from', table]);
     return { select(...args) { calls.push(['select', ...args]); return this; },
-      or(value) { calls.push(['or', value]); return this; }, eq(...args) { calls.push(['eq', ...args]); return this; },
+      or(value) { calls.push(['or', value]); return this; }, eq(...args) { calls.push(['eq', ...args]); return this; }, is(...args) { calls.push(['is', ...args]); return this; },
       order(...args) { calls.push(['order', ...args]); return this; }, range(...args) { calls.push(['range', ...args]); return this; },
       abortSignal(signal) { assert.ok(signal); return Promise.resolve(responses.shift()); },
     };
   } };
   const api = load('src/admin/clients/api.ts', {
     '../../lib/supabase': { requireSupabase: () => { calls.push(['client']); return client; } },
-    './model': model, './access': configured ? { clientsAccessConfigured: () => true } : access,
+    './model': model, './access': configured ? access : closedAccess,
   });
   return { ...api, calls };
 }
 
-test('actual production access stays closed and immutable; direct adapter call obtains no client', async () => {
-  assert.equal(access.clientsAccessConfigured(), false);
-  assert.equal(access.CLIENTS_ACCESS.administrativeReadConfirmed, false);
-  assert.equal(access.CLIENTS_ACCESS.clientScopeConfirmed, false);
+test('staff contract is configured and immutable; a disabled adapter still obtains no client', async () => {
+  assert.equal(access.clientsAccessConfigured(), true);
+  assert.equal(access.CLIENTS_ACCESS.administrativeReadConfirmed, true);
+  assert.equal(access.CLIENTS_ACCESS.clientScopeConfirmed, true);
   assert.equal(Object.isFrozen(access.CLIENTS_ACCESS), true);
   const api = apiFixture([], false);
   await assert.rejects(api.fetchClientPage(selection('admin=true&confirmed=true'), new AbortController().signal), error => error.kind === 'unconfigured');
@@ -62,7 +63,7 @@ test('hook requires configured source, session and valid selection even after Re
     './access': source, './api': realApi,
   }).useClients(chosen);
   const session = { user: { id: fixture(9).id } };
-  hook(access, session, 'ready', selection());
+  hook(closedAccess, session, 'ready', selection());
   assert.equal(options.enabled, false);
   await assert.rejects(options.queryFn({ signal: new AbortController().signal }), error => error.kind === 'unconfigured');
   assert.equal(realApi.calls.length, 0);
@@ -116,10 +117,11 @@ test('prepared adapter requests only one ordered page and fixed profile fields, 
   const api = apiFixture([{ data: [fixture(26)], error: null, status: 200, count: 26 }]);
   const result = await api.fetchClientPage(chosen, new AbortController().signal);
   assert.equal(result.hasNext, false); assert.equal(result.count, 26);
+  assert.deepEqual(plain(api.calls.filter(call => call[0] === 'is')), [['is', 'partner_id', null]]);
   assert.deepEqual(plain(api.calls.filter(call => call[0] === 'from')), [['from', 'users']]);
   const columns = api.calls.find(call => call[0] === 'select')[1];
   assert.equal(columns, 'id,display_id,full_name,display_name,company_name,bin,email,phone,created_at');
-  assert.deepEqual(plain(api.calls.filter(call => call[0] === 'eq')), [['eq', 'display_id', 26]]);
+  assert.deepEqual(plain(api.calls.filter(call => call[0] === 'eq')), [['eq', 'role', 'Пользователь'], ['eq', 'display_id', 26]]);
   assert.deepEqual(plain(api.calls.filter(call => call[0] === 'order')), [['order', 'created_at', { ascending: false, nullsFirst: false }], ['order', 'id', { ascending: false }]]);
   assert.deepEqual(plain(api.calls.filter(call => call[0] === 'range')), [['range', 25, 49]]);
   const invalid = apiFixture();
@@ -230,7 +232,7 @@ test('three dictionaries match and client list/card routes stay behind one Requi
   assert.deepEqual(keys(dicts[0]), keys(dicts[1])); assert.deepEqual(keys(dicts[0]), keys(dicts[2]));
   assert.equal(dicts[0].unconfigured.title, 'Административный доступ к списку клиентов не настроен');
   const routes = readFileSync(new URL('../src/routes/admin.tsx', import.meta.url), 'utf8');
-  assert.equal((routes.match(/element: <RequireAdmin/g) ?? []).length, 1);
+  assert.equal((routes.match(/element: <RequireAdmin\s/g) ?? []).length, 1);
   assert.ok(routes.indexOf("path: 'clients'") > routes.indexOf('element: <RequireAdmin'));
   assert.ok(routes.indexOf("path: 'clients/:id'") > routes.indexOf('element: <RequireAdmin'));
 });

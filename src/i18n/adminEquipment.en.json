@@ -8,7 +8,7 @@
   "storeSearchError": "Could not load store options",
   "selectedUnavailable": "The selected store name is unavailable. The ID filter is retained.",
   "storesUnavailable": "Some store names are unavailable. IDs are shown instead; equipment remains in the list.",
-  "search": { "carts": "Cart number", "beacons": "Box number or device identifier" },
+  "search": { "carts": "Smart cart number", "beacons": "Box number or device identifier" },
   "searchHint": "Case-insensitive search for part of the value.",
   "status": "Status in Apex", "anyStatus": "Any status",
   "statusHint": "Exact, case-sensitive raw status. Leave empty for any status.",

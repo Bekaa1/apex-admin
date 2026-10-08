@@ -26,6 +26,7 @@ const id = n => '00000000-0000-4000-8000-' + String(n).padStart(12, '0');
 const profile = n => ({ id: id(n), display_id: n, full_name: null, display_name: null, company_name: null, bin: null, email: null, phone: null, created_at: null });
 const model = load('src/admin/clients/model.ts');
 const access = load('src/admin/clients/access.ts');
+const closedAccess = { clientsAccessConfigured: () => false };
 const tabModel = load('src/admin/clients/details/model.ts', { '../model': model });
 const campaignModel = load('src/admin/campaigns/model.ts', {
   '../../lib/database.types': { Constants: { public: { Enums: { ad_status: [] } } } },
@@ -42,7 +43,7 @@ function backend(responses = {}) {
     requests.push(request);
     const result = responses[table]?.shift();
     const builder = { then(resolve, reject) { return Promise.resolve(result).then(resolve, reject); } };
-    for (const method of ['select', 'eq', 'or', 'filter', 'order', 'range', 'in', 'limit', 'abortSignal', 'maybeSingle']) {
+    for (const method of ['select', 'eq', 'is', 'or', 'filter', 'order', 'range', 'in', 'limit', 'abortSignal', 'maybeSingle']) {
       builder[method] = (...args) => { request.calls.push([method, ...args]); return builder; };
     }
     return builder;
@@ -51,7 +52,7 @@ function backend(responses = {}) {
 }
 function clientApi(mock, configured = true) {
   return load('src/admin/clients/api.ts', { '../../lib/supabase': { requireSupabase: () => mock.client }, './model': model,
-    './access': configured ? { clientsAccessConfigured: () => true } : access });
+    './access': configured ? access : closedAccess });
 }
 function campaignApi(mock) {
   return load('src/admin/campaigns/api.ts', { '../../lib/supabase': { requireSupabase: () => mock.client }, './model': campaignModel });
@@ -69,7 +70,7 @@ test('closed profile source blocks card and both related adapters before any Sup
   let relatedReads = 0;
   const related = load('src/admin/clients/details/api.ts', {
     '../../campaigns/api': { fetchCampaignPage() { relatedReads++; } }, '../../invoices/api': { fetchInvoicePage() { relatedReads++; } },
-    '../access': access, '../api': api, '../model': model,
+    '../access': closedAccess, '../api': api, '../model': model,
   });
   for (const read of [() => api.fetchClientProfile(id(1), signal()), () => related.fetchClientCampaigns(id(1), 1, signal()), () => related.fetchClientInvoices(id(1), 1, signal())]) {
     await assert.rejects(read(), error => error.kind === 'unconfigured');
@@ -84,9 +85,10 @@ test('profile adapter uses same fixed fields and UUID equality; invalid IDs and 
   assert.equal(mock.requests.length, 0);
   assert.equal((await api.fetchClientProfile(id(1), signal())).id, id(1));
   assert.equal(mock.requests.length, 1); assert.equal(mock.requests[0].table, 'users');
-  assert.deepEqual(plain(mock.requests[0].calls.filter(call => call[0] === 'eq')), [['eq', 'id', id(1)]]);
+  assert.deepEqual(plain(mock.requests[0].calls.filter(call => call[0] === 'eq')), [['eq', 'id', id(1)], ['eq', 'role', 'Пользователь']]);
   assert.equal(mock.requests[0].calls.find(call => call[0] === 'select')[1], 'id,display_id,full_name,display_name,company_name,bin,email,phone,created_at');
   assert.ok(mock.requests[0].calls.some(call => call[0] === 'maybeSingle'));
+  assert.deepEqual(plain(mock.requests[0].calls.filter(call => call[0] === 'is')), [['is', 'partner_id', null]]);
   for (const data of [profile(2), { ...profile(1), email: {} }]) {
     await assert.rejects(clientApi(backend({ users: [response(data)] })).fetchClientProfile(id(1), signal()), error => error.kind === 'invalid');
   }
@@ -245,6 +247,8 @@ function pageHarness() {
     'react-router': { useParams: () => ({ id: context.id }), useLocation: () => ({ state: context.state }),
       useSearchParams: () => [context.params, (next, options) => { context.lastNavigation = { next, options }; }] },
     '../../../design-system': { Alert: 'Alert', Button: 'Button', Tabs: 'Tabs' }, '../../../i18n/i18n': i18n,
+    '../../../auth/usePermissions': { usePermissions: () => ({ can: () => true }) },
+    '../../../auth/RequirePermission': { PermissionDenied: 'PermissionDenied' },
     '../../../navigation/returnTo': load('src/navigation/returnTo.ts'), '../../overview/model': { overviewDate: (_date, _lang, fallback) => fallback },
     '../../overview/OverviewState': { OverviewLoading: 'OverviewLoading' },
     '../../campaigns/details/DetailState': { DetailField: ({ label, children }) => require('react').createElement('div', {}, require('react').createElement('dt', {}, label), require('react').createElement('dd', {}, children)) },
@@ -345,7 +349,7 @@ test('detail dictionaries have matching keys and exact unconfigured Russian text
   assert.deepEqual(keys(dictionaries[0]), keys(dictionaries[1])); assert.deepEqual(keys(dictionaries[0]), keys(dictionaries[2]));
   assert.equal(dictionaries[0].unconfigured, 'Административный доступ к профилю не настроен');
   const routes = readFileSync(new URL('../src/routes/admin.tsx', import.meta.url), 'utf8');
-  assert.equal((routes.match(/element: <RequireAdmin/g) ?? []).length, 1);
+  assert.equal((routes.match(/element: <RequireAdmin\s/g) ?? []).length, 1);
   assert.ok(routes.indexOf("path: 'clients/:id'") > routes.indexOf('element: <RequireAdmin'));
   assert.ok(routes.indexOf("path: 'clients/:id'") < routes.indexOf('element: <AdminNotFound'));
 });

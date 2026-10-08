@@ -1,11 +1,11 @@
-import { useRef, type ReactNode } from 'react';
-import { Button, Icon, IconButton, Meter } from '../../../../design-system';
+import { useRef, useState, type ReactNode } from 'react';
+import { Button, Dialog, Icon, IconButton, Meter } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { CampaignCover } from '../../../ui/CampaignCover';
 import { VideoCover } from '../../../ui/VideoCover';
 import { formatClock } from '../media';
 import type { MediaState } from '../types';
-import { useMetaLine, useProblemText } from './mediaText';
+import { useMetaLine, useProblemText, useVideoRules } from './mediaText';
 
 type FileMedia = Exclude<MediaState, { status: 'empty' }>;
 
@@ -23,7 +23,11 @@ interface MediaFileProps {
 export function MediaFile({ kind, media, accept, onFile, onRemove, coverTone = 1 }: MediaFileProps) {
   const { t } = useI18n();
   const replaceRef = useRef<HTMLInputElement>(null);
+  const [dismissedError, setDismissedError] = useState<FileMedia | null>(null);
   const problemText = useProblemText();
+  const videoRules = useVideoRules();
+  const tooLong = kind === 'video' && media.status === 'failed' && media.problem === 'duration';
+  const dismissError = () => setDismissedError(media);
   const metaLine = useMetaLine(media.meta);
   const duration = media.meta?.durationSec;
   const time = duration && media.status !== 'uploading' ? <span className="cmp-cover__time">{formatClock(duration)}</span> : null;
@@ -50,6 +54,18 @@ export function MediaFile({ kind, media, accept, onFile, onRemove, coverTone = 1
 
   return (
     <div className={media.status === 'failed' ? 'cmp-file is-invalid' : 'cmp-file'}>
+      <Dialog
+        open={tooLong && dismissedError !== media}
+        title={t('campaigns.wizard.media.durationTitle')}
+        tone="danger"
+        icon="alert-circle"
+        closeLabel={t('campaigns.wizard.media.dismissError')}
+        onClose={dismissError}
+        actions={<Button data-autofocus onClick={dismissError}>{t('campaigns.wizard.media.dismissError')}</Button>}
+      >
+        {tooLong ? <p>{problemText('duration', kind, media.meta)}</p> : null}
+        <p>{videoRules}</p>
+      </Dialog>
       {thumb}
       <div className="cmp-file__body">
         <p className="cmp-file__name">{media.fileName}</p>

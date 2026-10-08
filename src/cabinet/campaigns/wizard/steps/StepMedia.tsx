@@ -6,6 +6,7 @@ import type { MediaField } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 import { DESCRIPTION_MAX, NAME_MAX } from '../validation';
 import { MediaFile } from './MediaFile';
+import { useVideoRules } from './mediaText';
 
 const FIELD = {
   video: { accept: VIDEO_ACCEPT, icon: 'video', title: 'videoDrop', hint: 'videoRules' },
@@ -15,6 +16,7 @@ const FIELD = {
 function MediaInput({ field, wizard }: { field: MediaField; wizard: CampaignWizardState }) {
   const { t } = useI18n();
   const labelId = useId();
+  const videoRules = useVideoRules();
   const media = wizard.form[field];
   const error = wizard.errors[field];
   const config = FIELD[field];
@@ -34,7 +36,7 @@ function MediaInput({ field, wizard }: { field: MediaField; wizard: CampaignWiza
           accept={config.accept}
           icon={config.icon}
           title={t(`campaigns.wizard.media.${config.title}`)}
-          hint={t(`campaigns.wizard.media.${config.hint}`)}
+          hint={field === 'video' ? videoRules : t(`campaigns.wizard.media.${config.hint}`)}
           buttonLabel={t('campaigns.wizard.media.chooseFile')}
           labelledBy={labelId}
           invalid={error === 'required'}
@@ -49,7 +51,7 @@ function MediaInput({ field, wizard }: { field: MediaField; wizard: CampaignWiza
           <span>{t(error === 'required' ? 'campaigns.wizard.media.errors.videoRequired' : 'campaigns.wizard.media.errors.uploading')}</span>
         </p>
       ) : null}
-      {field === 'video' && media.status !== 'empty' && media.status !== 'failed' ? <p className="ax-hint">{t('campaigns.wizard.media.videoRules')}</p> : null}
+      {field === 'video' && media.status !== 'empty' ? <p className="ax-hint">{videoRules}</p> : null}
     </div>
   );
 }

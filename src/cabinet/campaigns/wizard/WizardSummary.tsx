@@ -19,13 +19,13 @@ function Stack({ main, sub }: { main: ReactNode; sub?: ReactNode }) {
 const Empty = ({ children = '—' }: { children?: ReactNode }) => <span className="cab-subtle">{children}</span>;
 
 function MediaValue({ media, optional }: { media: MediaState; optional?: string }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   if (media.status !== 'ready') return <Empty>{optional}</Empty>;
   const seconds = media.meta?.durationSec;
   return (
     <span className="cmp-ok">
       <Icon name="check-circle" size={16} />
-      {seconds ? t('campaigns.wizard.seconds', { n: Math.round(seconds) }) : media.fileName}
+      {seconds ? t('campaigns.wizard.seconds', { n: formatNumber(seconds, lang) }) : media.fileName}
     </span>
   );
 }

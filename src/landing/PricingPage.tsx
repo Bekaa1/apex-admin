@@ -26,7 +26,7 @@ export function PricingPage() {
         <p className={styles.planDescription}>{t(`cabinet.tariffs.${tariff.code}.text`)}</p>
         <div className={styles.price}><span>{t('cabinet.tariffs.pricePerPlay')}</span><strong>{tariff.plan ? formatPrice(tariff.plan.pricePerPlay, lang) : '—'}</strong></div>
         <div className={styles.price}><span>{t('cabinet.tariffs.minimum')}</span><strong>{tariff.plan ? t('cabinet.tariffs.from', { amount: formatMoney(tariff.plan.minimum, lang) }) : '—'}</strong></div>
-        <CampaignLink tariff={tariff.code} variant={tariff.code === 'zones' ? 'primary' : 'secondary'} fullWidth>{t('public.pricing.choose')}</CampaignLink>
+        <CampaignLink tariff={tariff.code} variant="primary" fullWidth aria-label={`${t('cabinet.tariffs.buy')}: ${t(`cabinet.tariffs.${tariff.code}.name`)}`}>{t('cabinet.tariffs.buy')}</CampaignLink>
         <ul className={styles.features}>{TARIFF_FEATURES.slice(0, 3).map((feature, index) => <li key={feature} className={index < tariff.level ? styles.included : styles.excluded}><Icon name={index < tariff.level ? 'check-circle' : 'minus'} size={18} /><span><span className="ax-sr">{t(index < tariff.level ? 'cabinet.tariffs.has' : 'cabinet.tariffs.hasNot')} </span>{t(`cabinet.tariffs.feature.${feature}`)}</span></li>)}</ul>
       </article>)}
     </div>

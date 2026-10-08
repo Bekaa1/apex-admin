@@ -156,8 +156,8 @@ export function LegalDocumentPage({ kind }: { kind: LegalPageKind }) {
             </p>
           )}
 
-          <footer className="legal-document__footer">
-            {returnToSignup && loadState.status === 'loaded' ? (
+          {returnToSignup && loadState.status === 'loaded' ? (
+            <footer className="legal-document__footer">
               <div className="legal-document__consent">
                 <Checkbox
                   checked={documents[kind]}
@@ -169,16 +169,8 @@ export function LegalDocumentPage({ kind }: { kind: LegalPageKind }) {
                   {backLabel}
                 </Button>
               </div>
-            ) : null}
-            <Button
-              variant="secondary"
-              size="md"
-              href={kind === 'privacy' ? '/legal/privacy-policy.docx' : '/legal/public-offer.docx'}
-              download={kind === 'privacy' ? 'privacy-policy.docx' : 'public-offer.docx'}
-            >
-              {t('landing.legal.downloadOriginal')}
-            </Button>
-          </footer>
+            </footer>
+          ) : null}
         </article>
       </main>
     </div>

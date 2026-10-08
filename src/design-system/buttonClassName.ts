@@ -15,3 +15,10 @@ export interface ButtonLook {
 export function buttonClassName({ variant = 'primary', size = 'lg', fullWidth, loading, className }: ButtonLook): string {
   return cx('ax-btn', `ax-btn--${variant}`, `ax-btn--${size}`, fullWidth && 'ax-btn--full', loading && 'ax-btn--loading', className);
 }
+
+export type IconButtonVariant = 'outline' | 'ghost';
+
+/** Class list of an icon button; lets a router link look exactly like `IconButton`. */
+export function iconButtonClassName(variant: IconButtonVariant = 'outline', className?: string): string {
+  return cx('ax-iconbtn', variant === 'ghost' && 'ax-iconbtn--ghost', className);
+}

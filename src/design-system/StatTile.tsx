@@ -12,11 +12,13 @@ export interface StatTileProps {
   meta?: ReactNode;
   /** Change vs the previous period, shown before `meta`. */
   delta?: { text: ReactNode; tone: StatDeltaTone; icon?: IconName };
+  /** A ready `Delta` instead of `delta`, as the statistics tiles draw it. */
+  trend?: ReactNode;
   className?: string;
 }
 
 /** A labelled big number on a surface card. */
-export function StatTile({ icon, label, value, meta, delta, className }: StatTileProps) {
+export function StatTile({ icon, label, value, meta, delta, trend, className }: StatTileProps) {
   return (
     <div className={cx('ax-stat', className)}>
       <p className="ax-stat__label">
@@ -24,8 +26,9 @@ export function StatTile({ icon, label, value, meta, delta, className }: StatTil
         {label}
       </p>
       <p className="ax-stat__value">{value}</p>
-      {meta || delta ? (
+      {meta || delta || trend ? (
         <p className="ax-stat__meta">
+          {trend}
           {delta ? (
             <span className={cx('ax-stat__delta', `ax-stat__delta--${delta.tone}`)}>
               {delta.icon ? <Icon name={delta.icon} size={16} /> : null}

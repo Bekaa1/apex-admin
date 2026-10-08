@@ -21,12 +21,18 @@ export function VerificationRoute() {
     : <Navigate to={DEFAULT_AUTH_LINKS.signup} replace />;
 }
 
-export function ResetPasswordRoute({ step }: { step: ResetPasswordStep }) {
+export function ResetPasswordRoute({ step, admin = false }: { step: ResetPasswordStep; admin?: boolean }) {
   const location = useLocation();
   const { session, status } = useAuthSession();
   const { t } = useI18n();
   const legacyState: unknown = typeof window === 'undefined' ? null : window.history.state;
   const resetState = readResetPasswordState(location.state ?? legacyState, location.search);
+  // Public recovery retains the existing email/SMS scenario from main.
+  // Admin recovery below accepts email only and checks the recovery session.
+  if (!admin) {
+    const actualStep = !resetState && (step === 'code' || step === 'new') ? 'email' : step;
+    return <ResetPasswordFlow key={actualStep} step={actualStep} contact={resetState?.contact} channel={resetState?.channel} />;
+  }
   const reset = resetState?.channel === 'email' && !validateEmail(resetState.contact) ? resetState : null;
   const state: unknown = location.state;
   const completed = state !== null && typeof state === 'object' && 'completed' in state && state.completed === true;

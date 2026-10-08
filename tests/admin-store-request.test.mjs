@@ -306,7 +306,7 @@ test('request query waits for session and valid UUID, separates user/request cac
 });
 
 test('one route per wizard address under the existing RequireAdmin; store list and detail remain intact', () => {
-  const routes = source('src/routes.tsx');
+  const routes = source('src/routes/admin.tsx');
   for (const path of ['stores/new', 'stores/new/:requestId']) assert.equal(routes.split(`path: '${path}'`).length - 1, 1);
   const root = routes.indexOf("path: '/admin', element: <RequireAdmin />");
   const end = routes.indexOf("{ path: '*', element: <AdminNotFound />");

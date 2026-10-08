@@ -1,8 +1,11 @@
 // Rows the campaigns list reads from Supabase and the cards it shows.
 import type { Database } from '../../lib/database.types';
 import type { BudgetFigures } from '../campaignBudget';
+import type { CampaignStage } from '../campaignStage';
 import type { DailyPlaysRow } from '../plays';
 import type { TariffCode } from '../tariffs';
+
+export type { CampaignStage, Moderation, StageKind } from '../campaignStage';
 
 type StatsView = Database['public']['Views']['my_campaigns_stats']['Row'];
 
@@ -29,6 +32,8 @@ export type CampaignStatsRow = Pick<
   | 'invoice_sent_to'
   | 'rejection_reasons'
   | 'moderator_comment'
+  | 'submitted_at'
+  | 'tariff_can_extend'
 >;
 
 export interface CampaignsSource {
@@ -43,25 +48,6 @@ export type PlaysPeriod = 'week' | 'month' | 'all';
 export type CampaignTab = 'all' | 'running' | 'review' | 'finished';
 export type CampaignSort = 'new' | 'budgetLeft' | 'shows' | 'name';
 
-export interface Moderation {
-  /** Codes of the broken rules, texts in `campaigns.rules.*`. */
-  rules: string[];
-  comment: string | null;
-}
-
-/** Where the campaign is. `null` means the backend doesn't tell yet, and that part is not shown. */
-export type CampaignStage =
-  | { kind: 'review'; paid: boolean | null }
-  | { kind: 'awaitingPayment'; invoice: { amount: number; sentTo: string } | null }
-  | { kind: 'rejected'; paid: boolean | null; moderation: Moderation | null }
-  | { kind: 'active'; since: string | null; low: boolean }
-  | { kind: 'paused'; since: string | null }
-  | { kind: 'hoursEnded' }
-  | { kind: 'noBudget' }
-  | { kind: 'finished'; from: string | null; to: string | null };
-
-export type StageKind = CampaignStage['kind'];
-
 export interface CampaignCard {
   id: string;
   name: string;
@@ -74,6 +60,10 @@ export interface CampaignCard {
   cartsCount: number | null;
   createdAt: string;
   stage: CampaignStage;
+  /** The backend accepts `edit_campaign` in this status. */
+  canEdit: boolean;
+  /** The backend accepts `extend_campaign`: the campaign runs or ran out of money, and its plan is still sold. */
+  canTopUp: boolean;
   budget: BudgetFigures;
   /** null — impressions have not started yet. */
   plays: Record<PlaysPeriod, number> | null;

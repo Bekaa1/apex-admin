@@ -37,12 +37,14 @@ export const CABINET_SECTIONS: CabinetSection[] = [
     subpages: [
       { path: 'campaigns/new', titleKey: 'campaigns.titles.new', hideCreate: true, page: () => import('./campaigns/wizard/NewCampaignPage').then((m) => m.NewCampaignPage) },
       { path: 'campaigns/corporate', titleKey: 'campaigns.titles.corporate', page: () => import('./campaigns/corporate/CorporatePage').then((m) => m.CorporatePage) },
-      { path: 'campaigns/:campaignId/fix', titleKey: 'campaigns.titles.fix', hideCreate: true, page: () => import('./campaigns/wizard/FixCampaignPage').then((m) => m.FixCampaignPage) },
-      { path: 'campaigns/:campaignId/sent', titleKey: 'campaigns.titles.new', hideCreate: true, page: () => import('./campaigns/wizard/CampaignSentPage').then((m) => m.CampaignSentPage) },
-      { path: 'campaigns/:campaignId', titleKey: 'cabinet.nav.campaigns' },
+      { path: 'campaigns/:campaignId/edit', titleKey: 'campaigns.titles.edit', hideCreate: true, page: () => import('./campaigns/wizard/EditCampaignPage').then((m) => m.EditCampaignPage) },
+      { path: 'campaigns/:campaignId/sent', titleKey: 'campaigns.titles.sent', hideCreate: true, page: () => import('./campaigns/wizard/CampaignSentPage').then((m) => m.CampaignSentPage) },
+      { path: 'campaigns/:campaignId/topup', titleKey: 'campaigns.titles.topUp', hideCreate: true, page: () => import('./campaigns/topup/TopUpPage').then((m) => m.TopUpPage) },
+      { path: 'campaigns/:campaignId/topup/sent', titleKey: 'campaigns.titles.topUp', hideCreate: true, page: () => import('./campaigns/topup/TopUpSentPage').then((m) => m.TopUpSentPage) },
+      { path: 'campaigns/:campaignId', titleKey: 'cabinet.nav.campaigns', page: () => import('./campaigns/details/CampaignDetailsPage').then((m) => m.CampaignDetailsPage) },
     ],
   },
-  { id: 'stats', path: 'stats', labelKey: 'cabinet.nav.stats', icon: 'chart' },
+  { id: 'stats', path: 'stats', labelKey: 'cabinet.nav.stats', icon: 'chart', page: () => import('./stats/StatsPage').then((m) => m.StatsPage) },
   {
     id: 'analytics',
     path: 'analytics',
@@ -93,6 +95,8 @@ export const CABINET_LINKS = {
   corporate: cabinetUrl('campaigns/corporate'),
   corporateFromWizard: `${cabinetUrl('campaigns/corporate')}?from=wizard`,
   campaignSent: (id: string) => cabinetUrl(`campaigns/${id}/sent`),
-  campaignFix: (id: string) => cabinetUrl(`campaigns/${id}/fix`),
+  campaignEdit: (id: string) => cabinetUrl(`campaigns/${id}/edit`),
+  campaignTopUp: (id: string) => cabinetUrl(`campaigns/${id}/topup`),
+  campaignTopUpSent: (id: string) => cabinetUrl(`campaigns/${id}/topup/sent`),
   campaignCopy: (id: string) => `${cabinetUrl('campaigns/new')}?copy=${encodeURIComponent(id)}`,
 };

@@ -1,7 +1,9 @@
-import type { TariffCode } from '../../tariffs';
+import type { TariffCode, TariffTerms } from '../../tariffs';
 import type { Moderation } from '../types';
 
-export type StepId = 'media' | 'tariff' | 'stores' | 'zones' | 'budget';
+export type StepId = 'media' | 'tariff' | 'stores' | 'zones' | 'budget' | 'review';
+/** A new campaign ends with the budget; an edit keeps the plan and the budget and ends with the review of changes. */
+export type WizardFlow = 'new' | 'edit';
 export type MediaField = 'video' | 'cover';
 
 /** Why a file can't be used; texts in `campaigns.wizard.media.errors.*`. */
@@ -53,9 +55,15 @@ export interface CatalogZone {
   otherBrands: number | null;
 }
 
-export interface WizardCatalog {
+/** Stores with carts and their shelf zones, as `catalog_stores` and `catalog_zones` offer them. */
+export interface StoreCatalog {
   stores: CatalogStore[];
   zones: CatalogZone[];
+}
+
+export interface WizardCatalog extends StoreCatalog {
+  /** Plans on sale with their current minimum and terms version. */
+  tariffs: TariffTerms[];
 }
 
 export interface UploadedMedia {
@@ -68,6 +76,8 @@ export interface CampaignSubmission {
   name: string;
   description: string;
   tariffCode: TariffCode;
+  /** The terms version the wizard showed: the server refuses with `tariff_changed` if the plan changed meanwhile. */
+  tariffVersion: number;
   video: UploadedMedia & { durationSec: number; width: number; height: number; sizeBytes: number };
   cover: UploadedMedia | null;
   storeIds: string[];
@@ -76,24 +86,63 @@ export interface CampaignSubmission {
   requestId: string;
 }
 
-export type WizardMode = { kind: 'new' } | { kind: 'fix'; campaignId: string; moderation: Moderation | null };
+/** What an edit sends to `edit_campaign`: the plan and the budget stay with the campaign. */
+export type CampaignEdit = Omit<CampaignSubmission, 'tariffCode' | 'tariffVersion' | 'budget' | 'requestId'>;
+
+/** The campaign being edited, as far as the wizard needs it. */
+export interface EditedCampaign {
+  id: string;
+  /** Shows run now: the edit pauses them until the moderator approves. */
+  running: boolean;
+  rejected: boolean;
+  /** Shows already started once; budget figures are «spent / left». */
+  launched: boolean;
+  budget: number;
+  left: number;
+  canTopUp: boolean;
+  /** The campaign's plan has shelf zones; the plan may be off sale, so it comes with the campaign, not the catalog. */
+  hasZones: boolean;
+}
+
+/** What the steps and checks need besides the form. */
+export interface WizardContext {
+  flow: WizardFlow;
+  catalog: WizardCatalog;
+  /** The plan has shelf zones (`tariffs.can_select_zone`); null before a plan is chosen, and the zones step is shown. */
+  zones: boolean | null;
+  /** An edit: the campaign as it was opened, to compare with. */
+  original: CampaignForm | null;
+}
+
+export type WizardMode =
+  | { kind: 'new' }
+  | { kind: 'edit'; campaign: EditedCampaign; original: CampaignForm; moderation: Moderation | null };
 
 export interface WizardApi {
   uploadMedia: (file: Blob, fileName: string, onProgress: (pct: number) => void, signal: AbortSignal) => Promise<UploadedMedia>;
-  /** Resolves with the campaign id; a fix resends the returned campaign. */
-  submit: (submission: CampaignSubmission, mode: WizardMode) => Promise<string>;
+  /** Resolves with the new campaign id. */
+  submit: (submission: CampaignSubmission) => Promise<string>;
+  /** Sends the edited campaign back to moderation; resolves with its id. */
+  edit: (campaignId: string, edit: CampaignEdit) => Promise<string>;
 }
+
+/** Fields the review of changes compares; texts in `campaigns.edit.fields.*`. */
+export type ChangeField = 'name' | 'description' | 'video' | 'cover' | 'stores' | 'zones';
 
 /** What the success screen shows; passed in the navigation state. */
-export interface SentReceipt {
-  name: string;
-  tariff: TariffCode;
-  budget: number;
-}
+export type SentReceipt =
+  | { kind: 'new'; name: string; tariff: TariffCode; budget: number; pricePerPlay: number | null }
+  | { kind: 'edit'; name: string; changed: ChangeField[]; paused: boolean };
 
-/** A campaign read back for «Исправить» and «Повторить». */
+/** A campaign read back for «Редактировать», «Исправить» and «Повторить». */
 export interface CampaignPrefill {
   status: string | null;
+  spent: number | null;
+  launched: boolean;
+  /** The plan is still sold, so the campaign can be topped up. */
+  tariffSold: boolean;
+  /** The campaign's plan has shelf zones (`can_select_zone`). */
+  tariffZones: boolean;
   name: string;
   description: string;
   tariff: TariffCode | null;

@@ -300,8 +300,8 @@ test('all invoice detail dictionaries have matching keys; new route remains belo
   const keys = (object, prefix = '') => Object.entries(object).flatMap(([key, value]) => typeof value === 'object' ? keys(value, prefix + key + '.') : [prefix + key]).sort();
   const dicts = ['ru', 'kk', 'en'].map(lang => JSON.parse(readFileSync(new URL(`../src/i18n/adminInvoiceDetail.${lang}.json`, import.meta.url))));
   assert.deepEqual(keys(dicts[0]), keys(dicts[1])); assert.deepEqual(keys(dicts[0]), keys(dicts[2]));
-  const routes = readFileSync(new URL('../src/routes.tsx', import.meta.url), 'utf8');
+  const routes = readFileSync(new URL('../src/routes/admin.tsx', import.meta.url), 'utf8');
   assert.equal((routes.match(/element: <RequireAdmin/g) ?? []).length, 1);
   assert.ok(routes.indexOf("path: 'invoices/:id'") > routes.indexOf('element: <RequireAdmin'));
-  assert.ok(routes.includes("import('./admin/invoices/details/InvoiceDetailPage')"));
+  assert.ok(routes.includes("import('../admin/invoices/details/InvoiceDetailPage')"));
 });

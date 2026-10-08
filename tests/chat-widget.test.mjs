@@ -143,7 +143,7 @@ test('all protected/auth paths and trees without public pages hide the widget, i
     assert.equal(canShowChat(path, '', true), true); assert.equal(canShowChat(path, '', false), false);
   }
   assert.equal(canShowChat('/privacy', '?returnTo=%2Fsignup', true), false);
-  const routes = read('src/routes.tsx'); assert.equal((routes.match(/element: <ChatRouteLayout/g) ?? []).length, 1);
+  const routes = read('src/routes/public.tsx'); assert.equal((routes.match(/element: <ChatRouteLayout/g) ?? []).length, 1);
   assert.ok(routes.includes('handle: { publicChat: true }'));
 });
 

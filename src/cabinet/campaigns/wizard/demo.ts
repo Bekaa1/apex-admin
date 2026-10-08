@@ -1,3 +1,4 @@
+import { demoTariffTerms } from '../../demo';
 import type { CampaignForm, CatalogZone, MediaState, WizardApi, WizardCatalog } from './types';
 import { emptyForm } from './reducer';
 
@@ -22,6 +23,7 @@ export function demoCatalog(): WizardCatalog {
     zones: STORES.flatMap(([storeId, , , , , , zones]): CatalogZone[] =>
       zones.map(([name, otherBrands]) => ({ id: `${storeId}-${name}`, storeId, name, otherBrands })),
     ),
+    tariffs: demoTariffTerms(),
   };
 }
 
@@ -64,5 +66,6 @@ export function demoWizardApi(): WizardApi {
         });
       }),
     submit: () => new Promise((resolve) => window.setTimeout(() => resolve('demo-sent'), 600)),
+    edit: (campaignId) => new Promise((resolve) => window.setTimeout(() => resolve(campaignId), 600)),
   };
 }

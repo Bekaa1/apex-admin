@@ -2,12 +2,13 @@ import { Link, useLocation } from 'react-router';
 import { Badge } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { formatNumber, pluralKey } from '../../../lib/format';
+import { STAGE_BADGE } from '../../campaignStage';
 import { CABINET_LINKS } from '../../sections';
-import { CampaignCover } from '../CampaignCover';
+import { CampaignCover } from '../../ui/CampaignCover';
 import type { CampaignCard, PlaysPeriod } from '../types';
 import { ActionCell, BudgetCell, PlaysCell } from './CampaignRowCells';
 import { CampaignRowFoot } from './CampaignRowFoot';
-import { STAGE_BADGE, stageNote } from './rowView';
+import { stageNote } from './rowView';
 
 /** One campaign: a 6-column card on wide content, a stacked card below 640px (campaigns.css). */
 export function CampaignRow({ card, period }: { card: CampaignCard; period: PlaysPeriod }) {

@@ -229,7 +229,7 @@ test('three dictionaries match and client list/card routes stay behind one Requi
   const dicts = ['ru', 'kk', 'en'].map(lang => JSON.parse(readFileSync(new URL(`../src/i18n/adminClients.${lang}.json`, import.meta.url))));
   assert.deepEqual(keys(dicts[0]), keys(dicts[1])); assert.deepEqual(keys(dicts[0]), keys(dicts[2]));
   assert.equal(dicts[0].unconfigured.title, 'Административный доступ к списку клиентов не настроен');
-  const routes = readFileSync(new URL('../src/routes.tsx', import.meta.url), 'utf8');
+  const routes = readFileSync(new URL('../src/routes/admin.tsx', import.meta.url), 'utf8');
   assert.equal((routes.match(/element: <RequireAdmin/g) ?? []).length, 1);
   assert.ok(routes.indexOf("path: 'clients'") > routes.indexOf('element: <RequireAdmin'));
   assert.ok(routes.indexOf("path: 'clients/:id'") > routes.indexOf('element: <RequireAdmin'));

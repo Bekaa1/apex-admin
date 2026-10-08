@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthSession } from '../auth/useAuthSession';
-import { getAccountCompanyName } from './api';
+import { getAccountProfile } from './api';
 import { parseDemoVariant } from './demo';
 import { queryKeys } from './queryKeys';
 
@@ -20,7 +20,7 @@ export function useAccount(): Account {
     queryKey: queryKeys.account(userId),
     queryFn: () => {
       if (!userId) throw new Error('Authentication required');
-      return getAccountCompanyName(userId);
+      return getAccountProfile(userId);
     },
     enabled: Boolean(userId) && !demo,
   });
@@ -30,8 +30,8 @@ export function useAccount(): Account {
       : { companyName: 'ТОО «Ваша компания»', contact: 'marketing@company.kz', status: 'ready' };
   }
   return {
-    companyName: profile.data ?? null,
-    contact: session?.user.email || session?.user.phone || null,
+    companyName: profile.data?.companyName ?? null,
+    contact: profile.data?.email || session?.user.email || session?.user.phone || null,
     status: profile.isError ? 'error' : userId && profile.isPending ? 'loading' : 'ready',
   };
 }

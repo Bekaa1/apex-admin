@@ -257,7 +257,7 @@ test('all locales are complete; safe SVG escapes labels; existing wizard route a
     const html = renderToStaticMarkup(React.createElement(PlanPreview, { plan: example(), interaction: { selectedId: 'A-1', colors: new Map([['A-1', '#22AA55']]), labels: new Map([['A-1', '<script>text</script>']]), unassigned: translator(lang)('adminStoreZoning.unassigned'), onElement() {} } }));
     assert.doesNotMatch(html, /<script>|adminStorePlan\./); assert.match(html, /&lt;script&gt;/); assert.match(html, /aria-pressed="true"/); assert.match(html, /stroke-dasharray="4 3"/);
   }
-  const routes = read('src/routes.tsx'); assert.equal(routes.split("path: 'stores/new/:requestId'").length - 1, 1);
+  const routes = read('src/routes/admin.tsx'); assert.equal(routes.split("path: 'stores/new/:requestId'").length - 1, 1);
   for (const file of ['api.ts', 'save.ts', 'StoreZoningStep.tsx', 'ZonePanel.tsx']) assert.doesNotMatch(read(root + 'zoning/' + file), /innerHTML|dangerouslySetInnerHTML|\.from\(\s*['"]|\.update\(|\.insert\(/);
   assert.match(read(root + 'StoreRequestPage.tsx'), /step === 'review' && record \? <StoreReviewStep/);
 });

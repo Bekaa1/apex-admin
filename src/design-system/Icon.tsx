@@ -146,6 +146,20 @@ const ICONS = {
       <path d="M15 8h5v5" />
     </>
   ),
+  'trending-down': (
+    <>
+      <path d="m4 8 6 6 4-4 6 6" />
+      <path d="M15 16h5v-5" />
+    </>
+  ),
+  pause: <path d="M9 5.5v13M15 5.5v13" />,
+  more: (
+    <>
+      <circle cx={5.5} cy={12} r={1.3} fill="currentColor" />
+      <circle cx={12} cy={12} r={1.3} fill="currentColor" />
+      <circle cx={18.5} cy={12} r={1.3} fill="currentColor" />
+    </>
+  ),
   wallet: (
     <>
       <path d="M4.5 7.5A2.5 2.5 0 0 1 7 5h10.5v3" />
@@ -247,6 +261,38 @@ const ICONS = {
     </>
   ),
   zap: <path d="M13 3 5 13.5h6l-1 7.5 8-10.5h-6z" />,
+  calendar: (
+    <>
+      <rect x={3.5} y={5} width={17} height={15.5} rx={2.5} />
+      <path d="M3.5 10h17M8 3v4M16 3v4" />
+    </>
+  ),
+  tag: (
+    <>
+      <path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-6.1 6.1a1.5 1.5 0 0 1-2.1 0z" />
+      <circle cx={8.5} cy={8.5} r={1.5} />
+    </>
+  ),
+  wifi: (
+    <>
+      <path d="M3 9.5a13 13 0 0 1 18 0M6 13a8.2 8.2 0 0 1 12 0M9 16.5a3.6 3.6 0 0 1 6 0" />
+      <circle cx={12} cy={19.5} r={0.9} />
+    </>
+  ),
+  'wifi-off': (
+    <>
+      <path d="M3 3l18 18" />
+      <path d="M8.6 5.4A13 13 0 0 1 21 9.5M3 9.5a13 13 0 0 1 3-2.2M10.4 9.6A8.2 8.2 0 0 1 18 13M6 13a8.2 8.2 0 0 1 2.5-1.8M9 16.5a3.6 3.6 0 0 1 4.6-1.2" />
+      <circle cx={12} cy={19.5} r={0.9} />
+    </>
+  ),
+  table: (
+    <>
+      <rect x={3.5} y={5} width={17} height={14} rx={2.5} />
+      <path d="M3.5 10h17M3.5 14.5h17M9.5 10v9" />
+    </>
+  ),
+  'chevron-right': <path d="m9 6 6 6-6 6" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof ICONS;

@@ -5,7 +5,7 @@
     "text": "Upload a 7-second video, choose a plan, stores and shelf zones, set a budget — and shoppers will see your ad on cart screens.",
     "how": "How it works",
     "facts": {
-      "payment": "Pay by card, Kaspi QR or invoice",
+      "payment": "Payment by invoice",
       "review": "We review the video before launch",
       "stats": "Statistics by store and zone"
     },
@@ -49,7 +49,7 @@
     },
     "budget": {
       "title": "Budget and payment",
-      "text": "The budget must be at least the plan minimum. Pay by card, Kaspi QR or invoice.",
+      "text": "The budget must be at least the plan minimum. The invoice comes by email right after you send the campaign.",
       "minimum": "Plan minimum",
       "yours": "Your budget"
     },
@@ -106,7 +106,7 @@
     },
     "start": {
       "q": "When do impressions start?",
-      "a": "After payment and the video review — from the start date you choose. The review result comes by email."
+      "a": "As soon as the video is approved and the invoice is paid. The review result comes by email."
     },
     "impression": {
       "q": "What counts as an impression?",
@@ -118,7 +118,7 @@
     },
     "payment": {
       "q": "How do I pay?",
-      "a": "By card, Kaspi QR or invoice for companies. With an invoice, the campaign starts once the payment arrives."
+      "a": "By invoice: it comes to the email in your profile right after you send the campaign. You can pay while the video is under review."
     }
   },
   "support": {

@@ -344,7 +344,7 @@ test('detail dictionaries have matching keys and exact unconfigured Russian text
   const dictionaries = ['ru', 'kk', 'en'].map(lang => JSON.parse(readFileSync(new URL(`../src/i18n/adminClientDetail.${lang}.json`, import.meta.url))));
   assert.deepEqual(keys(dictionaries[0]), keys(dictionaries[1])); assert.deepEqual(keys(dictionaries[0]), keys(dictionaries[2]));
   assert.equal(dictionaries[0].unconfigured, 'Административный доступ к профилю не настроен');
-  const routes = readFileSync(new URL('../src/routes.tsx', import.meta.url), 'utf8');
+  const routes = readFileSync(new URL('../src/routes/admin.tsx', import.meta.url), 'utf8');
   assert.equal((routes.match(/element: <RequireAdmin/g) ?? []).length, 1);
   assert.ok(routes.indexOf("path: 'clients/:id'") > routes.indexOf('element: <RequireAdmin'));
   assert.ok(routes.indexOf("path: 'clients/:id'") < routes.indexOf('element: <AdminNotFound'));

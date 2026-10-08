@@ -2,9 +2,9 @@
 
 ## Подключение и маршруты
 
-`src/routes.tsx` подключает один `ChatRouteLayout`. Компонент виджета загружается лениво из `src/chat/widget/ChatWidget.tsx`. Правило видимости находится в `src/chat/widget/routePolicy.ts`: требуется `handle.publicChat` у публичной ветки маршрутов.
+`src/routes/public.tsx` подключает один `ChatRouteLayout`. Компонент виджета загружается лениво из `src/chat/widget/ChatWidget.tsx`. Правило видимости находится в `src/chat/widget/routePolicy.ts`: требуется `handle.publicChat` у публичной ветки маршрутов. Выбор сборки описан в [BUILD_MODES.md](BUILD_MODES.md).
 
-Виджет доступен на `/pricing`, `/stores`, `/how-it-works`, `/privacy`, `/offer`. Документы, открытые с `returnTo=/signup`, исключены. На `/admin/*`, `/login`, `/signup/*`, `/reset-password/*`, `/access-denied`, `/cabinet/*` и неизвестных маршрутах его нет. Корневой `/` ведёт в административный сценарий. В дереве без публичных страниц чат не монтируется.
+В публичной сборке виджет доступен на `/`, `/pricing`, `/stores`, `/how-it-works`, `/privacy`, `/offer`. Документы, открытые с `returnTo=/signup`, исключены. На `/admin/*`, `/login`, `/signup/*`, `/reset-password/*`, `/access-denied`, `/cabinet/*` и неизвестных маршрутах его нет. Публичный `/` открывает лендинг. Отдельное административное дерево `src/routes/admin.tsx` вообще не импортирует Chat; его `/` ведёт в `/admin`.
 
 ## Конфигурация
 

@@ -1,5 +1,4 @@
 import { TARIFFS, type TariffCode } from '../cabinet/tariffs';
-import { adminReturnTo } from '../navigation/returnTo';
 
 const KEY = 'apex-campaign-intent-v1';
 const PATH = '/cabinet/campaigns/new';
@@ -25,8 +24,6 @@ export function rememberCampaignIntent(intent: CampaignIntent): void {
 }
 
 export function postAuthDestination(): string {
-  const admin = adminReturnTo(window.location.search);
-  if (admin) return admin;
   try {
     const value: unknown = JSON.parse(sessionStorage.getItem(KEY) ?? 'null');
     if (!value || typeof value !== 'object' || !('href' in value) || typeof value.href !== 'string' || !('expires' in value) || typeof value.expires !== 'number' || value.expires < Date.now()) return '/cabinet';

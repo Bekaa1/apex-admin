@@ -12,7 +12,7 @@ export function LowBudgetAlert({ campaign }: { campaign: CampaignItem }) {
       tone="warning"
       title={t('home.lowBudget.title', { name: campaign.name })}
       action={
-        <ButtonLink to={CABINET_LINKS.campaign(campaign.id)} variant="secondary" size="md" iconLeft="plus">
+        <ButtonLink to={CABINET_LINKS.campaignTopUp(campaign.id)} variant="secondary" size="md" iconLeft="plus">
           {t('home.lowBudget.topUp')}
         </ButtonLink>
       }

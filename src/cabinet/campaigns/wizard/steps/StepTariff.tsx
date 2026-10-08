@@ -1,9 +1,10 @@
-import { Alert, Badge, ChoiceCard, Icon } from '../../../../design-system';
+import { Badge, ChoiceCard, Icon } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
-import { formatMoney } from '../../../../lib/format';
+import { formatMoney, formatPrice } from '../../../../lib/format';
 import { CABINET_LINKS } from '../../../sections';
-import { CORPORATE_LEVEL, TARIFF_FEATURES, TARIFF_LEVELS, TARIFFS } from '../../../tariffs';
+import { CORPORATE_LEVEL, TARIFF_FEATURES, TARIFF_LEVELS, TARIFFS, termsOf } from '../../../tariffs';
 import { ButtonLink } from '../../../ui/ButtonLink';
+import type { WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 
 const CORPORATE_FEATURES = ['reach', 'zonePriority', 'moreShows', 'brandOnly', 'manager'];
@@ -47,24 +48,26 @@ function CorporateCard() {
   );
 }
 
-/** Step 2: three plans to pick from; the corporate plan leads to a request instead. A fix keeps the campaign's plan. */
-export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
+/** Step 2: the plans on sale with their current minimum; the corporate plan leads to a request instead. An edit skips this step. */
+export function StepTariff({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
   const { t, lang } = useI18n();
-  const { form, errors, dispatch, fixing } = wizard;
+  const { form, errors, dispatch } = wizard;
+  const plans = TARIFFS.flatMap((tariff) => {
+    const terms = termsOf(catalog.tariffs, tariff.code);
+    return terms ? [{ ...tariff, minimum: terms.minimum, pricePerPlay: terms.pricePerPlay }] : [];
+  });
   return (
     <div className="cmp-fields">
-      {fixing ? <Alert tone="info" title={t('campaigns.wizard.fix.tariffLocked')} /> : null}
       <fieldset className="cmp-fieldset">
         <legend className="ax-sr">{t('campaigns.wizard.tariff.legend')}</legend>
         <div className="cmp-tariff-grid">
-          {TARIFFS.map((tariff) => (
+          {plans.map((tariff) => (
             <ChoiceCard
               key={tariff.code}
               className="cmp-tariff-choice"
               name="tariff"
               value={tariff.code}
               checked={form.tariff === tariff.code}
-              disabled={fixing && form.tariff !== tariff.code}
               onChange={() => dispatch({ type: 'tariff', value: tariff.code })}
               top={<Level level={tariff.level} />}
               title={t(`cabinet.tariffs.${tariff.code}.name`)}
@@ -85,18 +88,22 @@ export function StepTariff({ wizard }: { wizard: CampaignWizardState }) {
                 })}
               </ul>
               <div className="cab-tariff__min">
+                <p className="cab-tariff__price">
+                  <span>{t('cabinet.tariffs.pricePerPlay')}</span>
+                  <strong>{formatPrice(tariff.pricePerPlay, lang)}</strong>
+                </p>
                 <span>{t('cabinet.tariffs.minimum')}</span>
                 <strong>{t('cabinet.tariffs.from', { amount: formatMoney(tariff.minimum, lang) })}</strong>
               </div>
             </ChoiceCard>
           ))}
-          {fixing ? null : <CorporateCard />}
+          <CorporateCard />
         </div>
       </fieldset>
       {errors.tariff ? (
         <p className="ax-error" role="alert">
           <Icon name="alert-circle" size={18} />
-          <span>{t('campaigns.wizard.tariff.error')}</span>
+          <span>{t(errors.tariff === 'unavailable' ? 'campaigns.wizard.tariff.errorUnavailable' : 'campaigns.wizard.tariff.error')}</span>
         </p>
       ) : null}
       <p className="cab-note">

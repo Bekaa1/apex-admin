@@ -24,6 +24,16 @@
 .skip { position: fixed; z-index: 40; top: var(--space-2); left: var(--space-2); padding: var(--space-3); transform: translateY(-200%); background: var(--surface); color: var(--link); }
 .skip:focus { transform: translateY(0); }
 .mobileMenu { display: none; }
+/* Home: the header floats over the first-screen video, transparent with white controls while the page is at its top. */
+.home .header { position: fixed; left: 0; right: 0; transition: background-color .2s ease, border-color .2s ease; }
+.overHero { background: transparent; border-bottom-color: transparent; }
+.overHero > :global(.ax-logo), .overHero > .desktopNav .navLink, .overHero > .desktopNav .activeLink, .overHero > .desktopNav .navButton, .overHero .login { color: var(--on-primary); }
+.overHero .login:hover { background: color-mix(in oklab, var(--on-primary) 16%, transparent); color: var(--on-primary); }
+.overHero .preferences :global(.ax-seg) { background: color-mix(in oklab, var(--on-primary) 14%, transparent); border-color: color-mix(in oklab, var(--on-primary) 30%, transparent); }
+.overHero .preferences :global(.ax-seg__item) { color: var(--on-primary); }
+.overHero .preferences :global(.ax-seg__item[aria-pressed="true"]) { background: var(--on-primary); color: var(--brand-blue); }
+.overHero .preferences :global(.ax-iconbtn), .overHero .mobileMenu > :global(.ax-iconbtn) { border-color: color-mix(in oklab, var(--on-primary) 45%, transparent); background: color-mix(in oklab, var(--on-primary) 14%, transparent); color: var(--on-primary); }
+.overHero a:focus-visible, .overHero button:focus-visible { outline-color: var(--on-primary); }
 @media (max-width: 1190px) {
   .desktopNav, .preferences, .start { display: none; }
   .header { gap: var(--space-3); }

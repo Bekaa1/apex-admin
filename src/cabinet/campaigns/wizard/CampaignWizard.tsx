@@ -1,6 +1,5 @@
 import { useEffect, useId, useRef } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router';
-import { listReturnTo } from '../../../navigation/returnTo';
+import { Link, useSearchParams } from 'react-router';
 import { Alert, Icon } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { clearCampaignIntent } from '../../../lib/campaignIntent';
@@ -8,6 +7,7 @@ import { CABINET_LINKS } from '../../sections';
 import { activeSteps } from './steps';
 import { StepBudget } from './steps/StepBudget';
 import { StepMedia } from './steps/StepMedia';
+import { StepReview } from './steps/StepReview';
 import { StepStores } from './steps/StepStores';
 import { StepTariff } from './steps/StepTariff';
 import { StepZones } from './steps/StepZones';
@@ -18,21 +18,33 @@ import { WizardActions } from './WizardActions';
 import { WizardHelp } from './WizardHelp';
 import { WizardStepper } from './WizardStepper';
 import { WizardSummary } from './WizardSummary';
+import type { WizardMode } from './types';
+
+/** Above the steps of an edit: why the moderator returned the campaign, or that saving sends it to moderation. */
+function EditNotice({ mode }: { mode: WizardMode }) {
+  const { t } = useI18n();
+  if (mode.kind !== 'edit') return null;
+  if (mode.campaign.rejected) return <ReturnedAlert moderation={mode.moderation} />;
+  return (
+    <Alert tone={mode.campaign.running ? 'warning' : 'info'} title={t('campaigns.edit.notice.title')}>
+      {t(mode.campaign.running ? 'campaigns.edit.notice.running' : 'campaigns.edit.notice.text')}
+    </Alert>
+  );
+}
 
 export function CampaignWizard(options: WizardOptions) {
   const { t } = useI18n();
-  const location = useLocation();
   const { catalog, mode } = options;
   const wizard = useCampaignWizard(options);
-  const { step, form } = wizard;
+  const { step, form, flow } = wizard;
   const titleId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const errorsRef = useRef<HTMLDivElement>(null);
   const shownStep = useRef(step);
   const [params, setParams] = useSearchParams();
-  const steps = activeSteps(form.tariff);
+  const steps = activeSteps(flow, wizard.ctx.zones);
   const hasErrors = Object.keys(wizard.errors).length > 0;
-  const moderation = mode.kind === 'fix' ? mode.moderation : null;
+  const backTo = mode.kind === 'edit' ? CABINET_LINKS.campaign(mode.campaign.id) : CABINET_LINKS.campaigns;
 
   // Once initialized, the saved form wins over a copy or a choice from the public catalog on reload.
   const hasPrefill = params.has('copy') || params.has('tariff') || params.has('store');
@@ -47,9 +59,9 @@ export function CampaignWizard(options: WizardOptions) {
         next.delete('store');
         return next;
       },
-      { replace: true, state: location.state },
+      { replace: true },
     );
-  }, [hasPrefill, mode.kind, setParams, location.state]);
+  }, [hasPrefill, mode.kind, setParams]);
 
   // A new step starts at the top, and screen readers land on its title.
   useEffect(() => {
@@ -65,21 +77,21 @@ export function CampaignWizard(options: WizardOptions) {
 
   return (
     <div className="cmp-wizard">
-      <Link className="cab-link cmp-back" to={listReturnTo(location.state, CABINET_LINKS.campaigns)}>
+      <Link className="cab-link cmp-back" to={backTo}>
         <Icon name="arrow-left" size={18} />
-        {t('campaigns.wizard.back')}
+        {t(mode.kind === 'edit' ? 'campaigns.topUp.back' : 'campaigns.wizard.back')}
       </Link>
       <div className="cab-card cmp-wizard__stepper">
-        <WizardStepper step={step} form={form} catalog={catalog} onStepClick={wizard.goTo} />
+        <WizardStepper step={step} form={form} ctx={wizard.ctx} onStepClick={wizard.goTo} />
       </div>
-      {mode.kind === 'fix' ? <ReturnedAlert moderation={moderation} /> : null}
+      <EditNotice mode={mode} />
       <div className="cmp-wizard__grid">
         <form
           className="cmp-wizard__main"
           noValidate
           onSubmit={(event) => {
             event.preventDefault();
-            if (step === 'budget') wizard.submit();
+            if (step === 'budget' || step === 'review') wizard.submit();
             else wizard.next();
           }}
         >
@@ -97,17 +109,25 @@ export function CampaignWizard(options: WizardOptions) {
               </div>
             ) : null}
             {step === 'media' ? <StepMedia wizard={wizard} /> : null}
-            {step === 'tariff' ? <StepTariff wizard={wizard} /> : null}
+            {step === 'tariff' ? <StepTariff wizard={wizard} catalog={catalog} /> : null}
             {step === 'stores' ? <StepStores wizard={wizard} catalog={catalog} /> : null}
             {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} /> : null}
             {step === 'budget' ? <StepBudget wizard={wizard} catalog={catalog} /> : null}
+            {step === 'review' && mode.kind === 'edit' ? <StepReview wizard={wizard} campaign={mode.campaign} /> : null}
           </section>
           {wizard.submitError ? <SubmitError code={wizard.submitError} /> : null}
-          <WizardActions step={step} form={form} submitting={wizard.submitting} onBack={wizard.back} />
+          <WizardActions
+            flow={flow}
+            step={step}
+            zones={wizard.ctx.zones}
+            submitting={wizard.submitting}
+            onBack={wizard.back}
+            cancel={mode.kind === 'edit' ? { to: backTo, onClick: wizard.discard } : null}
+          />
         </form>
         <aside className="cmp-wizard__aside">
-          <WizardSummary step={step} form={form} catalog={catalog} />
-          <WizardHelp step={step} failedRules={moderation?.rules ?? []} />
+          <WizardSummary step={step} form={form} ctx={wizard.ctx} edited={mode.kind === 'edit' ? mode.campaign : null} />
+          <WizardHelp step={step} failedRules={mode.kind === 'edit' ? (mode.moderation?.rules ?? []) : []} />
         </aside>
       </div>
     </div>

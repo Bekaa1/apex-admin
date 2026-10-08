@@ -213,7 +213,7 @@ test('queue UI handles loading, empty, access error and several nullable/long re
   const markup = html(); assert.match(markup, /Без названия/); assert.match(markup, /Моя заявка/); assert.match(markup, /&lt;script&gt;/); assert.doesNotMatch(markup, /<script>/); assert.equal((markup.match(/Рассмотреть/g) ?? []).length, 2);
 });
 test('routes stay behind both guards, reuse previews and clear access on session changes; no backend writes outside RPC', () => {
-  const routes = read('src/routes.tsx'); const admin = routes.indexOf("path: '/admin', element: <RequireAdmin"), owner = routes.indexOf('element: <RequireStoreOwner');
+  const routes = read('src/routes/admin.tsx'); const admin = routes.indexOf("path: '/admin', element: <RequireAdmin"), owner = routes.indexOf('element: <RequireStoreOwner');
   assert.ok(owner > admin); for (const path of ['store-requests/pending', 'store-requests/:requestId/review']) { assert.ok(routes.indexOf(`path: '${path}'`) > owner); assert.equal(routes.split(`path: '${path}'`).length - 1, 1); }
   const summary = read('src/admin/stores/onboarding/review/StoreReviewStep.tsx'); assert.match(summary, /!readOnly && canEdit/); assert.match(summary, /!check.valid && editable/); assert.match(summary, /<PlanPreview/);
   assert.match(read('src/auth/AuthSessionProvider.tsx'), /queryClient.clear\(\)/); assert.match(read('src/auth/useSignOut.ts'), /queryClient.clear\(\)/);

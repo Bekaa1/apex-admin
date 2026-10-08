@@ -209,5 +209,5 @@ test('compact zone preview is safe, read-only and translated; no production bypa
     assert.doesNotMatch(html, /<script>|aria-pressed|adminStorePlan\./); assert.match(html, /&lt;script&gt;/); assert.match(html, /compact/); assert.match(html, /#22AA55/);
   }
   for (const name of ['api.ts', 'submit.ts', 'model.ts', 'StoreReviewStep.tsx', 'SubmitDialog.tsx']) assert.doesNotMatch(read(root + 'review/' + name), /innerHTML|owner_approve_store_request|owner_reject_store_request|\.from\(|\.update\(|\.insert\(/);
-  assert.equal(read('src/routes.tsx').split("path: 'stores/new/:requestId'").length - 1, 1);
+  assert.equal(read('src/routes/admin.tsx').split("path: 'stores/new/:requestId'").length - 1, 1);
 });

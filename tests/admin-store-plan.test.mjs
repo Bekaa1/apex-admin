@@ -270,7 +270,7 @@ test('safe SVG preview displays geometry, text and count in all locales; zoom an
 });
 
 test('saved-plan step reuses the existing route; styles constrain mobile viewport and no unsafe markup is used', () => {
-  const routes = read('src/routes.tsx');
+  const routes = read('src/routes/admin.tsx');
   assert.equal(routes.split("path: 'stores/new/:requestId'").length - 1, 1);
   assert.match(read(root + 'StoreRequestPage.tsx'), /step === 'plan' && record/);
   assert.match(read(root + 'StoreRequestPage.tsx'), /next && result.outcome === 'saved'/);

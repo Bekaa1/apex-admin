@@ -1,7 +1,7 @@
 export { cx } from './cx';
 export { Icon, iconNames, type IconName, type IconProps } from './Icon';
 export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from './Button';
-export { buttonClassName, type ButtonLook } from './buttonClassName';
+export { buttonClassName, iconButtonClassName, type ButtonLook, type IconButtonVariant } from './buttonClassName';
 export { IconButton, type IconButtonProps } from './IconButton';
 export { TextField, PasswordField, FieldAction, type TextFieldProps, type PasswordFieldProps } from './TextField';
 export { OtpInput, type OtpInputProps } from './OtpInput';
@@ -26,3 +26,9 @@ export { ChoiceCard, type ChoiceCardProps } from './ChoiceCard';
 export { Chip, type ChipProps } from './Chip';
 export { FileDrop, type FileDropProps } from './FileDrop';
 export { TextAreaField, type TextAreaFieldProps } from './TextAreaField';
+export { Delta, type DeltaProps, type DeltaTone, type DeltaTrend } from './Delta';
+export { ColumnsChart, type ColumnsChartProps, type ColumnsChartBar } from './ColumnsChart';
+export { Menu, type MenuProps, type MenuItem } from './Menu';
+export { Sparkline, type SparklineProps } from './Sparkline';
+export { BarList, type BarListProps, type BarListItem } from './BarList';
+export { Heatmap, type HeatmapProps, type HeatmapRow, type HeatmapLevel } from './Heatmap';

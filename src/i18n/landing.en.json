@@ -17,7 +17,8 @@
     "titleAfter": " with your product",
     "text": "Screens on shopping carts start your ad when a shopper reaches the right shelf. Pick stores on the map and zones — drinks, snacks, household goods — and pay per impression.",
     "ctaPrimary": "Launch a campaign",
-    "ctaSecondary": "How it works"
+    "watch": "Watch the video",
+    "watchLength": "2 min"
   },
   "stats": {
     "s1Value": "200+",
@@ -26,6 +27,12 @@
     "s2Label": "per video",
     "s3Value": "By shelf",
     "s3Label": "choose zones inside the store"
+  },
+  "video": {
+    "title": "Apexmedia video",
+    "close": "Close the video",
+    "pause": "Pause the background video",
+    "play": "Play the background video"
   },
   "figure": {
     "alt": "A tablet on a cart handle plays a video when the shopper reaches the shelf",
@@ -45,7 +52,6 @@
     "acceptPrivacy": "I have read the privacy policy and accept its terms",
     "acceptOffer": "I have read the public offer and accept its terms",
     "originalLanguage": "The original document is provided in Russian.",
-    "downloadOriginal": "Download original DOCX",
     "loading": "Opening document…",
     "loadError": "Could not open the document.",
     "retry": "Try again"

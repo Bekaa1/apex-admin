@@ -20,7 +20,7 @@ export function CorporateRequestPage() {
   return <section className={styles.page} aria-busy={query.isFetching}>
     <div><Button href={returnTo} variant="ghost" size="md" iconLeft="arrow-left">{t(returnTo === '/admin' ? 'adminCorporate.backOverview' : 'adminCorporate.backList')}</Button></div>
     <header className={styles.heading}><h1>{t('adminCorporate.title')}</h1><p className={styles.muted}>{t('adminCorporate.readOnly')}</p></header>
-    {!isRequestId(id) ? <Alert tone="warning" title={t('adminCorporate.invalidId.title')}>{t('adminCorporate.invalidId.body')}</Alert>
+    {!isRequestId(id) ? <Alert tone="danger" title={t('adminCorporate.invalidId.title')}>{t('adminCorporate.invalidId.body')}</Alert>
       : query.isPending ? <OverviewLoading />
       : query.isError ? <Alert tone="danger" title={t(errorKind === 'denied' ? 'adminCorporate.deniedTitle' : 'adminCorporate.errorTitle')}
         action={<Button variant="secondary" size="md" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('cabinet.retry')}</Button>}>

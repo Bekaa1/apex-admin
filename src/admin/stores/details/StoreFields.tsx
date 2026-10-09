@@ -11,7 +11,7 @@ function PartnerValue({ id, partnerId }: { id: string; partnerId: string }) {
   return <div className={styles.blocks} aria-busy={query.isFetching}>
     <span>{query.isError ? partnerId : query.data?.name || partnerId}</span>
     {query.isPending ? <span className={styles.muted} role="status">{t('adminStoreDetail.partnerLoading')}</span> : null}
-    {query.isError || query.data?.unavailable ? <Alert tone="info"
+    {query.isError || query.data?.unavailable ? <Alert tone="danger"
       action={<Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('cabinet.retry')}</Button>}>
       {t('adminStoreDetail.partnerUnavailable')}
     </Alert> : null}

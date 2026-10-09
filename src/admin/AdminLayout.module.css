@@ -23,3 +23,6 @@
 .skip { position: fixed; top: var(--space-3); left: var(--space-3); transform: translateY(-200%); z-index: 40; padding: var(--space-3); background: var(--surface); color: var(--link); border-radius: var(--radius-md); }
 .skip:focus { transform: none; outline: 2px solid var(--focus); }
 @media (max-width: 760px) { .shell .mobileBrand { display: inline-flex; flex: 1 0 100%; } .shell .sectionTitle { display: none; } .placeholder { padding: var(--space-5); } }
+.shell :global(.ax-alert--success .ax-alert__title) { color: var(--success); }
+.shell :global(.ax-alert--danger .ax-alert__title) { color: var(--danger); }
+.shell :global(.ax-alert--warning .ax-alert__title) { color: var(--warning); }

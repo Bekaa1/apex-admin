@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Alert, Button } from '../../../../design-system';
+import { Alert, Badge, Button } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { storeDetailPath } from '../../model';
 import { canEdit, FIELDS, requestPath, STORE_REQUEST_LIST, type StoreRequest } from '../model';
@@ -11,6 +11,7 @@ import { UnsavedPlanDialog } from '../plan/UnsavedPlanDialog';
 import { errorStep, reviewRequest } from './model';
 import { readSubmission, submitReviewed, type SubmitResult } from './submit';
 import { SubmitDialog } from './SubmitDialog';
+import { adminStatusTone } from '../../../statusTone';
 import shared from '../StoreRequestPage.module.css';
 import styles from './Review.module.css';
 
@@ -67,10 +68,10 @@ export function StoreReviewStep({ record, onRevision, onResult, readOnly = false
       </section>
       <section className={shared.panel} aria-labelledby="review-status">
         <h2 id="review-status">{t('adminStoreReview.status')}</h2>
-        <p>{['inactive', 'rejected', 'pending_owner_approval', 'approved'].includes(record.status) ? t(`adminStoreReview.statuses.${record.status}`) : record.status}</p>
+        <p><Badge tone={adminStatusTone('storeRequest', record.status)}>{['inactive', 'rejected', 'pending_owner_approval', 'approved'].includes(record.status) ? t(`adminStoreReview.statuses.${record.status}`) : record.status}</Badge></p>
         {!editable && <p>{t('adminStoreRequest.readOnly')}</p>}
-        {record.status === 'rejected' && <Alert tone="warning" title={t('adminStoreRequest.ownerComment')}><span className={shared.comment}>{record.review_comment || t('adminStoreRequest.noComment')}</span></Alert>}
-        {record.status === 'pending_owner_approval' && <><Alert title={t('adminStoreReview.awaiting')} /><p>{t('adminStoreReview.submittedAt')}: {dateText}</p></>}
+        {record.status === 'rejected' && <Alert tone="danger" title={t('adminStoreRequest.ownerComment')}><span className={shared.comment}>{record.review_comment || t('adminStoreRequest.noComment')}</span></Alert>}
+        {record.status === 'pending_owner_approval' && <><Alert tone="warning" title={t('adminStoreReview.awaiting')} /><p>{t('adminStoreReview.submittedAt')}: {dateText}</p></>}
         {record.status === 'approved' && <><Alert tone="success" title={t('adminStoreReview.approved')} />{record.published_store_id && <Button size="md" href={storeDetailPath(record.published_store_id)}>{t('adminStoreRequest.openStore')}</Button>}</>}
       </section>
       <section className={shared.panel} aria-labelledby="review-plan">

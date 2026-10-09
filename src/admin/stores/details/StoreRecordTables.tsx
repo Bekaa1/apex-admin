@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { Badge } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { usePermissions } from '../../../auth/usePermissions';
+import { adminStatusTone } from '../../statusTone';
 import { formatNumber } from '../../../lib/format';
 import { overviewDate } from '../../overview/model';
 import { storeDetailPath } from '../model';
@@ -32,7 +33,7 @@ function ZoneValue({ id, name }: { id: string | null; name: string | null }) {
 /** Preserve raw status codes, including unknown ones; do not infer connectivity from time. */
 function DeviceStatus({ value }: { value: string | null }) {
   const { t } = useI18n();
-  return <Badge tone="neutral" className={styles.status}>{value?.trim() || t('adminStoreDetail.noData')}</Badge>;
+  return <Badge tone={adminStatusTone('equipment', value)} className={styles.status}>{value?.trim() || t('adminStoreDetail.noData')}</Badge>;
 }
 
 export function ZoneTable({ rows }: { rows: ZoneRow[] }) {

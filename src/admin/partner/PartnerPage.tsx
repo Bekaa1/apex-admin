@@ -10,6 +10,7 @@ import { isStoreId } from '../stores/model';
 import { StoreFields } from '../stores/details/StoreFields';
 import { StoreRecords } from '../stores/details/StoreRecords';
 import { roleError } from '../roles/api';
+import { adminStatusTone } from '../statusTone';
 import { currentPartner, readPartnerPage, readPartnerStore, type PartnerSection } from './api';
 import styles from '../roles/Roles.module.css';
 
@@ -38,7 +39,7 @@ function PartnerList({ section, partnerId }: { section: PartnerSection; partnerI
             {section === 'equipment' ? <><th scope="col">{t('roles.battery')}</th><th scope="col">{t('roles.lastSeen')}</th><th scope="col">{t('roles.route')}</th></> : <><th scope="col">{t('roles.start')}</th><th scope="col">{t('roles.end')}</th></>}</>}
         </tr></thead>
         <tbody>{query.data.rows.map(row => <tr key={row.key}><td>{section === 'stores' ? <Link to={`/admin/partner/stores/${row.id}`}>{row.name || unknown}</Link> : row.name || row.id}</td>
-          {section === 'stores' ? <td>{row.city || unknown}</td> : <><td>{row.storeId ? <Link to={`/admin/partner/stores/${row.storeId}`}>{row.storeName || row.storeId}</Link> : row.storeName || unknown}</td><td><Badge>{row.status || unknown}</Badge></td>
+          {section === 'stores' ? <td>{row.city || unknown}</td> : <><td>{row.storeId ? <Link to={`/admin/partner/stores/${row.storeId}`}>{row.storeName || row.storeId}</Link> : row.storeName || unknown}</td><td><Badge tone={adminStatusTone(section === 'equipment' ? 'equipment' : 'campaign', row.status)}>{row.status || unknown}</Badge></td>
             {section === 'equipment' ? <><td>{row.battery === null ? unknown : `${formatNumber(row.battery, lang)}%`}</td><td>{row.lastSeen || unknown}</td><td><Link to={`/admin/cart-routes/${row.id}`}>{t('roles.route')}</Link></td></>
               : <><td>{overviewDate(row.start, lang, unknown)}</td><td>{overviewDate(row.end, lang, unknown)}</td></>}</>}
         </tr>)}</tbody></table></div>}
@@ -59,6 +60,6 @@ function PartnerStore({ id, partnerId }: { id: string; partnerId: string }) {
 export function PartnerStorePage() {
   const { id } = useParams(), { t } = useI18n();
   return <section className={styles.page}><div><Button href="/admin/partner/stores" size="md" variant="ghost" iconLeft="arrow-left">{t('roles.myStores')}</Button></div>
-    {isStoreId(id) ? <NetworkGate>{partnerId => <PartnerStore key={`${id}:${partnerId}`} id={id} partnerId={partnerId} />}</NetworkGate> : <Alert>{t('roles.errors.invalid')}</Alert>}
+    {isStoreId(id) ? <NetworkGate>{partnerId => <PartnerStore key={`${id}:${partnerId}`} id={id} partnerId={partnerId} />}</NetworkGate> : <Alert tone="danger">{t('roles.errors.invalid')}</Alert>}
   </section>;
 }

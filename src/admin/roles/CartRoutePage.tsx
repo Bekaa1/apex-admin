@@ -26,8 +26,8 @@ export function CartRoutePage() {
       <TextField type="date" label={t('roles.to')} value={to} onChange={event => setTo(event.target.value)} />
       <Button size="md" type="submit" disabled={!validRoutePeriod(from, to) || query.isFetching || !isStoreId(id)}>{t('roles.show')}</Button>
     </form>
-    {!validRoutePeriod(from, to) ? <Alert tone="warning">{t('roles.periodError')}</Alert> : null}
-    {!isStoreId(id) ? <Alert>{t('roles.errors.invalid')}</Alert> : query.isPending ? <p role="status">{t('roles.loading')}</p> : query.isError ? <Alert tone="danger" action={<Button size="md" onClick={() => { void query.refetch(); }}>{t('roles.retry')}</Button>}>{t(`roles.errors.${roleError(query.error).kind}`)}</Alert>
+    {!validRoutePeriod(from, to) ? <Alert tone="danger">{t('roles.periodError')}</Alert> : null}
+    {!isStoreId(id) ? <Alert tone="danger">{t('roles.errors.invalid')}</Alert> : query.isPending ? <p role="status">{t('roles.loading')}</p> : query.isError ? <Alert tone="danger" action={<Button size="md" onClick={() => { void query.refetch(); }}>{t('roles.retry')}</Button>}>{t(`roles.errors.${roleError(query.error).kind}`)}</Alert>
       : !query.data.length ? <p>{t('roles.empty')}</p> : <><p className={styles.muted}>{t('roles.routeCount', { count: query.data.length })}</p>
         <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={t('roles.route')}><table className={styles.table}><thead><tr>{['zone', 'entered', 'left', 'plays'].map(key => <th key={key} scope="col">{t(`roles.${key}`)}</th>)}</tr></thead>
           <tbody>{query.data.slice((page - 1) * 25, page * 25).map((row, index) => <tr key={`${row.zoneId}:${row.entered}:${index}`}><td>{row.name || row.zoneId || unknown}</td><td>{date(row.entered)}</td><td>{date(row.left)}</td><td>{row.plays === null ? unknown : formatNumber(row.plays, lang)}</td></tr>)}</tbody></table></div>

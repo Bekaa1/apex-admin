@@ -59,7 +59,7 @@ function ClientContent({ id }: { id: string }) {
       <Tabs items={[{ value: 'campaigns', label: t('adminClientDetail.tabs.campaigns') }, ...(can('invoices') ? [{ value: 'invoices', label: t('adminClientDetail.tabs.invoices') }] : [])]}
         value={tab} onChange={next => { if (next === 'campaigns' || next === 'invoices') setParams(clientTabParams(params, next), navigation); }} label={t('adminClientDetail.records')} panelId="client-records" />
       <div className={local.tabPanel} id="client-records" role="tabpanel" aria-label={t(`adminClientDetail.tabs.${tab}`)} tabIndex={0}>
-        {error ? <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={() => setParams(clientTabParams(params, tab, 1), navigation)}>{t('adminClients.firstPage')}</Button>}>{t('adminClientDetail.invalidPage')}</Alert>
+        {error ? <Alert tone="danger" action={<Button size="md" variant="secondary" onClick={() => setParams(clientTabParams(params, tab, 1), navigation)}>{t('adminClients.firstPage')}</Button>}>{t('adminClientDetail.invalidPage')}</Alert>
           : tab === 'campaigns' ? <ClientCampaigns key={`${id}:campaigns`} id={id} page={page} onPage={onPage} />
             : can('invoices') ? <ClientInvoices key={`${id}:invoices`} id={id} page={page} onPage={onPage} /> : <PermissionDenied />}
       </div>
@@ -76,7 +76,7 @@ export function ClientDetailPage() {
   return <section className={styles.page} aria-labelledby="client-detail-title">
     <div><Button href={listReturnTo(state, '/admin/clients')} variant="ghost" size="md" iconLeft="arrow-left">{t('adminClientDetail.back')}</Button></div>
     <header><h1 id="client-detail-title" tabIndex={-1}>{t('adminClientDetail.title')}</h1><p className={styles.muted}>{t('adminClientDetail.description')}</p></header>
-    {!isClientId(id) ? <Alert tone="warning">{t('adminClientDetail.invalidId')}</Alert>
+    {!isClientId(id) ? <Alert tone="danger">{t('adminClientDetail.invalidId')}</Alert>
       : !clientsAccessConfigured() ? <Alert tone="warning">{t('adminClientDetail.unconfigured')}</Alert>
         : <ClientContent key={id} id={id} />}
   </section>;

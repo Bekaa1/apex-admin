@@ -86,7 +86,7 @@ export function StoreZoningStep({ record, onRevision, onSaved }: {
   return <div className={shared.panel} aria-busy={pending}>
     <h2>{t('adminStoreZoning.title')}</h2>
     {!editable && <Alert title={t('adminStoreRequest.readOnly')} />}
-    {record.status === 'rejected' && record.review_comment && <Alert tone="warning" title={t('adminStoreRequest.ownerComment')}><span className={shared.comment}>{record.review_comment}</span></Alert>}
+    {record.status === 'rejected' && record.review_comment && <Alert tone="danger" title={t('adminStoreRequest.ownerComment')}><span className={shared.comment}>{record.review_comment}</span></Alert>}
     {loaded.error && <Alert tone="danger" title={t(`adminStoreZoning.errors.${loaded.error.kind}`)} />}
     {issue && <Alert tone="danger" title={t(`adminStoreZoning.errors.${issue.kind}`)}>
       {issue.details && <p>{issue.details}</p>}
@@ -95,7 +95,7 @@ export function StoreZoningStep({ record, onRevision, onSaved }: {
     {notice && <Alert tone={notice === 'saved' ? 'success' : 'warning'} title={t(`adminStoreZoning.${notice}`)} />}
     {loaded.data && loaded.data.discarded.length > 0 && <Alert tone="warning" title={t('adminStoreZoning.discarded', { count: loaded.data.discarded.length })} />}
     {plan && <>
-      {validation.length > 0 && editable && <Alert tone="warning" title={t('adminStoreZoning.validationSummary')}>{t(`adminStoreZoning.validation.${validation[0].code}`)}</Alert>}
+      {validation.length > 0 && editable && <Alert tone="danger" title={t('adminStoreZoning.validationSummary')}>{t(`adminStoreZoning.validation.${validation[0].code}`)}</Alert>}
       <div className={styles.layout}>
         <div className={`${styles.canvas} ${issue?.kind === 'invalid_assignments' ? styles.invalid : ''}`}>
           {editable && <div className={styles.row} role="group" aria-label={t('adminStoreZoning.tools')}>

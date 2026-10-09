@@ -1,4 +1,5 @@
 import type { BadgeTone } from '../../../design-system';
+import { adminStatusTone } from '../../statusTone';
 import type { Database } from '../../../lib/database.types';
 import { isStoreId, storeDetailPath } from '../model';
 import { requestPath, type Step } from '../onboarding/model';
@@ -17,7 +18,7 @@ export interface ListSelection { status: RequestStatus | ''; search: string; pag
 export interface ListData { rows: RequestItem[]; skipped: number; received: number }
 export function isStatus(value: string): value is RequestStatus { return (STATUSES as readonly string[]).includes(value); }
 export function statusTone(status: string): BadgeTone {
-  return status === 'approved' ? 'success' : status === 'rejected' ? 'danger' : status === 'pending_owner_approval' ? 'warning' : 'neutral';
+  return adminStatusTone('storeRequest', status);
 }
 export function nextStep(row: RequestItem): Step {
   if (!row.isMine || !['inactive', 'rejected'].includes(row.status)) return 'review';

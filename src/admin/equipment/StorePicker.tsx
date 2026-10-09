@@ -33,7 +33,7 @@ function StoreSearch({ selected, onSelect }: { selected: string; onSelect: (id: 
     <TextField label={t('adminEquipment.storeSearch')} hint={t('adminEquipment.storeSearchHint')} value={draft} maxLength={FILTER_LIMIT}
       autoComplete="off" onChange={event => setDraft(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); apply(); } }} />
     <div><Button size="md" variant="secondary" onClick={apply}>{t('adminEquipment.findStores')}</Button></div>
-    {!valid ? <Alert tone="warning">{t('adminStores.validation.filters')}</Alert>
+    {!valid ? <Alert tone="danger">{t('adminStores.validation.filters')}</Alert>
       : query.isPending ? <OverviewLoading />
       : query.isError ? <Alert tone="danger" title={t('adminEquipment.storeSearchError')}
         action={<Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('cabinet.retry')}</Button>}>{t(`adminStores.errors.${kind}`)}</Alert>

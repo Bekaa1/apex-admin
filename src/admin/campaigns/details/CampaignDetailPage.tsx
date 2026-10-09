@@ -31,7 +31,7 @@ export function CampaignDetailPage() {
     <header><h1 id="campaign-detail-title" tabIndex={-1}>{t('adminCampaigns.detailTitle')}</h1><p className={styles.muted}>{t('adminModeration.detailDescription')}</p></header>
     {can('moderate') && isCampaignId(id) ? <ModerationActions key={id} id={id} row={query.isError ? undefined : query.data} fetching={query.isFetching} /> : null}
     {can('moderate') && isCampaignId(id) ? <CampaignStatusAction key={`status:${id}`} id={id} row={query.isError ? undefined : query.data} fetching={query.isFetching} /> : null}
-    {!isCampaignId(id) ? <Alert tone="warning">{t('adminCampaigns.invalidId')}</Alert>
+    {!isCampaignId(id) ? <Alert tone="danger">{t('adminCampaigns.invalidId')}</Alert>
       : <DetailQuery query={query}>{(row) => row === null
         ? <Alert title={t('adminCampaignDetail.notFound')}>{t('adminCampaignDetail.notFoundBody')}</Alert>
         : <div key={row.id} className={styles.blocks}>

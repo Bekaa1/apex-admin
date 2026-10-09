@@ -7,6 +7,13 @@
 .counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
 .counter { min-width: 0; display: flex; flex-direction: column; }
 .metric { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.counter[data-tone='success'] { --counter-color: var(--success); }
+.counter[data-tone='danger'] { --counter-color: var(--danger); }
+.counter[data-tone='warning'] { --counter-color: var(--warning); }
+.counter[data-tone='brand'] { --counter-color: var(--link); }
+.counter[data-tone='neutral'] { --counter-color: var(--text); }
+.metric :global(.ax-stat__value), .metric :global(.ax-stat__label > .ax-icon) { color: var(--counter-color); }
+.counterError > p { color: var(--danger); }
 .counterError { padding: var(--space-4); display: grid; justify-items: start; gap: var(--space-3); background: var(--danger-soft); color: var(--text); border-radius: var(--radius-md); font-size: 13px; line-height: 1.5; }
 .secondary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5); }
 .quickLinks { display: grid; gap: var(--space-3); align-content: start; }

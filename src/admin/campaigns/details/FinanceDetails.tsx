@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Badge } from '../../../design-system';
 import { useI18n } from '../../../i18n/i18n';
 import { usePermissions } from '../../../auth/usePermissions';
+import { adminStatusTone } from '../../statusTone';
 import { formatMoney, formatNumber } from '../../../lib/format';
 import { overviewDate } from '../../overview/model';
 import { fetchInvoices, fetchPortions } from './api';
@@ -25,7 +26,7 @@ function InvoiceList({ id }: { id: string }) {
         <tbody>{rows.map((row) => <tr key={row.id}>
           <td>{row.number === null ? unknown : '№ ' + formatNumber(row.number, lang)}<span className={styles.identifier}>{row.id}</span></td>
           <td>{row.amount === null ? unknown : formatMoney(row.amount, lang)}</td>
-          <td><Badge className={styles.status}>{row.status?.trim() || unknown}</Badge></td>
+          <td><Badge tone={adminStatusTone('invoice', row.status)} className={styles.status}>{row.status?.trim() || unknown}</Badge></td>
           <td>{overviewDate(row.issued_at, lang, unknown)}</td><td>{overviewDate(row.paid_at, lang, unknown)}</td>
         </tr>)}</tbody>
       </table></div> : <p className={styles.empty}>{t(page > 1 ? 'adminCampaignDetail.pageEmpty' : 'adminCampaignDetail.invoicesEmpty')}</p>}

@@ -89,8 +89,8 @@ export function StorePlanStep({ record, onSaved, onReload }: {
   }
   return <div className={shared.panel} aria-busy={pending}>
     <h2>{t('adminStorePlan.title')}</h2>
-    {!editable && <Alert title={t(record.status === 'pending_owner_approval' ? 'adminStoreRequest.pendingApproval' : record.status === 'approved' ? 'adminStoreRequest.approved' : 'adminStoreRequest.readOnly')} />}
-    {record.status === 'rejected' && record.review_comment && <Alert tone="warning" title={t('adminStoreRequest.ownerComment')}><span className={shared.comment}>{record.review_comment}</span></Alert>}
+    {!editable && <Alert tone={adminStatusAlertTone('storeRequest', record.status)} title={t(record.status === 'pending_owner_approval' ? 'adminStoreRequest.pendingApproval' : record.status === 'approved' ? 'adminStoreRequest.approved' : 'adminStoreRequest.readOnly')} />}
+    {record.status === 'rejected' && record.review_comment && <Alert tone="danger" title={t('adminStoreRequest.ownerComment')}><span className={shared.comment}>{record.review_comment}</span></Alert>}
     <p className={styles.filename}>{t('adminStorePlan.fileName')}: {selectedFile || t(record.plan ? 'adminStorePlan.unknownName' : 'adminStorePlan.noFile')}</p>
     {editable && <>
       <p id="store-plan-upload-label">{t('adminStorePlan.upload')}</p>
@@ -120,3 +120,4 @@ export function StorePlanStep({ record, onSaved, onReload }: {
     {navigation.blocker.state === 'blocked' && <UnsavedPlanDialog busy={pending} onStay={() => navigation.blocker.reset?.()} onLeave={() => navigation.blocker.proceed?.()} />}
   </div>;
 }
+import { adminStatusAlertTone } from '../../../statusTone';

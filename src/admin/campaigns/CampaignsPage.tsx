@@ -25,8 +25,8 @@ function CampaignResults({ selection, mode, onPage, onReset }: { selection: Camp
   return <div className={styles.results} aria-busy={query.isFetching}>
     <div className={styles.actions}><p role="status">{count === null ? t('adminCampaigns.countUnknown') : t('adminCampaigns.count', { count: formatNumber(count, lang) })}</p>
       <Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('adminCampaigns.refresh')}</Button></div>
-    {profilesUnavailable ? <Alert tone="info">{t('adminCampaigns.profilesUnavailable')}</Alert> : null}
-    {tariffsUnavailable ? <Alert tone="info">{t('adminCampaigns.tariffsUnavailable')}</Alert> : null}
+    {profilesUnavailable ? <Alert tone="danger">{t('adminCampaigns.profilesUnavailable')}</Alert> : null}
+    {tariffsUnavailable ? <Alert tone="danger">{t('adminCampaigns.tariffsUnavailable')}</Alert> : null}
     {rows.length ? <CampaignTable rows={rows} /> : <div className={styles.empty} role="status">
       <h2>{t(mode === 'moderation' && empty === 'empty' ? 'adminModeration.empty' : `adminCampaigns.${empty}.title`)}</h2><p>{t(`adminCampaigns.${empty}.body`)}</p>
       {selection.page > 1 ? <Button size="md" variant="secondary" onClick={() => onPage(1)}>{t('adminCampaigns.firstPage')}</Button>

@@ -25,7 +25,7 @@ function RecordResults({ id, selection, onPage }: { id: string; selection: Store
       <p role="status">{count === null ? t('adminStores.countUnknown') : t('adminStores.count', { count: formatNumber(count, lang) })}</p>
       <Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('adminStores.refresh')}</Button>
     </div>
-    {namesUnavailable ? <Alert tone="info">{t('adminStoreDetail.zoneNamesUnavailable')}</Alert> : null}
+    {namesUnavailable ? <Alert tone="danger">{t('adminStoreDetail.zoneNamesUnavailable')}</Alert> : null}
     {rows.length ? result.tab === 'zones' ? <ZoneTable rows={result.data.rows} />
       : result.tab === 'carts' ? <CartTable rows={result.data.rows} /> : <BeaconTable rows={result.data.rows} />
       : <div className={styles.blocks} role="status">
@@ -56,7 +56,7 @@ export function StoreRecords({ id, partner = false }: { id: string; partner?: bo
       value={selection.tab} onChange={tab => setParams(tabParams(params, tab), navigation)} label={t('adminStoreDetail.records')} panelId="store-records" />
     {allowed && selection.tab === 'beacons' ? <Checkbox checked={selection.withoutZone} onChange={event => setParams(beaconFilterParams(params, event.target.checked), navigation)}>{t('adminStoreDetail.withoutZone')}</Checkbox> : null}
     <div className={local.tabPanel} role="tabpanel" id="store-records" tabIndex={0} aria-label={t(`adminStoreDetail.tabs.${selection.tab}`)}>
-      {!allowed ? <PermissionDenied /> : selection.error ? <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={() => setParams(resetTabParams(params, selection.tab), navigation)}>{t('adminStoreDetail.resetTab')}</Button>}>{t('adminStoreDetail.invalidTab')}</Alert>
+      {!allowed ? <PermissionDenied /> : selection.error ? <Alert tone="danger" action={<Button size="md" variant="secondary" onClick={() => setParams(resetTabParams(params, selection.tab), navigation)}>{t('adminStoreDetail.resetTab')}</Button>}>{t('adminStoreDetail.invalidTab')}</Alert>
         : <RecordResults key={`${id}:${selection.tab}`} id={id} selection={selection} onPage={page => setParams(tabParams(params, selection.tab, page), navigation)} />}
     </div>
   </section>;

@@ -1,6 +1,7 @@
 import { Constants, type Database } from '../../lib/database.types';
 import { STATUS_TONE, statusLabelKey, type VisibleStatus } from '../../cabinet/campaignStatus';
 import type { BadgeTone } from '../../design-system';
+import { adminStatusTone } from '../statusTone';
 
 export const CAMPAIGN_LIST = '/admin/campaigns';
 export const MODERATION_LIST = '/admin/moderation';
@@ -71,7 +72,7 @@ export function isCampaignRow(value: unknown): value is CampaignRow {
 }
 export function campaignStatus(status: string | null): { key?: string; raw?: string; tone: BadgeTone } {
   if (status === null || status === '') return { key: 'adminCampaigns.noData', tone: 'neutral' };
-  if (Object.hasOwn(STATUS_TONE, status)) return { key: statusLabelKey(status as VisibleStatus), tone: STATUS_TONE[status as VisibleStatus] };
+  if (Object.hasOwn(STATUS_TONE, status)) return { key: statusLabelKey(status as VisibleStatus), tone: adminStatusTone('campaign', status) };
   if (status === 'deleted') return { key: 'adminCampaigns.deleted', tone: 'neutral' };
   return { raw: status, tone: 'neutral' };
 }

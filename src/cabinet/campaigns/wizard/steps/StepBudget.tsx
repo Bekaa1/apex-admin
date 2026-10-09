@@ -8,10 +8,11 @@ import { budgetPresets, summarize } from '../summary';
 import type { WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
 import { WizardTermsChanged } from '../WizardTermsChanged';
+import { DailyLimit } from './DailyLimit';
 import { ReviewList } from './ReviewList';
 import { RulesCheckbox } from './RulesCheckbox';
 
-/** Step 5: budget, review of the campaign, what happens next and the rules consent. */
+/** Step 5: budget and daily limit, review of the campaign, what happens next and the rules consent. */
 export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
   const { t, lang } = useI18n();
   const { form, errors, dispatch } = wizard;
@@ -76,6 +77,7 @@ export function StepBudget({ wizard, catalog }: { wizard: CampaignWizardState; c
             </div>
           ) : null}
         </div>
+        <DailyLimit wizard={wizard} />
       </section>
       <section className="cmp-sub" aria-labelledby={reviewId}>
         <h3 className="cmp-sub__title" id={reviewId}>

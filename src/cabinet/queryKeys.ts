@@ -6,6 +6,7 @@ export const queryKeys = {
   campaignList: (userId: string | undefined) => ['campaigns', userId, 'list'] as const,
   campaignDetails: (userId: string | undefined, campaignId: string) => ['campaigns', userId, 'details', campaignId] as const,
   campaignPrefill: (userId: string | undefined, campaignId: string | null) => ['campaigns', userId, 'prefill', campaignId] as const,
+  campaignInvoices: (userId: string | undefined, campaignId: string) => ['campaigns', userId, 'invoices', campaignId] as const,
   /** Under `campaigns`, so a top-up or an edit refreshes the statistics too. */
   stats: (userId: string | undefined) => ['campaigns', userId, 'stats'] as const,
   storeCatalog: (userId: string | undefined) => ['catalog', userId] as const,

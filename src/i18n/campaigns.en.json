@@ -203,7 +203,8 @@
         "invalid_status": "This campaign can’t be changed right now — it may have been sent already. Go back to the campaign.",
         "tariff_change_not_allowed": "The plan can’t be changed in a fix. For another plan, create a new campaign.",
         "not_authenticated": "Your session has ended. Sign in again and send the campaign.",
-        "tariff_changed": "The plan’s terms have just changed. Check the minimum budget and send the campaign again."
+        "tariff_changed": "The plan’s terms have just changed. Check the minimum budget and send the campaign again.",
+        "invalid_daily_limit": "The daily impression limit didn’t fit. Enter a whole number above zero and send again — the campaign is already created, there won’t be a second one."
       },
       "toProfile": "Open profile"
     },
@@ -232,6 +233,7 @@
       "minimum": "Minimum budget",
       "dependsOnTariff": "Depends on the plan",
       "yourBudget": "Your budget",
+      "days": "≈ {days} at {limit} a day",
       "minimumOf": "Minimum {amount}"
     },
     "help": {
@@ -418,6 +420,19 @@
       "rulesPdf": "The PDF opens in a new tab",
       "rulesError": "Confirm that the video meets the rules"
     },
+    "dailyLimit": {
+      "label": "Daily impression limit",
+      "hint": "The maximum number of the campaign’s impressions in one day",
+      "errorInteger": "Enter a whole number above zero, for example 1000",
+      "errorMax": "The “{tariff}” plan allows up to {max} impressions a day",
+      "none": "No limit",
+      "plays": "The budget buys",
+      "days": "The campaign runs for",
+      "about": "≈ {days}",
+      "noLimit": "Until the budget runs out",
+      "note": "This assumes the limit is reached every day. On days with fewer impressions the campaign runs longer.",
+      "noteNoLimit": "Without a limit, daily impressions aren’t capped. Set a limit to see how many days the campaign runs."
+    },
     "review": {
       "title": "Review of changes",
       "lead": "See what changed and send the campaign to the moderator. The budget doesn’t change here."
@@ -436,6 +451,19 @@
     },
     "toList": "To my campaigns",
     "createAnother": "Create another one"
+  },
+  "payment": {
+    "pay": "Pay with Kaspi",
+    "payNewTab": "Pay with Kaspi — opens in a new tab",
+    "invoice": "Invoice",
+    "number": "No. {number}",
+    "status": "Payment",
+    "awaiting": "Awaiting payment",
+    "paid": "Paid",
+    "awaitingTitle": "Invoice No. {number} for {amount} is awaiting payment",
+    "note": "Press “Pay with Kaspi” and enter {amount}. An accountant confirms the payment — then the status updates here and on the campaign card.",
+    "loadError": "Couldn’t check the payment",
+    "loadErrorText": "The invoice is created. Try again to see its number and status."
   },
   "corporate": {
     "backToTariffs": "Back to plans",

@@ -27,6 +27,8 @@ export function useCampaignDetails(campaignId: string): CampaignDetailsState {
   const details = useQuery({
     queryKey: queryKeys.campaignDetails(userId, campaignId),
     queryFn: userId && !demo ? ({ signal }) => fetchCampaignDetails(campaignId, signal) : skipToken,
+    // Back from Kaspi in another tab: the invoice may have been marked paid meanwhile.
+    refetchOnWindowFocus: true,
   });
   const catalog = useQuery({
     queryKey: queryKeys.storeCatalog(userId),

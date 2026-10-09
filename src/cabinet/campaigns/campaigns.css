@@ -236,6 +236,9 @@
 .cmp-min .ax-icon { flex: none; margin-top: 1px; color: var(--link); }
 .cmp-budget-row { display: grid; grid-template-columns: minmax(0, 440px); gap: var(--space-4); align-items: start; }
 .cmp-budget-field .ax-input { font-family: var(--font-display); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cmp-limit-field { max-width: 440px; }
+.cmp-forecast { display: flex; flex-direction: column; gap: var(--space-3); max-width: 560px; }
+.cmp-forecast .cab-receipt { box-shadow: none; }
 .cmp-currency { display: inline-flex; align-items: center; justify-content: center; width: var(--control-md); height: var(--control-md); font-size: 20px; font-weight: 600; color: var(--text-muted); }
 .cmp-review { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-xl); }
 .cmp-review__item { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-5); }
@@ -259,6 +262,7 @@
 .cmp-done__lead { max-width: 32em; margin: 0; }
 .cmp-done__receipt { align-self: stretch; text-align: left; box-shadow: none; background: var(--bg); }
 .cmp-done__timeline { align-self: stretch; text-align: left; padding: var(--space-2) 0; }
+.cmp-done__note { align-self: stretch; text-align: left; }
 .cmp-done__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
 
 /* ── Corporate ─────────────────────────────────────────── */

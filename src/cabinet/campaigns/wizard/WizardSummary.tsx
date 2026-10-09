@@ -4,7 +4,7 @@ import { useI18n } from '../../../i18n/i18n';
 import { formatMoney, formatNumber, formatPrice, pluralKey } from '../../../lib/format';
 import { termsOf } from '../../tariffs';
 import { aboutPlays } from '../playsText';
-import { summarize } from './summary';
+import { budgetDays, summarize } from './summary';
 import type { CampaignForm, EditedCampaign, MediaState, StepId, WizardContext } from './types';
 
 function Stack({ main, sub }: { main: ReactNode; sub?: ReactNode }) {
@@ -65,6 +65,14 @@ export function WizardSummary({ step, form, ctx, edited }: WizardSummaryProps) {
     : summary.minimum === null && t('campaigns.wizard.summary.dependsOnTariff');
   // What the budget buys at the plan's price of a play.
   const plays = onBudget && plan && form.budget ? aboutPlays(t, lang, form.budget, plan.pricePerPlay) : null;
+  const days = onBudget ? budgetDays(form, ctx) : null;
+  const daysText =
+    days === null
+      ? null
+      : t('campaigns.wizard.summary.days', {
+          days: t(pluralKey('campaigns.details.budget.days', days, lang), { count: formatNumber(days, lang) }),
+          limit: formatNumber(Number(form.dailyLimit), lang),
+        });
   if (edited) {
     totalLabel = t('campaigns.edit.summary.budget');
     total = edited.budget;
@@ -125,6 +133,7 @@ export function WizardSummary({ step, form, ctx, edited }: WizardSummaryProps) {
         <span>{totalLabel}</span>
         <strong>{total === null ? '—' : formatMoney(total, lang)}</strong>
         {plays ? <span className="cmp-summary__sub">{plays}</span> : null}
+        {daysText ? <span className="cmp-summary__sub">{daysText}</span> : null}
         {totalSub ? <span className="cmp-summary__sub">{totalSub}</span> : null}
       </div>
     </section>

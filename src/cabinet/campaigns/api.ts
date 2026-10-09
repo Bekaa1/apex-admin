@@ -4,6 +4,7 @@ import { allRows, requireSupabase, uploadToStorage } from '../../lib/supabase';
 import { TARIFFS, type TariffCode } from '../tariffs';
 import { monthStart } from './model';
 import type { CampaignDetailsSource } from './details/types';
+import type { InvoiceSource } from './payment/kaspi';
 import type { CampaignsSource } from './types';
 import { extensionOf } from './wizard/media';
 import type { CampaignEdit, CampaignPrefill, CampaignSubmission, MediaMeta, MediaState, StoreCatalog, UploadedMedia } from './wizard/types';
@@ -83,7 +84,7 @@ export async function fetchCampaignDetails(campaignId: string, signal: AbortSign
       .abortSignal(signal)),
     sb
       .from('advertiser_invoices')
-      .select('id, kind, amount, status, issued_at, paid_at, sent_to, tariff_version, price_per_play')
+      .select('id, number, kind, amount, status, issued_at, paid_at, sent_to, tariff_version, price_per_play')
       .eq('ad_id', campaignId)
       .order('issued_at')
       .abortSignal(signal),
@@ -106,6 +107,13 @@ export async function fetchCampaignDetails(campaignId: string, signal: AbortSign
     invoices: invoices.data ?? [],
     tariffChangedAt: tariffs.data?.find((tariff) => tariff.code === row.tariff_code)?.updated_at ?? null,
   };
+}
+
+/** Own invoices of a campaign: the first one and top-ups. */
+export async function fetchCampaignInvoices(campaignId: string, signal: AbortSignal): Promise<InvoiceSource[]> {
+  const { data, error } = await requireSupabase().from('advertiser_invoices').select('number, amount, status, issued_at').eq('ad_id', campaignId).abortSignal(signal);
+  if (error) throw error;
+  return data;
 }
 
 /** Stores with carts and their shelf zones with a working beacon, as the backend offers them for sale. */
@@ -154,7 +162,7 @@ export async function fetchCampaignPrefill(userId: string, campaignId: string, s
     sb
       .from('ads')
       .select(
-        'status, title, name, description, budget, spent_budget, start_date, rejection_reasons, moderator_comment, video_url, video_original_filename, video_duration_sec, video_width, video_height, video_size_bytes, content_url, cover_original_filename, tariff:tariffs(code, purchasable, is_archived, can_select_zone)',
+        'status, title, name, description, budget, daily_play_limit, spent_budget, start_date, rejection_reasons, moderator_comment, video_url, video_original_filename, video_duration_sec, video_width, video_height, video_size_bytes, content_url, cover_original_filename, tariff:tariffs(code, purchasable, is_archived, can_select_zone)',
       )
       .eq('id', campaignId)
       .eq('user_id', userId)
@@ -183,6 +191,7 @@ export async function fetchCampaignPrefill(userId: string, campaignId: string, s
     video: meta ? storedMedia(row.video_url, row.video_original_filename, meta, userId) : { status: 'empty' },
     cover: storedMedia(row.content_url, row.cover_original_filename, null, userId),
     budget: row.budget,
+    dailyLimit: row.daily_play_limit,
     storeIds: stores.data.flatMap((link) => (link.store_id ? [link.store_id] : [])),
     zoneIds: zones.data.flatMap((link) => (link.zone_id ? [link.zone_id] : [])),
     moderation: reasons.length || row.moderator_comment ? { rules: reasons, comment: row.moderator_comment } : null,
@@ -213,7 +222,7 @@ function contentPayload(content: CampaignEdit) {
   };
 }
 
-/** Creates the campaign (status «На проверке») and its invoice at the plan's terms of `tariff_version`; resending the same request returns the same id. */
+/** Creates the campaign (status «На проверке») and its invoice at the plan's terms of `tariff_version`, then sets its daily limit; resending the same request returns the same id. */
 export async function submitCampaign(submission: CampaignSubmission): Promise<string> {
   const p = {
     ...contentPayload(submission),
@@ -222,9 +231,15 @@ export async function submitCampaign(submission: CampaignSubmission): Promise<st
     budget: submission.budget,
     request_id: submission.requestId,
   };
-  const { data, error } = await requireSupabase().rpc('submit_campaign', { p });
+  const sb = requireSupabase();
+  const { data: id, error } = await sb.rpc('submit_campaign', { p });
   if (error) throw rpcError(error);
-  return data;
+  // submit_campaign doesn't take the limit; if this call fails, a resend gets the same campaign back and sets it again.
+  if (submission.dailyLimit !== null) {
+    const limit = await sb.rpc('set_campaign_daily_limit', { p_id: id, p_limit: submission.dailyLimit });
+    if (limit.error) throw rpcError(limit.error);
+  }
+  return id;
 }
 
 /** «Редактировать» and «Исправить»: the campaign goes back to moderation and stops showing until approved. The plan and the budget stay. */

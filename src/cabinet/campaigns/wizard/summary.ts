@@ -1,6 +1,8 @@
+import { termsOf } from '../../tariffs';
+import { daysFor } from '../details/model';
 import type { CampaignForm, CampaignPrefill, CatalogStore, CatalogZone, StoreCatalog, WizardContext } from './types';
 import { emptyForm } from './reducer';
-import { minimumBudget } from './validation';
+import { minimumBudget, parseDailyLimit } from './validation';
 
 /** Quick budget amounts: the plan minimum and two steps above it (2, 3 and 5 million for «Премиум»). */
 const PRESET_FACTORS = [1, 1.5, 2.5];
@@ -43,6 +45,14 @@ export function summarize(form: CampaignForm, ctx: WizardContext): WizardSummary
   };
 }
 
+/** How many days the budget lasts if every day reaches the daily limit; null without a budget, a plan or a valid limit. */
+export function budgetDays(form: CampaignForm, ctx: WizardContext): number | null {
+  const plan = termsOf(ctx.catalog.tariffs, form.tariff);
+  const limit = parseDailyLimit(form.dailyLimit);
+  if (!plan || !form.budget || limit === null || limit === 'invalid') return null;
+  return daysFor(form.budget, limit * plan.pricePerPlay);
+}
+
 /** Form for «Исправить» and «Повторить». A placeholder store («Все магазины») or a store that is gone means every store. */
 export function formFromPrefill(prefill: CampaignPrefill, catalog: StoreCatalog): CampaignForm {
   // Stores that left the catalog (no carts any more) are dropped; the advertiser picks again.
@@ -56,6 +66,7 @@ export function formFromPrefill(prefill: CampaignPrefill, catalog: StoreCatalog)
     cover: prefill.cover,
     tariff: prefill.tariff,
     budget: prefill.budget,
+    dailyLimit: prefill.dailyLimit === null ? '' : String(prefill.dailyLimit),
     storeIds,
     zoneIds,
   };

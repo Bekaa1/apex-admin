@@ -11,6 +11,7 @@ import { DetailsHead } from './DetailsHead';
 import { DetailsHistory } from './DetailsHistory';
 import { DetailsMedia } from './DetailsMedia';
 import { DetailsNow } from './DetailsNow';
+import { DetailsPayment } from './DetailsPayment';
 import { DetailsStats } from './DetailsStats';
 import { DetailsStores } from './DetailsStores';
 import { buildCampaignDetails } from './model';
@@ -68,6 +69,7 @@ function CampaignDetailsView({ details }: { details: CampaignDetails }) {
     <>
       <DetailsHead details={details} />
       <DetailsNow details={details} />
+      <DetailsPayment details={details} />
       <div className="cmpd__grid">
         <div className="cmpd__main">
           <DetailsStats details={details} />

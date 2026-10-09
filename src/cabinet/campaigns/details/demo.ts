@@ -53,6 +53,7 @@ export function demoDetailsSource(id: string): CampaignDetailsSource | null {
     ? [
         {
           id: `${id}-initial`,
+          number: 1042,
           kind: 'initial',
           amount: row.budget,
           status: row.paid_amount ? 'paid' : 'unpaid',

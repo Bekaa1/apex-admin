@@ -14,6 +14,7 @@ const KNOWN_CODES = [
   'invalid_stores',
   'invalid_zones',
   'invalid_budget',
+  'invalid_daily_limit',
   'missing_email',
   'not_found',
   'invalid_status',

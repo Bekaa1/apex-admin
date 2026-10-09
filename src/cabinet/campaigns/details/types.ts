@@ -3,6 +3,7 @@ import type { Database, Tables } from '../../../lib/database.types';
 import type { BudgetFigures } from '../../campaignBudget';
 import type { DailyPlaysRow } from '../../plays';
 import type { TariffCode } from '../../tariffs';
+import type { InvoiceToPay } from '../payment/kaspi';
 import type { CampaignStage, CampaignStatsRow } from '../types';
 
 type StatsView = Database['public']['Views']['my_campaigns_stats']['Row'];
@@ -14,7 +15,7 @@ export type CampaignDetailsRow = CampaignStatsRow &
     'moderated_at' | 'description' | 'video_url' | 'video_duration_sec' | 'price_per_play' | 'plays_count' | 'tariff_version' | 'tariff_min_amount' | 'tariff_current_price'
   >;
 
-export type InvoiceRow = Pick<Tables<'advertiser_invoices'>, 'id' | 'kind' | 'amount' | 'status' | 'issued_at' | 'paid_at' | 'sent_to' | 'tariff_version' | 'price_per_play'>;
+export type InvoiceRow = Pick<Tables<'advertiser_invoices'>, 'id' | 'number' | 'kind' | 'amount' | 'status' | 'issued_at' | 'paid_at' | 'sent_to' | 'tariff_version' | 'price_per_play'>;
 
 export type LocationRow = Pick<Database['public']['Views']['my_campaign_locations']['Row'], 'kind' | 'location_id' | 'location_name' | 'parent_store_id'>;
 
@@ -107,6 +108,8 @@ export interface CampaignDetails {
     daysLeft: number | null;
   };
   history: HistoryEvent[];
+  /** The invoice to pay in Kaspi, or the last paid one. */
+  invoice: InvoiceToPay | null;
   /** Where invoices and moderation results go. */
   email: string | null;
 }

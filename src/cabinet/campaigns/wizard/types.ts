@@ -32,6 +32,8 @@ export interface CampaignForm {
   /** Zone ids across the chosen stores (a zone belongs to one store). */
   zoneIds: string[];
   budget: number | null;
+  /** «Лимит показов в день» as typed; empty — no limit. */
+  dailyLimit: string;
   rulesAccepted: boolean;
   /** One id per form: resending after a lost answer returns the same campaign instead of creating a second one. */
   requestId: string;
@@ -83,11 +85,13 @@ export interface CampaignSubmission {
   storeIds: string[];
   zoneIds: string[];
   budget: number;
+  /** Plays a day at most; null — no limit. */
+  dailyLimit: number | null;
   requestId: string;
 }
 
 /** What an edit sends to `edit_campaign`: the plan and the budget stay with the campaign. */
-export type CampaignEdit = Omit<CampaignSubmission, 'tariffCode' | 'tariffVersion' | 'budget' | 'requestId'>;
+export type CampaignEdit = Omit<CampaignSubmission, 'tariffCode' | 'tariffVersion' | 'budget' | 'dailyLimit' | 'requestId'>;
 
 /** The campaign being edited, as far as the wizard needs it. */
 export interface EditedCampaign {
@@ -133,7 +137,7 @@ export type ChangeField = 'name' | 'description' | 'video' | 'cover' | 'stores' 
 
 /** What the success screen shows; passed in the navigation state. */
 export type SentReceipt =
-  | { kind: 'new'; name: string; tariff: TariffCode; budget: number; pricePerPlay: number | null }
+  | { kind: 'new'; name: string; tariff: TariffCode; budget: number; pricePerPlay: number | null; dailyLimit: number | null }
   | { kind: 'edit'; name: string; changed: ChangeField[]; paused: boolean };
 
 /** A campaign read back for «Редактировать», «Исправить» and «Повторить». */
@@ -151,6 +155,7 @@ export interface CampaignPrefill {
   video: MediaState;
   cover: MediaState;
   budget: number | null;
+  dailyLimit: number | null;
   storeIds: string[];
   zoneIds: string[];
   moderation: Moderation | null;

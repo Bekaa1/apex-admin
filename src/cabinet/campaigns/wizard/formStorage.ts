@@ -41,6 +41,7 @@ function readForm(value: unknown): CampaignForm {
   const storeIds = prop(value, 'storeIds');
   const zoneIds = prop(value, 'zoneIds');
   const requestId = prop(value, 'requestId');
+  const dailyLimit = prop(value, 'dailyLimit');
   return {
     name: isString(name) ? name : '',
     description: isString(description) ? description : '',
@@ -50,6 +51,7 @@ function readForm(value: unknown): CampaignForm {
     storeIds: isStringArray(storeIds) ? storeIds : [],
     zoneIds: isStringArray(zoneIds) ? zoneIds : [],
     budget: readNumber(prop(value, 'budget')),
+    dailyLimit: isString(dailyLimit) ? dailyLimit : '',
     rulesAccepted: prop(value, 'rulesAccepted') === true,
     requestId: isString(requestId) && requestId ? requestId : crypto.randomUUID(),
   };

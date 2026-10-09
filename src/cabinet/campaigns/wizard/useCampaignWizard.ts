@@ -12,7 +12,7 @@ import { nextStep, prevStep, stepFromParam, stepParam } from './steps';
 import { selectedZones } from './summary';
 import type { CampaignEdit, CampaignForm, CampaignSubmission, SentReceipt, StepId, WizardApi, WizardCatalog, WizardContext, WizardMode } from './types';
 import { useMediaUpload } from './useMediaUpload';
-import { firstInvalidStep, isStepValid, reachableStep, validateStep } from './validation';
+import { firstInvalidStep, isStepValid, parseDailyLimit, reachableStep, validateStep } from './validation';
 
 export interface WizardOptions {
   userId: string;
@@ -45,8 +45,9 @@ export function toEdit(form: CampaignForm, ctx: WizardContext): CampaignEdit | n
 export function toSubmission(form: CampaignForm, ctx: WizardContext): CampaignSubmission | null {
   const content = toEdit(form, ctx);
   const terms = termsOf(ctx.catalog.tariffs, form.tariff);
-  if (!content || !terms || form.budget === null) return null;
-  return { ...content, tariffCode: terms.code, tariffVersion: terms.version, budget: form.budget, requestId: form.requestId };
+  const dailyLimit = parseDailyLimit(form.dailyLimit);
+  if (!content || !terms || form.budget === null || dailyLimit === 'invalid') return null;
+  return { ...content, tariffCode: terms.code, tariffVersion: terms.version, budget: form.budget, dailyLimit, requestId: form.requestId };
 }
 
 type Sent = { id: string; receipt: SentReceipt };
@@ -108,7 +109,7 @@ export function useCampaignWizard({ userId, initial, catalog, mode, storageKey, 
       const payload = toSubmission(form, ctx);
       if (!payload || !shown) throw new Error('The campaign is not complete.');
       const id = await api.submit(payload);
-      return { id, receipt: { kind: 'new', name: payload.name, tariff: payload.tariffCode, budget: payload.budget, pricePerPlay: shown.pricePerPlay } };
+      return { id, receipt: { kind: 'new', name: payload.name, tariff: payload.tariffCode, budget: payload.budget, pricePerPlay: shown.pricePerPlay, dailyLimit: payload.dailyLimit } };
     },
     onSuccess: ({ id, receipt }) => {
       clearForm(storageKey);

@@ -26,6 +26,8 @@ export interface TariffTerms {
   minimum: number;
   /** Shelf zones are chosen in the wizard (`can_select_zone`). */
   hasZones: boolean;
+  /** The most plays a day the plan allows (`max_daily_plays`); null — no cap. */
+  maxDailyPlays: number | null;
   /** Grows with every change of the terms; the site sends the version it showed (`tariff_changed` otherwise). */
   version: number;
 }

@@ -5,9 +5,11 @@ import type { CampaignForm, MediaProblem, MediaState, StepId, WizardCatalog, Wiz
 
 export const NAME_MAX = 80;
 export const DESCRIPTION_MAX = 300;
+// `ads.daily_play_limit` is a Postgres integer.
+const DAILY_LIMIT_MAX = 2_147_483_647;
 
-export type FieldKey = 'name' | 'video' | 'cover' | 'tariff' | 'stores' | 'zones' | 'budget' | 'changes' | 'rules';
-export type FieldError = 'required' | 'tooLong' | 'uploading' | 'min' | 'unavailable' | MediaProblem;
+export type FieldKey = 'name' | 'video' | 'cover' | 'tariff' | 'stores' | 'zones' | 'budget' | 'dailyLimit' | 'changes' | 'rules';
+export type FieldError = 'required' | 'tooLong' | 'uploading' | 'min' | 'max' | 'integer' | 'unavailable' | MediaProblem;
 export type StepErrors = Partial<Record<FieldKey, FieldError>>;
 
 function mediaError(media: MediaState, required: boolean): FieldError | undefined {
@@ -31,6 +33,23 @@ export function storesWithoutZones(form: CampaignForm, catalog: WizardCatalog): 
 
 export function minimumBudget(form: CampaignForm, catalog: WizardCatalog): number | null {
   return termsOf(catalog.tariffs, form.tariff)?.minimum ?? null;
+}
+
+/** The typed daily limit: null when the field is empty, 'invalid' unless it is a whole number above zero (no signs, dots or letters). */
+export function parseDailyLimit(text: string): number | null | 'invalid' {
+  const value = text.trim();
+  if (!value) return null;
+  if (!/^\d+$/.test(value)) return 'invalid';
+  const limit = Number(value);
+  return limit >= 1 && limit <= DAILY_LIMIT_MAX ? limit : 'invalid';
+}
+
+/** The limit isn't a whole number, or it is above the plan's cap. */
+export function dailyLimitError(form: CampaignForm, catalog: WizardCatalog): FieldError | undefined {
+  const limit = parseDailyLimit(form.dailyLimit);
+  if (limit === 'invalid') return 'integer';
+  const cap = termsOf(catalog.tariffs, form.tariff)?.maxDailyPlays ?? null;
+  return limit !== null && cap !== null && limit > cap ? 'max' : undefined;
 }
 
 /** An edit with no changes compared with `ctx.original` can't be sent. */
@@ -64,6 +83,7 @@ export function validateStep(step: StepId, form: CampaignForm, ctx: WizardContex
       const minimum = minimumBudget(form, catalog);
       if (form.budget === null) errors.budget = 'required';
       else if (minimum !== null && form.budget < minimum) errors.budget = 'min';
+      set('dailyLimit', dailyLimitError(form, catalog));
       if (!form.rulesAccepted) errors.rules = 'required';
       break;
     }

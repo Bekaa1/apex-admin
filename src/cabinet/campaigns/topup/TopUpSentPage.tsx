@@ -6,6 +6,8 @@ import { useI18n } from '../../../i18n/i18n';
 import { formatMoney, formatPrice } from '../../../lib/format';
 import { CABINET_LINKS } from '../../sections';
 import { ButtonLink } from '../../ui/ButtonLink';
+import { PaymentNote, PaymentRows, PayInKaspiButton } from '../payment/KaspiPayment';
+import { canPay, useInvoiceToPay } from '../payment/useInvoiceToPay';
 import { readTopUpReceipt } from './receipt';
 
 /** «Счёт выставлен». Opened right after the invoice is created; without that state it returns to the campaign. */
@@ -15,6 +17,7 @@ export function TopUpSentPage() {
   const { campaignId } = useParams();
   const location = useLocation();
   const receipt = readTopUpReceipt(location.state);
+  const payment = useInvoiceToPay(receipt && campaignId ? campaignId : null, receipt?.amount ?? 0);
   if (!campaignId) return <Navigate to={CABINET_LINKS.campaigns} replace />;
   if (!receipt) return <Navigate to={CABINET_LINKS.campaign(campaignId)} replace />;
   const amount = formatMoney(receipt.amount, lang);
@@ -50,7 +53,9 @@ export function TopUpSentPage() {
             <dt>{t('campaigns.sent.toPay')}</dt>
             <dd>{amount}</dd>
           </div>
+          <PaymentRows invoice={payment.status === 'ready' ? payment.invoice : null} />
         </dl>
+        <PaymentNote state={payment} />
         <Timeline
           className="cmp-done__timeline"
           stateLabels={{ done: t('campaigns.row.stepState.done'), current: t('campaigns.row.stepState.current'), todo: t('campaigns.row.stepState.todo') }}
@@ -60,7 +65,8 @@ export function TopUpSentPage() {
           ]}
         />
         <div className="cmp-done__ctas">
-          <ButtonLink to={CABINET_LINKS.campaign(campaignId)} variant="primary" size="lg">
+          {canPay(payment) ? <PayInKaspiButton /> : null}
+          <ButtonLink to={CABINET_LINKS.campaign(campaignId)} variant={canPay(payment) ? 'secondary' : 'primary'} size="lg">
             {t('campaigns.topUp.back')}
           </ButtonLink>
           <ButtonLink to={CABINET_LINKS.campaigns} variant="ghost" size="lg">

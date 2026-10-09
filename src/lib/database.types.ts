@@ -261,6 +261,144 @@ export type Database = {
           },
         ]
       }
+      ad_packages: {
+        Row: {
+          ad_id: string
+          created_at: string
+          created_by: string | null
+          ends_at: string | null
+          id: string
+          plays_total: number
+          starts_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          plays_total: number
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          plays_total?: number
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_store_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ad_zone_names"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_campaign_cards"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertiser_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "broad_target_campaign_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_store_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaign_zone_shares"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_campaigns_stats"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "my_daily_plays_by_campaign"
+            referencedColumns: ["ad_id"]
+          },
+          {
+            foreignKeyName: "ad_packages_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "partner_campaign_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_packages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "partner_team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_packages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_stores: {
         Row: {
           actually_paid: number | null
@@ -5231,6 +5369,7 @@ export type Database = {
         Args: { p_ad: string; p_played_at: string }
         Returns: boolean
       }
+      _ad_over_package: { Args: { p_ad: string }; Returns: boolean }
       _ad_plays_on_day: {
         Args: { p_ad: string; p_day: string }
         Returns: number
@@ -5266,6 +5405,10 @@ export type Database = {
         Returns: string
       }
       _ntf_money: { Args: { p: number }; Returns: string }
+      _package_shown: {
+        Args: { p_pkg: Database["public"]["Tables"]["ad_packages"]["Row"] }
+        Returns: number
+      }
       _postgis_deprecate: {
         Args: { newname: string; oldname: string; version: string }
         Returns: undefined
@@ -5415,6 +5558,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      ad_allocation_state: { Args: never; Returns: Json }
       addauth: { Args: { "": string }; Returns: boolean }
       addgeometrycolumn:
         | {
@@ -5637,6 +5781,10 @@ export type Database = {
         }
         Returns: number
       }
+      buy_package: {
+        Args: { p_ad_id: string; p_ends_at?: string; p_plays: number }
+        Returns: Json
+      }
       cart_route: {
         Args: { p_cart_id: string; p_from?: string; p_to?: string }
         Returns: {
@@ -5846,6 +5994,18 @@ export type Database = {
       has_role: { Args: { p_role: string }; Returns: boolean }
       is_apex_admin: { Args: never; Returns: boolean }
       is_apex_store_owner: { Args: never; Returns: boolean }
+      list_store_plans: {
+        Args: never
+        Returns: {
+          created_at: string
+          height: number
+          plan_id: string
+          store_id: string
+          store_name: string
+          width: number
+          zones: number
+        }[]
+      }
       longtransactionsenabled: { Args: never; Returns: boolean }
       mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number }
       my_carts_with_plays: {
@@ -5853,6 +6013,21 @@ export type Database = {
         Returns: {
           carts: number
           store_id: string
+        }[]
+      }
+      my_packages: {
+        Args: { p_ad_id?: string }
+        Returns: {
+          ad_id: string
+          ad_name: string
+          display_id: number
+          ends_at: string
+          package_id: string
+          plays_total: number
+          remaining: number
+          shown: number
+          starts_at: string
+          status: string
         }[]
       }
       my_plays_by_hour: {

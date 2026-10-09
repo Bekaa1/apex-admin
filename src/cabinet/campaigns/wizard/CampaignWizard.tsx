@@ -12,6 +12,7 @@ import { StepStores } from './steps/StepStores';
 import { StepTariff } from './steps/StepTariff';
 import { StepZones } from './steps/StepZones';
 import { useCampaignWizard, type WizardOptions } from './useCampaignWizard';
+import { useStorePlans } from './useStorePlans';
 import { ReturnedAlert } from './ReturnedAlert';
 import { SubmitError } from './SubmitError';
 import { WizardActions } from './WizardActions';
@@ -37,6 +38,7 @@ export function CampaignWizard(options: WizardOptions) {
   const { catalog, mode } = options;
   const wizard = useCampaignWizard(options);
   const { step, form, flow } = wizard;
+  const plans = useStorePlans(options.userId, options.api, form.storeIds, step === 'zones' && wizard.ctx.zones !== false);
   const titleId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const errorsRef = useRef<HTMLDivElement>(null);
@@ -111,7 +113,7 @@ export function CampaignWizard(options: WizardOptions) {
             {step === 'media' ? <StepMedia wizard={wizard} /> : null}
             {step === 'tariff' ? <StepTariff wizard={wizard} catalog={catalog} /> : null}
             {step === 'stores' ? <StepStores wizard={wizard} catalog={catalog} /> : null}
-            {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} /> : null}
+            {step === 'zones' ? <StepZones wizard={wizard} catalog={catalog} plans={plans} /> : null}
             {step === 'budget' ? <StepBudget wizard={wizard} catalog={catalog} /> : null}
             {step === 'review' && mode.kind === 'edit' ? <StepReview wizard={wizard} campaign={mode.campaign} /> : null}
           </section>

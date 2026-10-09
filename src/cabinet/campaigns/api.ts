@@ -7,6 +7,7 @@ import type { CampaignDetailsSource } from './details/types';
 import type { InvoiceSource } from './payment/kaspi';
 import type { CampaignsSource } from './types';
 import { extensionOf } from './wizard/media';
+import { planSource, type StorePlanSource } from './wizard/storePlan';
 import type { CampaignEdit, CampaignPrefill, CampaignSubmission, MediaMeta, MediaState, StoreCatalog, UploadedMedia } from './wizard/types';
 
 const MEDIA_BUCKET = 'campaign-media';
@@ -114,6 +115,21 @@ export async function fetchCampaignInvoices(campaignId: string, signal: AbortSig
   const { data, error } = await requireSupabase().from('advertiser_invoices').select('number, amount, status, issued_at').eq('ad_id', campaignId).abortSignal(signal);
   if (error) throw error;
   return data;
+}
+
+/** Floor plans of the given stores that have one; a store without a published plan is left out. */
+export async function fetchStorePlans(storeIds: string[], signal: AbortSignal): Promise<StorePlanSource[]> {
+  const sb = requireSupabase();
+  const list = await sb.rpc('list_store_plans').abortSignal(signal);
+  if (list.error) throw list.error;
+  const withPlan = list.data.map((row) => row.store_id).filter((id) => storeIds.includes(id));
+  return Promise.all(
+    withPlan.map(async (storeId) => {
+      const { data, error } = await sb.rpc('get_store_plan', { p_store_id: storeId }).abortSignal(signal);
+      if (error) throw error;
+      return planSource(storeId, data);
+    }),
+  );
 }
 
 /** Stores with carts and their shelf zones with a working beacon, as the backend offers them for sale. */

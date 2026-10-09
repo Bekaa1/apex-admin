@@ -5,7 +5,7 @@ import { campaignAbilities, type Moderation } from '../../campaignStage';
 import { parseDemoVariant, type DemoVariant } from '../../demo';
 import { queryKeys } from '../../queryKeys';
 import { useTariffTerms } from '../../useTariffTerms';
-import { editCampaign, fetchCampaignPrefill, fetchStoreCatalog, submitCampaign, uploadCampaignMedia } from '../api';
+import { editCampaign, fetchCampaignPrefill, fetchStoreCatalog, fetchStorePlans, submitCampaign, uploadCampaignMedia } from '../api';
 import { DEMO_MODERATION, demoCatalog, demoReturnedForm, demoWizardApi } from './demo';
 import { formFromPrefill } from './summary';
 import type { CampaignForm, CampaignPrefill, EditedCampaign, WizardApi, WizardCatalog } from './types';
@@ -125,6 +125,7 @@ export function useWizardData(source: WizardSource): WizardData {
       uploadMedia: (file, fileName, onProgress, signal) => uploadCampaignMedia(userId, file, fileName, onProgress, signal),
       submit: submitCampaign,
       edit: editCampaign,
+      storePlans: fetchStorePlans,
     },
     refreshTariffs: () => void tariffs.refetch(),
   };

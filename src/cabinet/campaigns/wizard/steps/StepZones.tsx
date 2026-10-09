@@ -1,12 +1,15 @@
 import { useId } from 'react';
-import { Badge, Chip, Icon, Meter } from '../../../../design-system';
+import { Badge, Button, Chip, Icon, Meter } from '../../../../design-system';
 import { useI18n } from '../../../../i18n/i18n';
 import { formatNumber, pluralKey } from '../../../../lib/format';
+import type { StoreMap } from '../storePlan';
 import { selectedStores } from '../summary';
 import type { CatalogStore, CatalogZone, WizardCatalog } from '../types';
 import type { CampaignWizardState } from '../useCampaignWizard';
+import type { StorePlansState } from '../useStorePlans';
+import { ZoneMap } from './ZoneMap';
 
-function ZoneStore({ store, zones, wizard }: { store: CatalogStore; zones: CatalogZone[]; wizard: CampaignWizardState }) {
+function ZoneStore({ store, zones, map, wizard }: { store: CatalogStore; zones: CatalogZone[]; map: StoreMap | undefined; wizard: CampaignWizardState }) {
   const { t, lang } = useI18n();
   const nameId = useId();
   const chosen = zones.filter((zone) => wizard.form.zoneIds.includes(zone.id)).length;
@@ -37,6 +40,15 @@ function ZoneStore({ store, zones, wizard }: { store: CatalogStore; zones: Catal
       ) : (
         <p className="cab-muted">{t('campaigns.wizard.zones.noZones')}</p>
       )}
+      {map && zones.length ? (
+        <ZoneMap
+          map={map}
+          zones={zones}
+          selected={wizard.form.zoneIds}
+          storeName={store.name}
+          onToggle={(zoneId) => wizard.dispatch({ type: 'toggleZone', zoneId })}
+        />
+      ) : null}
       {invalid && zones.length ? (
         <p className="ax-error">
           <Icon name="alert-circle" size={18} />
@@ -47,8 +59,8 @@ function ZoneStore({ store, zones, wizard }: { store: CatalogStore; zones: Catal
   );
 }
 
-/** Step 4: shelf zones in every chosen store; quick chips apply a zone to all stores that have it. */
-export function StepZones({ wizard, catalog }: { wizard: CampaignWizardState; catalog: WizardCatalog }) {
+/** Step 4: shelf zones in every chosen store, by chips or on the store's floor plan; quick chips apply a zone to all stores that have it. */
+export function StepZones({ wizard, catalog, plans }: { wizard: CampaignWizardState; catalog: WizardCatalog; plans: StorePlansState }) {
   const { t, lang } = useI18n();
   const quickId = useId();
   const { form, dispatch } = wizard;
@@ -86,9 +98,28 @@ export function StepZones({ wizard, catalog }: { wizard: CampaignWizardState; ca
         <span>{progress}</span>
         <Meter className="cmp-zones-progress__meter" value={pct} tone={pct === 100 ? 'success' : 'primary'} size="sm" label={progress} />
       </div>
+      {plans.status === 'loading' ? (
+        <p className="cab-muted" role="status">
+          {t('campaigns.wizard.zones.map.loading')}
+        </p>
+      ) : null}
+      {plans.status === 'error' ? (
+        <div className="cmp-map-error" role="status">
+          <p className="cab-muted">{t('campaigns.wizard.zones.map.loadError')}</p>
+          <Button variant="ghost" size="md" iconLeft="refresh" onClick={plans.retry}>
+            {t('cabinet.retry')}
+          </Button>
+        </div>
+      ) : null}
       <ul className="cmp-zone-stores">
         {stores.map((store) => (
-          <ZoneStore key={store.id} store={store} zones={zonesOf(store.id)} wizard={wizard} />
+          <ZoneStore
+            key={store.id}
+            store={store}
+            zones={zonesOf(store.id)}
+            map={plans.status === 'ready' ? plans.maps.find((map) => map.storeId === store.id) : undefined}
+            wizard={wizard}
+          />
         ))}
       </ul>
     </div>

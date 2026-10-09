@@ -48,6 +48,17 @@ const ZONE_SHELVES: Record<string, string[]> = {
   'Бытовая химия': ['E-1', 'E-2', 'E-3'],
   'Фрукты и овощи': ['P-1', 'P-2', 'P-3', 'P-4'],
 };
+// Colours a store owner could pick for the zones in the admin console.
+const ZONE_COLORS: Record<string, string> = {
+  Напитки: '#3B82F6',
+  'Молочные продукты': '#06B6D4',
+  Снеки: '#F59E0B',
+  'Кофе и чай': '#8B5CF6',
+  'Кондитерские изделия': '#EC4899',
+  'Детские товары': '#10B981',
+  'Бытовая химия': '#EF4444',
+  'Фрукты и овощи': '#84CC16',
+};
 // Arai Food on Zhandosova has no plan: the zones step shows chips only there.
 const STORES_WITH_PLAN = ['s1', 's2', 's5', 's7', 's8', 's10'];
 
@@ -57,6 +68,7 @@ export function demoStorePlans(storeIds: string[]): StorePlanSource[] {
     storeId,
     plan: { version: 1, ...HALL, elements: DEMO_ELEMENTS, decorations: DEMO_COLUMNS, metadata: {} },
     assignments: zones.flatMap(([name]) => (ZONE_SHELVES[name] ?? []).map((elementId) => ({ elementId, zoneId: `${storeId}-${name}` }))),
+    colors: zones.flatMap(([name]) => (ZONE_COLORS[name] ? [{ zoneId: `${storeId}-${name}`, color: ZONE_COLORS[name] }] : [])),
   }));
 }
 

@@ -227,7 +227,7 @@
 .cmp-zone-store__name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .cmp-zone-store__name strong { font-size: 16px; }
 .cmp-zone-store__name span { font-size: 13px; color: var(--text-muted); }
-/* Floor plan of a store: zones on sale are lit, the chosen ones filled like a pressed chip */
+/* Floor plan of a store: zones on sale in their plan colour (inline `fill`), faint until chosen; chosen ones solid and outlined */
 .cmp-map { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
 .cmp-map__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
 .cmp-map__bar .cab-small { flex: 1 1 220px; }
@@ -237,14 +237,15 @@
 .cmp-map__hall { fill: var(--surface); stroke: var(--border-strong); }
 .cmp-map__wall { fill: var(--border-strong); }
 .cmp-map__plain { fill: var(--surface-muted); stroke: var(--border); }
-.cmp-map__zone { cursor: pointer; outline: none; }
-.cmp-map__shelf { fill: var(--primary-soft); stroke: var(--link); stroke-width: 1.5; }
-.cmp-map__zone:hover .cmp-map__shelf { fill: color-mix(in srgb, var(--primary) 30%, var(--surface)); }
-.cmp-map__zone.is-pressed .cmp-map__shelf { fill: var(--primary); stroke: var(--primary); }
+.cmp-map__zone { cursor: pointer; outline: none; fill: var(--primary); }
+.cmp-map__shelf { fill-opacity: .45; stroke: none; }
+.cmp-map__zone:hover .cmp-map__shelf { fill-opacity: .7; }
+.cmp-map__zone.is-pressed .cmp-map__shelf { fill-opacity: 1; stroke: var(--text); stroke-width: 2; }
 .cmp-map__zone:focus-visible .cmp-map__shelf { stroke: var(--focus); stroke-width: 3; }
 /* Shelves are a few pixels thick on a whole-hall view: a wide invisible stroke makes them tappable. */
 .cmp-map__hit { fill: transparent; stroke: transparent; stroke-width: 14; pointer-events: all; }
 .cmp-map__label { fill: var(--text); stroke: var(--surface); paint-order: stroke; stroke-linejoin: round; font-family: var(--font-sans); font-weight: 600; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+.cmp-zone-dot { display: inline-block; width: 10px; height: 10px; margin-right: var(--space-2); border: 1px solid var(--border); border-radius: var(--radius-full); }
 .cmp-map-error { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); }
 
 /* Step 5 — budget and review */

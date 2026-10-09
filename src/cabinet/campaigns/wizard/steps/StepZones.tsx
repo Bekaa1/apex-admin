@@ -9,6 +9,16 @@ import type { CampaignWizardState } from '../useCampaignWizard';
 import type { StorePlansState } from '../useStorePlans';
 import { ZoneMap } from './ZoneMap';
 
+/** A zone's name with a dot in its colour on the plan, so the chip points at the map. */
+function ZoneName({ name, color }: { name: string; color: string | undefined }) {
+  return (
+    <>
+      {color ? <span className="cmp-zone-dot" style={{ background: color }} aria-hidden="true" /> : null}
+      {name}
+    </>
+  );
+}
+
 function ZoneStore({ store, zones, map, wizard }: { store: CatalogStore; zones: CatalogZone[]; map: StoreMap | undefined; wizard: CampaignWizardState }) {
   const { t, lang } = useI18n();
   const nameId = useId();
@@ -31,7 +41,7 @@ function ZoneStore({ store, zones, map, wizard }: { store: CatalogStore; zones: 
             <Chip
               key={zone.id}
               pressed={wizard.form.zoneIds.includes(zone.id)}
-              label={zone.name}
+              label={<ZoneName name={zone.name} color={map?.zoneColor.get(zone.id)} />}
               meta={zone.otherBrands === null ? undefined : zone.otherBrands ? count('campaigns.wizard.zones.otherBrands', zone.otherBrands) : t('campaigns.wizard.zones.onlyYou')}
               onClick={() => wizard.dispatch({ type: 'toggleZone', zoneId: zone.id })}
             />

@@ -389,7 +389,16 @@
       },
       "onlyYou": "only you so far",
       "storeError": "Choose at least one zone or remove the store in step 3",
-      "noZones": "This store has no shelf zones yet. Remove it in step 3 or choose a plan without zones."
+      "noZones": "This store has no shelf zones yet. Remove it in step 3 or choose a plan without zones.",
+      "map": {
+        "hint": "Tap a highlighted zone on the map to select it or clear it",
+        "aria": "Store floor plan: {store}",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "fit": "Whole store",
+        "loading": "Loading store floor plans…",
+        "loadError": "Store floor plans didn’t load — choose zones from the list."
+      }
     },
     "budget": {
       "title": "Budget and review",

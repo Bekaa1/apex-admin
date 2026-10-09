@@ -10,6 +10,8 @@ export const queryKeys = {
   /** Under `campaigns`, so a top-up or an edit refreshes the statistics too. */
   stats: (userId: string | undefined) => ['campaigns', userId, 'stats'] as const,
   storeCatalog: (userId: string | undefined) => ['catalog', userId] as const,
+  /** `storeIds` sorted, so the same choice in another order reads the cache. */
+  storePlans: (userId: string | undefined, storeIds: string[]) => ['catalog', userId, 'plans', storeIds] as const,
   notifications: (userId: string | undefined) => ['notifications', userId] as const,
   notificationFeed: (userId: string | undefined) => ['notifications', userId, 'feed'] as const,
   unreadNotifications: (userId: string | undefined) => ['notifications', userId, 'unread'] as const,

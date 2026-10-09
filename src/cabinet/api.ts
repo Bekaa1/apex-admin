@@ -18,12 +18,12 @@ export async function getAccountProfile(userId: string): Promise<AccountProfile>
 export async function fetchTariffTerms(signal: AbortSignal): Promise<TariffTerms[]> {
   const { data, error } = await requireSupabase()
     .from('tariffs')
-    .select('code, price_per_play, min_amount, can_select_zone, version, purchasable, is_archived')
+    .select('code, price_per_play, min_amount, can_select_zone, max_daily_plays, version, purchasable, is_archived')
     .abortSignal(signal);
   if (error) throw error;
   return data.flatMap((row) => {
     const code = TARIFFS.find((plan) => plan.code === row.code)?.code;
     if (!code || !row.purchasable || row.is_archived) return [];
-    return [{ code, pricePerPlay: row.price_per_play, minimum: row.min_amount, hasZones: row.can_select_zone, version: row.version }];
+    return [{ code, pricePerPlay: row.price_per_play, minimum: row.min_amount, hasZones: row.can_select_zone, maxDailyPlays: row.max_daily_plays, version: row.version }];
   });
 }

@@ -23,6 +23,7 @@ export type WizardAction =
   | { type: 'toggleZone'; zoneId: string }
   | { type: 'zones'; zoneIds: string[] }
   | { type: 'budget'; value: number | null }
+  | { type: 'dailyLimit'; value: string }
   | { type: 'rules'; value: boolean }
   | { type: 'attempt'; steps: StepId[] };
 
@@ -36,6 +37,7 @@ export function emptyForm(): CampaignForm {
     storeIds: [],
     zoneIds: [],
     budget: null,
+    dailyLimit: '',
     rulesAccepted: false,
     requestId: crypto.randomUUID(),
   };
@@ -89,6 +91,8 @@ function formReducer(form: CampaignForm, action: WizardAction): CampaignForm {
       return { ...form, zoneIds: action.zoneIds };
     case 'budget':
       return { ...form, budget: action.value };
+    case 'dailyLimit':
+      return { ...form, dailyLimit: action.value };
     case 'rules':
       return { ...form, rulesAccepted: action.value };
     case 'attempt':

@@ -13,8 +13,8 @@ export function parseDemoVariant(value: string | null): DemoVariant | null {
 /** Plan terms of the demo, as in the design. A function, so production builds drop it. */
 export function demoTariffTerms(): TariffTerms[] {
   return [
-    { code: 'standard', pricePerPlay: 10, minimum: 500_000, hasZones: false, version: 1 },
-    { code: 'zones', pricePerPlay: 12, minimum: 1_000_000, hasZones: true, version: 1 },
-    { code: 'premium', pricePerPlay: 15, minimum: 2_000_000, hasZones: true, version: 1 },
+    { code: 'standard', pricePerPlay: 10, minimum: 500_000, hasZones: false, maxDailyPlays: null, version: 1 },
+    { code: 'zones', pricePerPlay: 12, minimum: 1_000_000, hasZones: true, maxDailyPlays: null, version: 1 },
+    { code: 'premium', pricePerPlay: 15, minimum: 2_000_000, hasZones: true, maxDailyPlays: null, version: 1 },
   ];
 }

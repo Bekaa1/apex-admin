@@ -4,6 +4,7 @@ import { coverTone } from '../../campaignCover';
 import { campaignAbilities, stageOf } from '../../campaignStage';
 import { linkedStores } from '../../stores';
 import { tariffOf } from '../../tariffs';
+import { invoiceToPay } from '../payment/kaspi';
 import type { StoreCatalog } from '../wizard/types';
 import type { CampaignDetails, CampaignDetailsSource, ChartBucket, DetailsStats, DetailsStore, HistoryEvent } from './types';
 
@@ -152,6 +153,7 @@ export function buildCampaignDetails(source: CampaignDetailsSource, catalog: Sto
       daysLeft: row.status === 'active' ? daysFor(money.left, dailySpend(source)) : null,
     },
     history: historyOf(source, Boolean(row.start_date)),
+    invoice: invoiceToPay(source.invoices),
     email: row.invoice_sent_to,
   };
 }

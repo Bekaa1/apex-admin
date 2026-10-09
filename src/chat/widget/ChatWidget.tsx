@@ -31,7 +31,7 @@ export default function ChatWidget({ transport = chatTransport }: { transport?: 
     if (!state.open) return;
     input.current?.focus({ preventScroll: true });
     const escape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { event.preventDefault(); controller.close(); requestAnimationFrame(() => launcher.current?.focus()); }
+      if (event.key === 'Escape' && !event.defaultPrevented && !document.querySelector('dialog:modal')) { event.preventDefault(); controller.close(); requestAnimationFrame(() => launcher.current?.focus()); }
     };
     document.addEventListener('keydown', escape);
     return () => document.removeEventListener('keydown', escape);

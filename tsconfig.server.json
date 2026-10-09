@@ -4,5 +4,5 @@
     "strict": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.server.tsbuildinfo"
   },
-  "include": ["server/chat/**/*.ts"]
+  "include": ["server/**/*.ts"]
 }

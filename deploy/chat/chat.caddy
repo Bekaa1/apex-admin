@@ -1,0 +1,4 @@
+# Include in BOTH apexmedia.kz and adminapex.kz site blocks, before the SPA fallback.
+handle /api/chat/respond {
+  reverse_proxy apex-chat-responder:8787
+}

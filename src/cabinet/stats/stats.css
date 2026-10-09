@@ -14,6 +14,10 @@
 [data-theme="dark"] .st-filters__scope { background: var(--bg); }
 .st-filters__scope .ax-seg__item { padding: 0 12px; white-space: nowrap; }
 .st-filters__export { margin-left: auto; }
+.st-export { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.st-export__action { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+.st-export__action > .cab-note { flex: 1 1 280px; margin: 0; }
+@media (max-width: 600px) { .st-export__action > button { width: 100%; } }
 .st-filters__meta { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--text-muted); }
 .st-filters__meta span { display: inline-flex; align-items: center; gap: 6px; }
 .st-filters__meta .ax-icon { color: var(--text-subtle); }

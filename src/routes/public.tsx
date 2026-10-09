@@ -30,7 +30,7 @@ const cabinetRoutes: RouteObject[] = [
 
 const applicationRoutes: RouteObject[] = [
   {
-    path: '/', element: <PublicLayout />, handle: { publicChat: true }, children: [
+    path: '/', element: <PublicLayout />, children: [
       { index: true, element: <Landing /> },
       { path: 'pricing', lazy: async () => ({ Component: (await import('../landing/PricingPage')).PricingPage }) },
       { path: 'stores', lazy: async () => ({ Component: (await import('../landing/StoresPage')).StoresPage }) },
@@ -45,8 +45,8 @@ const applicationRoutes: RouteObject[] = [
   { path: DEFAULT_AUTH_LINKS.resetCode, element: <ResetPasswordRoute step="code" /> },
   { path: DEFAULT_AUTH_LINKS.resetNew, element: <ResetPasswordRoute step="new" /> },
   { path: DEFAULT_AUTH_LINKS.resetDone, element: <ResetPasswordRoute step="done" /> },
-  { path: DEFAULT_AUTH_LINKS.privacy, handle: { publicChat: true }, element: <LegalDocumentPage key="privacy" kind="privacy" /> },
-  { path: DEFAULT_AUTH_LINKS.offer, handle: { publicChat: true }, element: <LegalDocumentPage key="offer" kind="offer" /> },
+  { path: DEFAULT_AUTH_LINKS.privacy, element: <LegalDocumentPage key="privacy" kind="privacy" /> },
+  { path: DEFAULT_AUTH_LINKS.offer, element: <LegalDocumentPage key="offer" kind="offer" /> },
   {
     element: <RequireSession />,
     hydrateFallbackElement: <SessionLoading />,

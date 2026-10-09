@@ -1,12 +1,17 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { ChatResponder, readConfig, ReplyError } from './responder.ts';
 import { PublicPricing, readPricingConfig } from './pricing.ts';
+import { readReportConfig } from '../stats/data.ts';
+import { StatsReports } from '../stats/service.ts';
+import { handleStatsReport } from '../stats/handler.ts';
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const config = readConfig(process.env);
 const pricing = new PublicPricing(readPricingConfig(process.env));
 const responder = config ? new ChatResponder(config, () => pricing.get()) : null;
-const origins = new Set((process.env.CHAT_ALLOWED_ORIGINS ?? 'http://127.0.0.1:5173,http://localhost:5173,https://apexmedia.kz').split(',').map(value => value.trim()));
+const reportConfig = readReportConfig(process.env);
+const reports = reportConfig ? new StatsReports(reportConfig) : null;
+const origins = new Set((process.env.CHAT_ALLOWED_ORIGINS ?? 'http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:5174,http://localhost:5174,https://apexmedia.kz,https://adminapex.kz').split(',').map(value => value.trim()));
 const port = Number(process.env.CHAT_SERVER_PORT ?? 8787);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid CHAT_SERVER_PORT');
 
@@ -33,6 +38,7 @@ async function body(req: IncomingMessage): Promise<{ sessionId: string; messageI
 
 const server = createServer(async (req, res) => {
   try {
+    if (req.url === '/api/stats/report') { await handleStatsReport(req, res, reports, origins); return; }
     if (req.url === '/health' && req.method === 'GET') { reply(res, responder ? 200 : 503, { ready: Boolean(responder) }); return; }
     if (req.url !== '/api/chat/respond') throw new ReplyError('not_found', 404);
     if (req.method !== 'POST') throw new ReplyError('method_not_allowed', 405);

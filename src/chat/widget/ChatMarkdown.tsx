@@ -1,10 +1,12 @@
-import { memo, type ComponentPropsWithoutRef } from 'react';
+import { memo, useContext, type ComponentPropsWithoutRef } from 'react';
 import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import { AppLink } from '../../design-system/AppLink';
 import { useI18n } from '../../i18n/i18n';
 import styles from './ChatMarkdown.module.css';
+import { ChatSiteContext } from './ChatSiteContext';
+import { chatLinkTarget } from './linkTarget';
 
 const plugins = [remarkGfm, remarkBreaks];
 
@@ -29,21 +31,14 @@ function Table({ children }: ComponentPropsWithoutRef<'table'>) {
 }
 
 function MessageLink({ href, children, title }: ComponentPropsWithoutRef<'a'>) {
+  const site = useContext(ChatSiteContext);
   if (!href) return <span>{children}</span>;
   if (href.startsWith('#')) return <a href={href} title={title}>{children}</a>;
 
   const currentUrl = typeof window === 'undefined' ? 'https://apexmedia.kz/' : window.location.href;
-  const url = new URL(href, currentUrl);
-  const sameSite = url.origin === new URL(currentUrl).origin || url.origin === 'https://apexmedia.kz';
-  if (sameSite && !url.username && !url.password) {
-    // Canonical links from the assistant stay on the current public app,
-    // including localhost. React Router preserves the mounted chat and session.
-    const path = `${url.pathname}${url.search}${url.hash}`;
-    const document = /\.[a-z0-9]+$/i.test(url.pathname);
-    return <AppLink href={path} title={title} target={document ? '_blank' : undefined}
-      rel={document ? 'noopener noreferrer' : undefined}>{children}</AppLink>;
-  }
-  return <a href={href} title={title} target="_blank" rel="noopener noreferrer nofollow">{children}</a>;
+  const target = chatLinkTarget(href, currentUrl, site);
+  return <AppLink href={target.href} title={title} target={target.external ? '_blank' : undefined}
+    rel={target.external ? 'noopener noreferrer nofollow' : undefined}>{children}</AppLink>;
 }
 
 const components: Components = {

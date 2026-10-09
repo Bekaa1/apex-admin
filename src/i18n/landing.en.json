@@ -22,7 +22,7 @@
   "stats": {
     "s1Value": "200+",
     "s1Label": "Smart carts already in stores",
-    "s2Value": "up to 7.9 sec",
+    "s2Value": "up to 7 sec",
     "s2Label": "per video",
     "s3Value": "By shelf",
     "s3Label": "choose zones inside the store"

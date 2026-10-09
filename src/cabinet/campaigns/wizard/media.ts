@@ -7,7 +7,9 @@ export const MAX_FILE_MB = 50;
 const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
 const VIDEO = { types: ['video/mp4', 'video/quicktime'], extensions: ['mp4', 'mov'] };
 const IMAGE = { types: ['image/jpeg', 'image/png'], extensions: ['jpg', 'jpeg', 'png'] };
+// Texts promise 7 seconds, but files up to 7.9 s pass: encoders and phones often add a fraction of a second.
 export const MAX_VIDEO_DURATION_SEC = 7.9;
+export const SHOWN_VIDEO_DURATION_SEC = 7;
 const MIN_WIDTH = 1280;
 const MIN_HEIGHT = 720;
 const RATIO = 16 / 9;

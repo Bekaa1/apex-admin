@@ -22,7 +22,7 @@ from reportlab.platypus import KeepTogether, ListFlowable, ListItem, Paragraph, 
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'docs' / 'ADVERTISING_RULES.md'
-VERSION = '1.2'
+VERSION = '1.3'
 OUTPUT = ROOT / 'public' / 'legal' / f'apexmedia-advertising-rules-{VERSION}.pdf'
 FONTS = ROOT / 'src' / 'assets' / 'fonts'
 

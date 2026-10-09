@@ -1,6 +1,6 @@
 import { useI18n } from '../../../../i18n/i18n';
 import { formatNumber, pluralKey } from '../../../../lib/format';
-import { MAX_VIDEO_DURATION_SEC } from '../media';
+import { SHOWN_VIDEO_DURATION_SEC } from '../media';
 import type { MediaMeta, MediaProblem } from '../types';
 
 const MEGABYTE = 1024 * 1024;
@@ -30,7 +30,7 @@ export function useProblemText() {
       // Round UP only for the error: 7.9001 must not appear equal to the 7.9 limit.
       const seconds = Math.ceil((meta?.durationSec ?? 0) * 1000) / 1000;
       return t(pluralKey('campaigns.wizard.media.errors.duration', seconds, lang), {
-        count: formatNumber(seconds, lang), max: formatNumber(MAX_VIDEO_DURATION_SEC, lang),
+        count: formatNumber(seconds, lang), max: formatNumber(SHOWN_VIDEO_DURATION_SEC, lang),
       });
     }
     if (problem === 'type' && kind === 'cover') return t('campaigns.wizard.media.errors.coverType');
@@ -40,5 +40,5 @@ export function useProblemText() {
 
 export function useVideoRules(): string {
   const { t, lang } = useI18n();
-  return t('campaigns.wizard.media.videoRules', { max: formatNumber(MAX_VIDEO_DURATION_SEC, lang) });
+  return t('campaigns.wizard.media.videoRules', { max: formatNumber(SHOWN_VIDEO_DURATION_SEC, lang) });
 }

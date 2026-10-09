@@ -2,7 +2,7 @@
   "guide": {
     "badge": "First launch",
     "title": "Launch your first ad in 5 steps",
-    "text": "Upload a video up to 7.9 seconds long, choose a plan, stores and shelf zones, set a budget — and shoppers will see your ad on Smart carts.",
+    "text": "Upload a video up to 7 seconds long, choose a plan, stores and shelf zones, set a budget — and shoppers will see your ad on Smart carts.",
     "how": "How it works",
     "facts": {
       "payment": "Payment by invoice",
@@ -26,7 +26,7 @@
     "lead": "The wizard guides you step by step. Here is what you need at each step.",
     "video": {
       "title": "Video and details",
-      "text": "Name, description, a video up to 7.9 seconds long and a cover. Without a cover we use the first frame of the video.",
+      "text": "Name, description, a video up to 7 seconds long and a cover. Without a cover we use the first frame of the video.",
       "cover": "Cover",
       "details": "Name and description"
     },
@@ -102,7 +102,7 @@
     "title": "Frequently asked questions",
     "format": {
       "q": "What should the ad be like?",
-      "a": "The video is no longer than 7.9 seconds. We show the file format and size requirements on upload and review the video before launch."
+      "a": "The video is no longer than 7 seconds. We show the file format and size requirements on upload and review the video before launch."
     },
     "start": {
       "q": "When do impressions start?",

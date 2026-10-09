@@ -81,7 +81,7 @@ export function PublicLayout() {
       </div>
     </header>
     <main id="public-main" className={styles.main} tabIndex={-1}><Outlet /></main>
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-chat-obstacle="flow">
       <p>© {year} Apexmedia</p>
       <div><Link to="/privacy">{t('landing.legal.privacy')}</Link><Link to="/offer">{t('landing.legal.offer')}</Link></div>
     </footer>

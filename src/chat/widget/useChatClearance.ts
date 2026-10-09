@@ -1,7 +1,8 @@
 import { useEffect, type RefObject } from 'react';
 import { chatBottomClearance } from './clearance';
 
-/** Existing shared bars; optional marker lets new layouts declare a bottom obstruction. */
+/** Existing shared bars; optional marker lets new layouts declare a bottom obstruction. `data-chat-obstacle="flow"` marks
+ * content at the end of the page (the public footer): it lifts the launcher only while it is on screen. */
 const selector = '.cab-tabs, .cmp-actions, [data-chat-obstacle]';
 export function useChatClearance(frame: RefObject<HTMLDivElement | null>, page: RefObject<HTMLDivElement | null>, locationKey: string) {
   useEffect(() => {
@@ -19,7 +20,8 @@ export function useChatClearance(frame: RefObject<HTMLDivElement | null>, page: 
       }
       const obstacles = elements.flatMap(el => {
         const css = getComputedStyle(el);
-        return ['fixed', 'sticky'].includes(css.position) && css.visibility !== 'hidden' ? [el.getBoundingClientRect()] : [];
+        const pinned = ['fixed', 'sticky'].includes(css.position) || el.dataset.chatObstacle === 'flow';
+        return pinned && css.visibility !== 'hidden' ? [el.getBoundingClientRect()] : [];
       });
       const bottom = chatBottomClearance(document.documentElement.clientWidth, window.innerHeight, obstacles);
       root.style.setProperty('--chat-obstacle-bottom', `${bottom}px`);

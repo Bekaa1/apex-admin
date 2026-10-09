@@ -11,15 +11,18 @@ const ZOOM_STEP = 0.5;
 interface ZoneShapesProps {
   zone: CatalogZone;
   shelves: StoreMap['shelves'];
+  /** The zone's colour on the plan; without one the brand colour (CSS). */
+  color: string | undefined;
   pressed: boolean;
   onToggle: () => void;
 }
 
 /** One zone's shelves as one button: a single tab stop, and a tap on any of its shelves toggles the zone. */
-function ZoneShapes({ zone, shelves, pressed, onToggle }: ZoneShapesProps) {
+function ZoneShapes({ zone, shelves, color, pressed, onToggle }: ZoneShapesProps) {
   return (
     <g
       className={pressed ? 'cmp-map__zone is-pressed' : 'cmp-map__zone'}
+      style={color ? { fill: color } : undefined}
       role="button"
       tabIndex={0}
       aria-pressed={pressed}
@@ -52,7 +55,7 @@ interface ZoneMapProps {
   onToggle: (zoneId: string) => void;
 }
 
-/** The hall of one store: zones on sale are lit, a tap on a shelf picks or drops its zone. Same state as the zone chips. */
+/** The hall of one store: zones on sale in their plan colours, faint until chosen; a tap on a shelf picks or drops its zone. Same state as the zone chips. */
 export function ZoneMap({ map, zones, selected, storeName, onToggle }: ZoneMapProps) {
   const { t } = useI18n();
   const [zoom, setZoom] = useState(ZOOM_MIN);
@@ -100,10 +103,18 @@ export function ZoneMap({ map, zones, selected, storeName, onToggle }: ZoneMapPr
             <rect key={id} className="cmp-map__plain" {...shelf} vectorEffect="non-scaling-stroke" />
           ))}
           {onMap.map((zone) => (
-            <ZoneShapes key={zone.id} zone={zone} shelves={shelvesOf(zone.id)} pressed={selected.includes(zone.id)} onToggle={() => onToggle(zone.id)} />
+            <ZoneShapes
+              key={zone.id}
+              zone={zone}
+              shelves={shelvesOf(zone.id)}
+              color={map.zoneColor.get(zone.id)}
+              pressed={selected.includes(zone.id)}
+              onToggle={() => onToggle(zone.id)}
+            />
           ))}
+          {/* Zones are told apart by colour (the dots on the chips); names only for the chosen ones, so a busy hall stays readable. */}
           {onMap.map((zone) => {
-            const box = boxes.get(zone.id);
+            const box = selected.includes(zone.id) ? boxes.get(zone.id) : undefined;
             return box ? (
               <text key={zone.id} className="cmp-map__label" x={box.x + box.width / 2} y={box.y + box.height / 2} fontSize={fontSize} strokeWidth={fontSize / 4} aria-hidden="true">
                 {zone.name}

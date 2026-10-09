@@ -17,6 +17,8 @@ export interface StoreMap {
   walls: MapRect[];
   /** Shelf id → zone id (`zones.id`, the same ids the zone chips use). */
   zoneOf: Map<string, string>;
+  /** Zone id → the colour the store painted it on the plan (`#RRGGBB`); a zone without one is drawn in the brand colour. */
+  zoneColor: Map<string, string>;
 }
 
 /** One store as the backend returns it: the plan JSON and which plan elements belong to which zone. */
@@ -24,10 +26,13 @@ export interface StorePlanSource {
   storeId: string;
   plan: unknown;
   assignments: Array<{ elementId: string; zoneId: string }>;
+  colors: Array<{ zoneId: string; color: string }>;
 }
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
 const isSize = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
+// Colours go into SVG `fill`, so only plain hex passes.
+const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 
 function asRect(value: unknown): MapRect | null {
   if (!isObject(value)) return null;
@@ -35,15 +40,19 @@ function asRect(value: unknown): MapRect | null {
   return isSize(x) && isSize(y) && isSize(width) && isSize(height) && width > 0 && height > 0 ? { x, y, width, height } : null;
 }
 
-/** `get_store_plan`: `{ plan: { plan_data }, assignments: [{ element_id, zone_id }] }`. */
+/** `get_store_plan`: `{ plan: { plan_data }, zones: [{ zone_id, color }], assignments: [{ element_id, zone_id }] }`. */
 export function planSource(storeId: string, value: unknown): StorePlanSource {
   const plan = isObject(value) && isObject(value.plan) ? value.plan.plan_data : null;
   const links = isObject(value) && Array.isArray(value.assignments) ? value.assignments : [];
+  const zones = isObject(value) && Array.isArray(value.zones) ? value.zones : [];
   return {
     storeId,
     plan,
     assignments: links.flatMap((link) =>
       isObject(link) && typeof link.element_id === 'string' && typeof link.zone_id === 'string' ? [{ elementId: link.element_id, zoneId: link.zone_id }] : [],
+    ),
+    colors: zones.flatMap((zone) =>
+      isObject(zone) && typeof zone.zone_id === 'string' && typeof zone.color === 'string' && HEX_COLOR.test(zone.color) ? [{ zoneId: zone.zone_id, color: zone.color }] : [],
     ),
   };
 }
@@ -65,6 +74,7 @@ export function toStoreMap(source: StorePlanSource): StoreMap | null {
     shelves: plan.elements.map(({ id, x, y, width, height }) => ({ id, x, y, width, height })),
     walls: plan.decorations.flatMap((decoration) => asRect(decoration) ?? []),
     zoneOf: new Map(source.assignments.filter((link) => shelfIds.has(link.elementId)).map((link) => [link.elementId, link.zoneId])),
+    zoneColor: new Map(source.colors.filter((zone) => HEX_COLOR.test(zone.color)).map((zone) => [zone.zoneId, zone.color])),
   };
 }
 

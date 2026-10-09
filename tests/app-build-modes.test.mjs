@@ -59,7 +59,7 @@ test('public build preserves landing, auth and cabinet; admin URLs resolve only 
   }
 });
 
-test('admin build protects every admin route including nested owner and unknown routes; no public pages or widget', () => {
+test('admin build protects every admin route including nested owner and unknown routes; shared chat outside guards', () => {
   assert.equal(matchRoutes(adminRoutes, '/').at(-1).route.element.props.to, '/admin');
   const login = matchRoutes(adminRoutes, '/login').at(-1).route.element;
   assert.equal(login.type.name, 'LoginFlow'); assert.equal(login.props.admin, true);
@@ -67,12 +67,26 @@ test('admin build protects every admin route including nested owner and unknown 
     '/admin/stores/new', '/admin/stores/new/example', '/admin/store-requests/pending', '/admin/store-requests/example/review', '/admin/unknown']) {
     const guards = names(matchRoutes(adminRoutes, url));
     assert.equal(guards.filter(n => n === 'RequireAdmin').length, 1, url);
-    assert.ok(!guards.includes('ChatRouteLayout'));
+    assert.equal(guards.filter(n => n === 'ChatRouteLayout').length, 1);
   }
   assert.ok(names(matchRoutes(adminRoutes, '/admin/store-requests/pending')).includes('RequireStoreOwner'));
   for (const url of ['/signup', '/cabinet', '/pricing', '/stores', '/privacy']) {
     assert.equal(matchRoutes(adminRoutes, url).at(-1).route.path, '*');
   }
+});
+
+test('all public, cabinet, auth, admin and 404 routes share one persistent chat parent', () => {
+  const paths = ['/', '/pricing', '/privacy?returnTo=%2Fsignup', '/cabinet', '/cabinet/stats', '/cabinet/campaigns',
+    '/cabinet/campaigns/new', '/login', '/signup', '/signup/verify', '/reset-password', '/reset-password/new',
+    '/admin', '/admin/invoices', '/admin/campaigns/example', '/access-denied', '/unknown'];
+  for (const routes of [publicRoutes, adminRoutes]) {
+    for (const path of paths) {
+      const matches = matchRoutes(routes, path);
+      assert.equal(names(matches).filter(n => n === 'ChatRouteLayout').length, 1, path);
+      assert.equal(matches[0].route, routes[0], path);
+    }
+  }
+  assert.equal(adminRoutes[0].element.props.site, 'admin');
 });
 
 test('both route trees explicitly choose their recovery flow and contain one root fallback', () => {
@@ -112,6 +126,7 @@ test('Vite selects one route entry, matching metadata and isolated output for ea
     const app = mode === 'admin' ? 'admin' : 'public';
     assert.equal(result.config.build.outDir, `dist/${app}`);
     assert.ok(result.config.resolve.alias['@app/routes'].replaceAll('\\', '/').endsWith(`/src/routes/${app}.tsx`));
+    assert.equal(result.config.server.proxy['/api/chat/respond'], 'http://127.0.0.1:8787');
     const metadata = result.config.plugins.find(p => p.name === 'apex-app-metadata');
     const html = metadata.transformIndexHtml(read('index.html'));
     assert.ok(html.includes(app === 'admin' ? '<title>ApexAdmin</title>' : '<title>Apexmedia — реклама у полки</title>'));

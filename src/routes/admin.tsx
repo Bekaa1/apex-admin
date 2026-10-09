@@ -11,6 +11,7 @@ import { ResetPasswordRoute } from '../auth/AuthRoutes';
 import { LoginFlow } from '../auth/AuthFlows';
 import { SessionLoading } from '../auth/RequireSession';
 import { DEFAULT_AUTH_LINKS } from '../auth/links';
+import { ChatRouteLayout } from '../chat/widget/ChatRouteLayout';
 
 function withPermission(route: RouteObject): RouteObject {
   return { ...route, handle: { adminPermission: adminRoutePermission(`/admin/${route.path ?? ''}`), adminHome: route.index === true, admin404: route.path === '*' },
@@ -65,4 +66,4 @@ const applicationRoutes: RouteObject[] = [
   { path: '*', element: <RouteFrame admin><RouteState to="/admin" label="admin" /></RouteFrame> },
 ];
 
-export const routes: RouteObject[] = [{ hydrateFallbackElement: <SessionLoading admin />, children: applicationRoutes }];
+export const routes: RouteObject[] = [{ element: <ChatRouteLayout site="admin" />, hydrateFallbackElement: <SessionLoading admin />, children: applicationRoutes }];

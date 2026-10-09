@@ -1,0 +1,9 @@
+# Include inside the apexmedia.kz site block, before the SPA fallback.
+# The existing responder container also serves authenticated statistics reports.
+handle /api/stats/report {
+  reverse_proxy apex-chat-responder:8787 {
+    transport http {
+      response_header_timeout 100s
+    }
+  }
+}

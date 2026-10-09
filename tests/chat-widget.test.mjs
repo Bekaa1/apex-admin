@@ -14,13 +14,14 @@ function load(relative) {
   if (cache.has(file)) return cache.get(file);
   const exports = {}; cache.set(file, exports);
   const code = ts.transpileModule(readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2023 } }).outputText;
-  vm.runInNewContext(code, { exports, URLSearchParams, require: name => {
+  vm.runInNewContext(code, { exports, URL, URLSearchParams, require: name => {
     assert.ok(name.startsWith('.')); return load(path.relative(root, path.resolve(path.dirname(file), name + '.ts')));
   } }, { filename: relative });
   return exports;
 }
 const { ChatWidgetController, combineVisibleMessages, shouldSendOnEnter, isNearBottom } = load('src/chat/widget/controller.ts');
-const { canShowChat } = load('src/chat/widget/routePolicy.ts');
+const { chatBottomClearance } = load('src/chat/widget/clearance.ts');
+const { chatLinkTarget } = load('src/chat/widget/linkTarget.ts');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; };
 function fixture(initial) {
@@ -135,16 +136,49 @@ test('reconnection is explicit, history error retries reading, missing configura
   assert.equal(f.calls.refresh, 1); f.cleanup();
 });
 
-test('all protected/auth paths and trees without public pages hide the widget, including legal consent', () => {
-  for (const path of ['/admin', '/admin/stores/new', '/ADMIN/unknown', '/login', '/signup', '/signup/verify', '/reset-password', '/reset-password/new', '/cabinet']) {
-    assert.equal(canShowChat(path, '', true), false);
+test('both applications mount exactly one unconditional widget outside the routed pages', () => {
+  for (const app of ['public', 'admin']) {
+    const routes = read(`src/routes/${app}.tsx`);
+    assert.equal((routes.match(/element: <ChatRouteLayout/g) ?? []).length, 1);
   }
-  for (const path of ['/pricing', '/stores', '/how-it-works', '/privacy', '/offer']) {
-    assert.equal(canShowChat(path, '', true), true); assert.equal(canShowChat(path, '', false), false);
+  const layout = read('src/chat/widget/ChatRouteLayout.tsx');
+  assert.equal((layout.match(/<ChatWidget/g) ?? []).length, 1);
+  assert.ok(!layout.includes('canShowChat') && !layout.includes('key={'));
+  assert.ok(layout.indexOf('<Outlet') < layout.indexOf('<ChatWidget'));
+});
+
+test('launcher clearance avoids mobile tabs and sticky actions but ignores hidden or distant bars', () => {
+  const tab = { top: 779, bottom: 844, left: 0, right: 390 };
+  assert.equal(chatBottomClearance(390, 844, [tab]), 77);
+  assert.equal(chatBottomClearance(390, 844, [{ ...tab, top: 735 }]), 121);
+  assert.equal(chatBottomClearance(390, 844, [{ top: 0, bottom: 0, left: 0, right: 0 }]), 0);
+  assert.equal(chatBottomClearance(390, 844, [{ ...tab, top: 900, bottom: 965 }]), 0);
+  assert.equal(chatBottomClearance(1440, 900, [{ top: 812, bottom: 900, left: 310, right: 1410 }]), 100);
+  assert.equal(chatBottomClearance(1440, 900, [{ top: 0, bottom: 60, left: 0, right: 1440 }]), 0);
+});
+
+test('canonical public links stay on public SPA but never point into admin 404', () => {
+  assert.equal(chatLinkTarget('https://apexmedia.kz/pricing?q=x#plan', 'http://localhost:5173/cabinet', 'public').href, '/pricing?q=x#plan');
+  const external = chatLinkTarget('https://apexmedia.kz/pricing', 'https://adminapex.kz/admin', 'admin');
+  assert.equal(external.href, 'https://apexmedia.kz/pricing'); assert.equal(external.external, true);
+  const relative = chatLinkTarget('/cabinet/stats?period=30d', 'http://localhost:5174/admin', 'admin');
+  assert.equal(relative.href, 'https://apexmedia.kz/cabinet/stats?period=30d'); assert.equal(relative.external, true);
+  const internal = chatLinkTarget('/admin/stores', 'https://adminapex.kz/admin', 'admin');
+  assert.equal(internal.href, '/admin/stores'); assert.equal(internal.external, false);
+  assert.equal(chatLinkTarget('/document.pdf', 'https://apexmedia.kz/', 'public').external, true);
+});
+
+test('route changes do not reset an active chat, unsent text or unread answers', async () => {
+  const f = fixture(); f.controller.open(); await tick();
+  f.controller.setDraft('Черновик между страницами'); f.controller.close();
+  // Route transitions only replace Outlet; the parent controller remains mounted.
+  for (const path of ['/', '/cabinet', '/cabinet/stats', '/cabinet/campaigns/new', '/login']) {
+    f.reply(`Ответ при переходе ${path}`);
+    assert.equal(f.controller.getSnapshot().draft, 'Черновик между страницами');
+    assert.equal(f.calls.initialize, 1); assert.equal(f.calls.dispose, 0);
   }
-  assert.equal(canShowChat('/privacy', '?returnTo=%2Fsignup', true), false);
-  const routes = read('src/routes/public.tsx'); assert.equal((routes.match(/element: <ChatRouteLayout/g) ?? []).length, 1);
-  assert.ok(routes.includes('handle: { publicChat: true }'));
+  assert.equal(f.controller.getSnapshot().unread, 5);
+  f.controller.open(); assert.equal(f.controller.getSnapshot().unread, 0); f.cleanup();
 });
 
 test('rendering remains safe Markdown and accessible; responsive bounds and translations are present', () => {

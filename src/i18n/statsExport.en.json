@@ -1,0 +1,15 @@
+{
+  "title": "Statistics PDF report", "download": "Download PDF report", "generating": "Preparing PDF…",
+  "note": "Selected period and campaigns. AI recommendations use available metrics. Period spend is estimated.",
+  "wait": "Analyzing statistics and preparing your file. This may take up to ninety seconds.",
+  "noData": "A report requires loaded statistics with plays in the selected period.",
+  "demo": "AI downloads are unavailable in demo mode.", "failed": "Unable to generate report", "retry": "Retry", "saved": "The PDF is ready and has been sent for download.",
+  "errors": {
+    "not_authenticated": "Your session has expired. Please sign in again.", "forbidden": "You cannot access the selected statistics.",
+    "no_data": "There is no report data in this period. Choose another period.", "campaign_unavailable": "The selected campaign is unavailable. Refresh the page.",
+    "too_large": "Too much data. Select one campaign or a shorter period.", "data_changed": "Data changed while loading. Please try again.",
+    "busy": "A report is being generated or the service is busy. Wait and retry.", "rate_limited": "Request limit reached. Retry in five minutes.",
+    "not_configured": "The report service is currently unavailable.", "analysis_unavailable": "AI recommendations are unavailable. No PDF was generated. Try again later.",
+    "report_unavailable": "Could not prepare or download the PDF. Check your connection and retry."
+  }
+}

@@ -4,7 +4,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY server/chat ./server/chat
+COPY server/stats ./server/stats
+COPY src/lib/dates.ts ./src/lib/dates.ts
+COPY src/cabinet/stats/reportSelection.ts ./src/cabinet/stats/reportSelection.ts
+COPY src/assets/fonts/Onest-400Regular.ttf src/assets/fonts/Onest-700Bold.ttf src/assets/fonts/OFL-Onest.txt ./src/assets/fonts/
 COPY src/lib/chat.database.types.ts ./src/lib/chat.database.types.ts
+COPY src/lib/database.types.ts ./src/lib/database.types.ts
 ENV NODE_ENV=production
 USER node
 EXPOSE 8787

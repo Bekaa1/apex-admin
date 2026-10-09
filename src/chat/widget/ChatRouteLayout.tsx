@@ -1,12 +1,19 @@
-import { lazy, Suspense } from 'react';
-import { Outlet, useLocation, useMatches } from 'react-router';
-import { canShowChat } from './routePolicy';
+import { lazy, Suspense, useRef } from 'react';
+import { Outlet, useLocation } from 'react-router';
+import { ChatSiteContext, type ChatSite } from './ChatSiteContext';
+import { useChatClearance } from './useChatClearance';
+import styles from './ChatRouteLayout.module.css';
 
 const ChatWidget = lazy(() => import('./ChatWidget'));
 
-export function ChatRouteLayout() {
-  const { pathname, search } = useLocation();
-  const matches = useMatches();
-  const publicRoute = matches.some(match => (match.handle as { publicChat?: boolean } | undefined)?.publicChat === true);
-  return <><Outlet />{canShowChat(pathname, search, publicRoute) ? <Suspense fallback={null}><ChatWidget /></Suspense> : null}</>;
+/** One persistent widget outside all page layouts and access guards. No Chat Auth until opened. */
+export function ChatRouteLayout({ site = 'public' }: { site?: ChatSite }) {
+  const { key } = useLocation();
+  const frame = useRef<HTMLDivElement>(null);
+  const page = useRef<HTMLDivElement>(null);
+  useChatClearance(frame, page, key);
+  return <ChatSiteContext.Provider value={site}><div ref={frame} className={styles.frame}>
+    <div ref={page} className={styles.page}><Outlet /></div>
+    <Suspense fallback={null}><ChatWidget /></Suspense>
+  </div></ChatSiteContext.Provider>;
 }

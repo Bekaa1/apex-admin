@@ -44,9 +44,18 @@ export function clientParams(previous: URLSearchParams, filters: ClientFilters, 
  * Only fixed columns/operators. User text cannot introduce another OR condition.
  */
 export function clientSearchFilter(search: string): string {
-  const literal = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const quoted = '"' + literal.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
-  return ['full_name', 'display_name', 'company_name', 'email'].map(column => `${column}.imatch.${quoted}`).join(',');
+  const value = search.trim();
+  const quote = (pattern: string) => '"' + pattern.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+  const literal = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const terms = ['full_name', 'display_name', 'company_name', 'email'].map(column => `${column}.imatch.${quote(literal)}`);
+  // Phone fragments may contain common display separators. Only digits enter the
+  // generated pattern, so user input cannot add regex operators or OR clauses.
+  // No anchors: a fragment can match the beginning, middle or end of the phone.
+  if (/^\+?[\d\s().\-\u2010-\u2015]+$/.test(value)) {
+    const digits = value.replace(/\D/g, '');
+    if (digits) terms.push(`phone.imatch.${quote(digits.split('').join('[[:space:]().+‐‑‒–—―-]*'))}`);
+  }
+  return terms.join(',');
 }
 export function isClientRow(value: unknown): value is ClientRow {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;

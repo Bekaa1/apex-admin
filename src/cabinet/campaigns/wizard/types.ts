@@ -1,5 +1,6 @@
 import type { TariffCode, TariffTerms } from '../../tariffs';
 import type { Moderation } from '../types';
+import type { StorePlanSource } from './storePlan';
 
 export type StepId = 'media' | 'tariff' | 'stores' | 'zones' | 'budget' | 'review';
 /** A new campaign ends with the budget; an edit keeps the plan and the budget and ends with the review of changes. */
@@ -130,6 +131,8 @@ export interface WizardApi {
   submit: (submission: CampaignSubmission) => Promise<string>;
   /** Sends the edited campaign back to moderation; resolves with its id. */
   edit: (campaignId: string, edit: CampaignEdit) => Promise<string>;
+  /** Floor plans of those stores that have one. */
+  storePlans: (storeIds: string[], signal: AbortSignal) => Promise<StorePlanSource[]>;
 }
 
 /** Fields the review of changes compares; texts in `campaigns.edit.fields.*`. */

@@ -10,6 +10,7 @@ import { reviewRequest } from '../onboarding/review/model';
 import { canDecide, OWNER_QUEUE, validComment, type Decision, type OwnerList } from './model';
 import { decideRequest, readDecision, type DecisionResult } from './decide';
 import { DecisionDialog } from './DecisionDialog';
+import { adminStatusAlertTone } from '../../statusTone';
 import styles from './Owner.module.css';
 
 export function OwnerDecision({ owner, record, userId, onRefresh }: { owner: boolean; record: StoreRequest; userId: string; onRefresh: () => void }) {
@@ -53,7 +54,7 @@ export function OwnerDecision({ owner, record, userId, onRefresh }: { owner: boo
   return <div className={styles.page} aria-busy={pending}>
     <header className={styles.actions}><h1>{t('adminStoreOwner.reviewTitle')}</h1><Button size="md" variant="secondary" disabled={pending} onClick={onRefresh}>{t('adminStoreRequests.refresh')}</Button></header>
     {issue && <Alert tone="danger" title={t(issue.kind === 'invalid_store' && issue.hint === 'comment' ? 'adminStoreOwner.commentLength' : `adminStoreOwner.errors.${issue.kind}`)}>{issue.details}</Alert>}
-    {notice && <Alert tone={notice.outcome === 'approved' || notice.outcome === 'rejected' ? 'success' : 'warning'} title={t(['revision_conflict', 'invalid_status', 'already_published'].includes(notice.reason) ? `adminStoreOwner.errors.${notice.reason}` : `adminStoreOwner.results.${notice.outcome}`)} />}
+    {notice && <Alert tone={notice.outcome === 'approved' || notice.outcome === 'rejected' ? adminStatusAlertTone('storeRequest', notice.outcome) : 'warning'} title={t(['revision_conflict', 'invalid_status', 'already_published'].includes(notice.reason) ? `adminStoreOwner.errors.${notice.reason}` : `adminStoreOwner.results.${notice.outcome}`)} />}
     {pending && <p role="status">{t(reading ? 'adminStoreRequest.loading' : `adminStoreOwner.${dialog ?? 'approve'}Busy`)}</p>}
     <div className={styles.actions}>
       {allowed && <><Button size="md" disabled={pending || blocked} onClick={() => { if (!busy.current) setDialog('approve'); }}>{t('adminStoreOwner.approve')}</Button>

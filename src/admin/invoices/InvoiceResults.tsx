@@ -24,8 +24,8 @@ export function InvoiceResults({ selection, onPage, onReset }: { selection: Invo
   return <div className={styles.results} aria-busy={query.isFetching}>
     <div className={styles.actions}><p role="status">{count === null ? t('adminInvoices.countUnknown') : t('adminInvoices.count', { count: formatNumber(count, lang) })}</p>
       <Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('adminInvoices.refresh')}</Button></div>
-    {profilesUnavailable ? <Alert tone="info">{t('adminInvoices.profilesUnavailable')}</Alert> : null}
-    {campaignsUnavailable ? <Alert tone="info">{t('adminInvoices.campaignsUnavailable')}</Alert> : null}
+    {profilesUnavailable ? <Alert tone="danger">{t('adminInvoices.profilesUnavailable')}</Alert> : null}
+    {campaignsUnavailable ? <Alert tone="danger">{t('adminInvoices.campaignsUnavailable')}</Alert> : null}
     {rows.length ? <InvoiceTable rows={rows} /> : <div className={styles.empty} role="status">
       <h2>{t(`adminInvoices.${empty}.title`)}</h2><p>{t(`adminInvoices.${empty}.body`)}</p>
       {selection.page > 1 ? <Button size="md" variant="secondary" onClick={() => onPage(1)}>{t('adminInvoices.firstPage')}</Button>

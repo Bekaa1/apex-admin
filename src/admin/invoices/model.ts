@@ -1,5 +1,6 @@
 import type { Database } from '../../lib/database.types';
 import type { BadgeTone } from '../../design-system';
+import { adminStatusTone } from '../statusTone';
 
 export const INVOICE_LIST = '/admin/invoices';
 export const PAGE_SIZE = 25;
@@ -56,10 +57,8 @@ export function isInvoiceRow(value: unknown): value is InvoiceRow {
 }
 export function invoiceStatus(status: string | null): { key?: string; raw?: string; tone: BadgeTone } {
   if (!status) return { key: 'adminInvoices.noData', tone: 'neutral' };
-  if (status === 'unpaid') return { key: 'adminInvoices.statuses.unpaid', tone: 'warning' };
-  if (status === 'paid') return { key: 'adminInvoices.statuses.paid', tone: 'success' };
-  if (status === 'cancelled') return { key: 'adminInvoices.statuses.cancelled', tone: 'neutral' };
-  return { raw: status, tone: 'neutral' };
+  if (INVOICE_STATUSES.some(value => value === status)) return { key: `adminInvoices.statuses.${status}`, tone: adminStatusTone('invoice', status) };
+  return { raw: status, tone: adminStatusTone('invoice', status) };
 }
 export function invoiceKind(kind: string | null): { key?: string; raw?: string } {
   if (!kind) return { key: 'adminInvoices.noData' };

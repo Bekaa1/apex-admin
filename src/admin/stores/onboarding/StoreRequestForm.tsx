@@ -76,8 +76,8 @@ export function StoreRequestForm({ record, userId, onSaved, onReload }: {
   if (initial.requestId) return <Navigate to={requestPath(initial.requestId)} replace />;
   return <form noValidate onSubmit={handleSubmit} className={styles.panel} aria-busy={pending}>
     <h2>{t('adminStoreRequest.steps.details')}</h2>
-    {record && !editable && <Alert title={t(`adminStoreRequest.${record.status === 'pending_owner_approval' ? 'pendingApproval' : record.status === 'approved' ? 'approved' : 'readOnly'}`)} />}
-    {record?.status === 'rejected' && <Alert tone="warning" title={t('adminStoreRequest.ownerComment')}>
+    {record && !editable && <Alert tone={adminStatusAlertTone('storeRequest', record.status)} title={t(`adminStoreRequest.${record.status === 'pending_owner_approval' ? 'pendingApproval' : record.status === 'approved' ? 'approved' : 'readOnly'}`)} />}
+    {record?.status === 'rejected' && <Alert tone="danger" title={t('adminStoreRequest.ownerComment')}>
       <span className={styles.comment}>{record.review_comment || t('adminStoreRequest.noComment')}</span>
     </Alert>}
     {uncertain && <Alert tone="warning" title={t('adminStoreRequest.uncertainCreate')} />}
@@ -104,3 +104,4 @@ export function StoreRequestForm({ record, userId, onSaved, onReload }: {
     {navigation.blocker.state === 'blocked' && <UnsavedPlanDialog scope="adminStoreRequest" busy={pending} onStay={() => navigation.blocker.reset?.()} onLeave={() => navigation.blocker.proceed?.()} />}
   </form>;
 }
+import { adminStatusAlertTone } from '../../statusTone';

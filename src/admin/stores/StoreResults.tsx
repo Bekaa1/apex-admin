@@ -24,7 +24,7 @@ export function StoreResults({ selection, onPage, onReset }: { selection: StoreS
   return <div className={styles.results} aria-busy={query.isFetching}>
     <div className={styles.actions}><p role="status">{count === null ? t('adminStores.countUnknown') : t('adminStores.count', { count: formatNumber(count, lang) })}</p>
       <Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('adminStores.refresh')}</Button></div>
-    {partnersUnavailable ? <Alert tone="info">{t('adminStores.partnersUnavailable')}</Alert> : null}
+    {partnersUnavailable ? <Alert tone="danger">{t('adminStores.partnersUnavailable')}</Alert> : null}
     {rows.length ? <StoreTable rows={rows} /> : <div className={styles.empty} role="status">
       <h2>{t(`adminStores.${empty}.title`)}</h2><p>{t(`adminStores.${empty}.body`)}</p>
       {selection.page > 1 ? <Button size="md" variant="secondary" onClick={() => onPage(1)}>{t('adminStores.firstPage')}</Button>

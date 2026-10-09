@@ -12,7 +12,7 @@ import styles from '../corporate-requests/CorporateRequestsPage.module.css';
 export function EquipmentResults({ selection, onPage, onReset }: { selection: EquipmentSelection; onPage: (page: number) => void; onReset: () => void }) {
   const { t, lang } = useI18n();
   const query = useEquipment(selection);
-  if (selection.error) return <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={onReset}>{t('adminStores.reset')}</Button>}>{t('adminEquipment.invalid')}</Alert>;
+  if (selection.error) return <Alert tone="danger" action={<Button size="md" variant="secondary" onClick={onReset}>{t('adminStores.reset')}</Button>}>{t('adminEquipment.invalid')}</Alert>;
   if (query.isPending) return <OverviewLoading />;
   if (query.isError) {
     const kind = query.error instanceof StoreReadError ? query.error.kind : 'unavailable';
@@ -27,8 +27,8 @@ export function EquipmentResults({ selection, onPage, onReset }: { selection: Eq
   return <div className={styles.results} aria-busy={query.isFetching}>
     <div className={styles.actions}><p role="status">{count === null ? t('adminStores.countUnknown') : t('adminStores.count', { count: formatNumber(count, lang) })}</p>
       <Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('adminStores.refresh')}</Button></div>
-    {storesUnavailable ? <Alert tone="info">{t('adminEquipment.storesUnavailable')}</Alert> : null}
-    {namesUnavailable ? <Alert tone="info">{t('adminStoreDetail.zoneNamesUnavailable')}</Alert> : null}
+    {storesUnavailable ? <Alert tone="danger">{t('adminEquipment.storesUnavailable')}</Alert> : null}
+    {namesUnavailable ? <Alert tone="danger">{t('adminStoreDetail.zoneNamesUnavailable')}</Alert> : null}
     {rows.length ? records.tab === 'carts' ? <CartTable rows={records.data.rows} stores={stores} /> : <BeaconTable rows={records.data.rows} stores={stores} />
       : <div className={styles.empty} role="status"><h2>{t(`${empty}.title`)}</h2><p>{t(`${empty}.body`)}</p>
         {selection.page > 1 ? <Button size="md" variant="secondary" onClick={() => onPage(1)}>{t('adminStores.firstPage')}</Button>

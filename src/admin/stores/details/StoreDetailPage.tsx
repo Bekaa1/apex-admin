@@ -32,6 +32,6 @@ export function StoreDetailPage() {
     <div><Button href={listReturnTo(state, STORE_LIST)} variant="ghost" size="md" iconLeft="arrow-left">{t('adminStoreDetail.back')}</Button></div>
     <header><h1 id="store-detail-title" tabIndex={-1}>{t('adminStoreDetail.title')}</h1><p className={styles.muted}>{t('adminStoreDetail.description')}</p></header>
     <Alert tone="info" title={t('adminStoreDetail.dataSource')}>{t('adminStoreDetail.syncUnknown')}</Alert>
-    {!isStoreId(id) ? <Alert tone="warning">{t('adminStoreDetail.invalidId')}</Alert> : <StoreContent key={id} id={id} />}
+    {!isStoreId(id) ? <Alert tone="danger">{t('adminStoreDetail.invalidId')}</Alert> : <StoreContent key={id} id={id} />}
   </section>;
 }

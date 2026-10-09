@@ -43,7 +43,7 @@ function ClientRecords<T>({ query, tab, page, onPage, children, warnings }: Reco
       <p role="status">{count === null ? t('adminClients.countUnknown') : t('adminClients.count', { count: formatNumber(count, lang) })}</p>
       <Button size="md" variant="secondary" loading={query.isFetching} onClick={() => { void query.refetch(); }}>{t('adminClients.refresh')}</Button>
     </div>
-    {warnings.map(key => <Alert key={key} tone="info">{t(key)}</Alert>)}
+    {warnings.map(key => <Alert key={key} tone="danger">{t(key)}</Alert>)}
     {rows.length ? children(rows) : <div className={styles.empty} role="status">
       <p>{t(page > 1 ? 'adminClients.pageEmpty.body' : `adminClientDetail.empty.${tab}`)}</p>
       {page > 1 ? <Button size="md" variant="secondary" onClick={() => onPage(1)}>{t('adminClients.firstPage')}</Button> : null}

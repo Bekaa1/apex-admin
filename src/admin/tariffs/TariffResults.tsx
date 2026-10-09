@@ -11,7 +11,7 @@ import styles from '../corporate-requests/CorporateRequestsPage.module.css';
 export function TariffResults({ selection, onPage, onReset }: { selection: TariffSelection; onPage: (page: number) => void; onReset: () => void }) {
   const { t, lang } = useI18n();
   const query = useTariffs(selection);
-  if (selection.error) return <Alert tone="warning" action={<Button size="md" variant="secondary" onClick={onReset}>{t('adminTariffs.showAll')}</Button>}>{t('adminTariffs.invalid')}</Alert>;
+  if (selection.error) return <Alert tone="danger" action={<Button size="md" variant="secondary" onClick={onReset}>{t('adminTariffs.showAll')}</Button>}>{t('adminTariffs.invalid')}</Alert>;
   if (query.isPending) return <OverviewLoading />;
   if (query.isError) {
     const kind = query.error instanceof TariffReadError ? query.error.kind : 'unavailable';

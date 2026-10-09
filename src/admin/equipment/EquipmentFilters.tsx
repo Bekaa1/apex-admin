@@ -26,7 +26,7 @@ export function EquipmentFilters({ tab, initial, onApply, onReset }: { tab: Devi
         autoComplete="off" onChange={event => setDraft(value => ({ ...value, status: event.target.value }))} />}
     <div className={styles.full}><StorePicker value={draft.storeId} onChange={storeId => setDraft(value => ({ ...value, storeId }))} /></div>
     {tab === 'beacons' ? <Checkbox checked={draft.withoutZone} onChange={event => setDraft(value => ({ ...value, withoutZone: event.target.checked }))}>{t('adminStoreDetail.withoutZone')}</Checkbox> : null}
-    {submitted && !validEquipmentFilters(tab, draft) ? <div className={styles.full}><Alert tone="warning">{t('adminEquipment.invalid')}</Alert></div> : null}
+    {submitted && !validEquipmentFilters(tab, draft) ? <div className={styles.full}><Alert tone="danger">{t('adminEquipment.invalid')}</Alert></div> : null}
     <div className={shared.actions}>
       <Button type="submit" size="md">{t('adminStores.apply')}</Button>
       <Button size="md" variant="ghost" onClick={() => { setDraft(emptyFilters()); setSubmitted(false); onReset(); }}>{t('adminStores.reset')}</Button>

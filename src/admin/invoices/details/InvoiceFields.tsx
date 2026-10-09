@@ -39,7 +39,7 @@ export function InvoiceFields({ row, canOpen, onOpen, onCancel }: { row: Invoice
       <DetailField label={t('adminInvoiceDetail.tariffVersion')}>{row.tariff_version === null ? unknown : String(row.tariff_version)}</DetailField>
     </dl>
     {names.isPending ? <p className={styles.muted} role="status">{t('adminInvoiceDetail.loadingNames')}</p> : null}
-    {namesMissing ? <Alert tone="info" action={<Button size="md" variant="secondary" loading={names.isFetching} onClick={() => { void names.refetch(); }}>{t('cabinet.retry')}</Button>}>{t('adminInvoiceDetail.namesUnavailable')}</Alert> : null}
+    {namesMissing ? <Alert tone="danger" action={<Button size="md" variant="secondary" loading={names.isFetching} onClick={() => { void names.refetch(); }}>{t('cabinet.retry')}</Button>}>{t('adminInvoiceDetail.namesUnavailable')}</Alert> : null}
     <div>{file ? <a className={local.link} href={file} target="_blank" rel="noopener noreferrer">{t('adminInvoiceDetail.openFile')}</a>
       : <p className={styles.muted}>{t(row.file_url?.trim() ? 'adminInvoiceDetail.invalidFile' : 'adminInvoiceDetail.noFile')}</p>}</div>
     {row.status === 'unpaid' ? <div className={styles.actions}>

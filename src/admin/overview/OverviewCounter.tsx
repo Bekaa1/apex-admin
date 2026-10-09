@@ -5,6 +5,7 @@ import { fetchOverviewCount, OverviewReadError } from './api';
 import type { Counter } from './model';
 import { OverviewStamp } from './OverviewState';
 import { useOverviewBlock } from './useOverview';
+import { adminCounterTone } from '../statusTone';
 import styles from './OverviewPage.module.css';
 
 const ICONS: Record<Counter, IconName> = { pending: 'clock', awaiting_payment: 'wallet', active: 'play', budget_ended: 'alert-circle', unpaid: 'wallet' };
@@ -14,7 +15,7 @@ export function OverviewCounter({ counter }: { counter: Counter }) {
   const query = useOverviewBlock(`count:${counter}`, (signal) => fetchOverviewCount(counter, signal));
   const labelId = `overview-${counter}`;
   const kind = query.error instanceof OverviewReadError ? query.error.kind : 'unavailable';
-  return <article className={styles.counter} aria-labelledby={labelId} aria-busy={query.isFetching}>
+  return <article className={styles.counter} data-tone={adminCounterTone(counter, query.data?.value, query.isError)} aria-labelledby={labelId} aria-busy={query.isFetching}>
     <StatTile className={styles.metric} icon={ICONS[counter]} label={<span id={labelId}>{t(`adminOverview.counts.${counter}`)}</span>}
       value={query.isPending ? <Skeleton width="50%" height="1em" /> : query.isError || !query.data ? '—' : formatNumber(query.data.value, lang)}
       meta={query.isPending ? <span role="status">{t('adminOverview.loading')}</span> : <OverviewStamp loadedAt={query.data?.loadedAt} />} />

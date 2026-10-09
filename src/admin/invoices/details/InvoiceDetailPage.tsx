@@ -60,6 +60,6 @@ export function InvoiceDetailPage() {
   return <section className={styles.page} aria-labelledby="invoice-detail-title">
     <div><Button href={listReturnTo(state, INVOICE_LIST)} variant="ghost" size="md" iconLeft="arrow-left">{t('adminInvoices.detail.back')}</Button></div>
     <header><h1 id="invoice-detail-title" tabIndex={-1}>{t('adminInvoices.detail.title')}</h1><p className={styles.muted}>{t('adminInvoiceDetail.description')}</p></header>
-    {isInvoiceId(id) ? <InvoiceContent key={`${session?.user.id}:${session?.expires_at}:${id}`} id={id} /> : <Alert tone="warning">{t('adminInvoices.detail.invalid')}</Alert>}
+    {isInvoiceId(id) ? <InvoiceContent key={`${session?.user.id}:${session?.expires_at}:${id}`} id={id} /> : <Alert tone="danger">{t('adminInvoices.detail.invalid')}</Alert>}
   </section>;
 }

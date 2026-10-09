@@ -14,7 +14,7 @@ function CreativeAsset({ source, video }: { source: string | null; video: boolea
   const kind = video ? 'video' : 'cover';
   const url = mediaUrl(source);
   if (!source?.trim()) return <p className={styles.empty}>{t(`adminCampaignDetail.${kind}Missing`)}</p>;
-  if (!url) return <Alert tone="warning">{t('adminCampaignDetail.invalidMediaUrl')}</Alert>;
+  if (!url) return <Alert tone="danger">{t('adminCampaignDetail.invalidMediaUrl')}</Alert>;
   if (failed) return <Alert tone="danger" title={t(`adminCampaignDetail.${kind}Error`)}
     action={<Button variant="secondary" size="md" onClick={() => { setFailed(false); setAttempt((value) => value + 1); }}>{t('cabinet.retry')}</Button>}>
     {t('adminCampaignDetail.mediaErrorBody')}

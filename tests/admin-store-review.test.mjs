@@ -16,6 +16,7 @@ function load(path, modules = {}, globals = {}) {
   vm.runInNewContext(ts.transpileModule(read(path), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText,
     { exports, TextEncoder, AbortSignal, console: { error() {} }, ...globals, require: name => {
       if (name === 'react/jsx-runtime') return require(name);
+      if (name.endsWith('/statusTone')) return load('src/admin/statusTone.ts', {});
       if (name in modules) return modules[name];
       throw new Error('Unexpected dependency: ' + name);
     } }, { filename: path });
@@ -136,7 +137,7 @@ function stepFixture(value = record(), submitImpl, readImpl) {
   const state = hookState(), results = [], revisions = []; let options, pending = false, guardBusy = false;
   const { StoreReviewStep } = load(root + 'review/StoreReviewStep.tsx', {
     react: state.hooks, '@tanstack/react-query': { useMutation(opts) { options = opts; return { isPending: pending, async mutateAsync() { pending = true; try { return await opts.mutationFn(); } finally { pending = false; } } }; } },
-    '../../../../design-system': { Alert: 'Alert', Button: 'Button' }, '../../../../i18n/i18n': { useI18n: () => ({ t: translator(), lang: 'ru' }) },
+    '../../../../design-system': { Alert: 'Alert', Badge: 'Badge', Button: 'Button' }, '../../../../i18n/i18n': { useI18n: () => ({ t: translator(), lang: 'ru' }) },
     '../../model': stores, '../model': model, '../errors': errors, '../plan/PlanPreview': { PlanPreview: 'PlanPreview' },
     '../plan/useUnsavedPlan': { useUnsavedPlan(_dirty, busy) { guardBusy = busy; return { blocker: { state: 'unblocked' } }; } },
     '../plan/UnsavedPlanDialog': { UnsavedPlanDialog: 'Dialog' }, './model': review,

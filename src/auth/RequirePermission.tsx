@@ -6,7 +6,7 @@ import { usePermissions } from './usePermissions';
 
 export function PermissionDenied() {
   const { t } = useI18n();
-  return <Alert tone="warning" title={t('roles.denied')} action={<Button href="/admin" size="md" variant="secondary">{t('roles.home')}</Button>}>
+  return <Alert tone="danger" title={t('roles.denied')} action={<Button href="/admin" size="md" variant="secondary">{t('roles.home')}</Button>}>
     {t('roles.deniedBody')}
   </Alert>;
 }

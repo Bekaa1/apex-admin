@@ -5,6 +5,7 @@ import { unitPrice } from '../campaigns/details/model';
 import { overviewDate } from '../overview/model';
 import { BOOLEAN_FIELDS, type TariffRow } from './model';
 import { TariffHistory } from './TariffHistory';
+import { adminStatusTone } from '../statusTone';
 import shared from '../corporate-requests/CorporateRequestsPage.module.css';
 import styles from './TariffsPage.module.css';
 
@@ -19,7 +20,7 @@ function TariffEntry({ row }: { row: TariffRow }) {
       <td>{row.code?.trim() || t('adminTariffs.noCode')}</td>
       <td>{unitPrice(row.price_per_play, lang, unknown)}</td><td>{unitPrice(row.min_amount, lang, unknown)}</td>
       <td>{String(row.version)}</td>
-      <td><Badge className={shared.status} tone={row.purchasable ? 'success' : 'neutral'}>{t(row.purchasable ? 'adminTariffs.purchase.yes' : 'adminTariffs.purchase.no')}</Badge></td>
+      <td><Badge className={shared.status} tone={adminStatusTone('availability', row.purchasable ? 'available' : 'unavailable')}>{t(row.purchasable ? 'adminTariffs.purchase.yes' : 'adminTariffs.purchase.no')}</Badge></td>
       <td><Badge className={shared.status} tone="neutral">{t(row.is_archived ? 'adminTariffs.archive.yes' : 'adminTariffs.archive.no')}</Badge></td>
       <td>{overviewDate(row.updated_at, lang, unknown)}</td>
       <td><Button size="md" variant="ghost" aria-expanded={expanded} aria-controls={detailsId}

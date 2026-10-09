@@ -15,6 +15,7 @@ function load(file, modules = {}) {
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, {
     exports, URLSearchParams, URL, require: name => {
       if (name === 'react/jsx-runtime') return require(name);
+      if (name.endsWith('/statusTone')) return load('src/admin/statusTone.ts', {});
       if (name in modules) return modules[name];
       throw new Error('Unexpected dependency: ' + name);
     },

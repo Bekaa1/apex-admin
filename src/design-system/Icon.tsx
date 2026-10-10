@@ -299,6 +299,19 @@ const ICONS = {
     </>
   ),
   'chevron-right': <path d="m9 6 6 6-6 6" />,
+  crown: (
+    <>
+      <path d="M4.5 17 3 7.5l5 3.5 4-6 4 6 5-3.5L19.5 17z" />
+      <path d="M5 20.5h14" />
+    </>
+  ),
+  gem: (
+    <>
+      <path d="M7 4h10l4 5.5-9 11-9-11z" />
+      <path d="M3 9.5h18M10 4 8.5 9.5 12 20.5l3.5-11L14 4" />
+    </>
+  ),
+  star: <path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.2 1 5.9L12 17l-5.2 2.8 1-5.9-4.3-4.2 5.9-.8z" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof ICONS;

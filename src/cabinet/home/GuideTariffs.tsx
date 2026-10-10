@@ -1,70 +1,44 @@
-import type { ReactNode } from 'react';
 import { Icon } from '../../design-system';
 import { useI18n } from '../../i18n/i18n';
-import { formatMoney, formatPrice } from '../../lib/format';
 import { campaignIntentHref } from '../../lib/campaignIntent';
-import { CORPORATE_LEVEL, TARIFFS, TARIFF_FEATURES, TARIFF_LEVELS, termsOf, type TariffCode, type TariffTerms } from '../tariffs';
+import { CABINET_LINKS } from '../sections';
+import { CORPORATE_TARIFF, RECOMMENDED_TARIFF, TARIFFS, termsOf, type TariffCode, type TariffLook, type TariffTerms } from '../tariffs';
 import { ButtonLink } from '../ui/ButtonLink';
+import { TariffPoints, TariffPrice, TariffTop } from '../ui/TariffParts';
 
 interface TariffCardProps {
   code: TariffCode | 'corporate';
-  level: number;
-  /** null for the corporate plan: its price is agreed with a manager. */
-  price: ReactNode | null;
-  minLabel: string;
-  min: ReactNode;
+  look: TariffLook;
+  /** null while the terms load, and for «Эксклюзив», whose budget is agreed with a manager. */
+  minimum: number | null;
 }
 
-function TariffCard({ code, level, price, minLabel, min }: TariffCardProps) {
+function TariffCard({ code, look, minimum }: TariffCardProps) {
   const { t } = useI18n();
+  const recommended = code === RECOMMENDED_TARIFF;
+  const name = t(`cabinet.tariffs.${code}.name`);
   return (
-    <li className="cab-card cab-tariff">
-      <span className="cab-tariff__level" aria-hidden="true">
-        {TARIFF_LEVELS.map((bar) => (
-          <span key={bar} className={bar <= level ? 'is-on' : undefined} />
-        ))}
-      </span>
-      <h3 className="cab-h3">{t(`cabinet.tariffs.${code}.name`)}</h3>
-      <p className="cab-tariff__text">{t(`cabinet.tariffs.${code}.text`)}</p>
-      <ul className="cab-tariff__features">
-        {TARIFF_FEATURES.map((feature, i) => {
-          const included = i < level;
-          return (
-            <li key={feature} className={included ? 'is-on' : 'is-off'}>
-              <Icon name={included ? 'check' : 'minus'} size={18} />
-              <span>
-                <span className="cab-sr">{t(included ? 'cabinet.tariffs.has' : 'cabinet.tariffs.hasNot')} </span>
-                {t(`cabinet.tariffs.feature.${feature}`)}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-      <div className="cab-tariff__min">
-        {price === null ? null : (
-          <p className="cab-tariff__price">
-            <span>{t('cabinet.tariffs.pricePerPlay')}</span>
-            <strong>{price}</strong>
-          </p>
-        )}
-        <span>{minLabel}</span>
-        <strong>{min}</strong>
-      </div>
-      <ButtonLink
-        to={campaignIntentHref({ tariff: code === 'corporate' ? undefined : code })}
-        variant="primary"
-        fullWidth
-        aria-label={`${t('cabinet.tariffs.buy')}: ${t(`cabinet.tariffs.${code}.name`)}`}
-      >
-        {t('cabinet.tariffs.buy')}
-      </ButtonLink>
+    <li className={recommended ? 'cab-card cab-tariff is-recommended' : 'cab-card cab-tariff'}>
+      <TariffTop look={look} recommended={recommended} />
+      <h3 className="cab-h3">{name}</h3>
+      <TariffPrice code={code} minimum={minimum} />
+      <TariffPoints code={code} look={look} className="cab-tariff__points" />
+      {code === 'corporate' ? (
+        <ButtonLink to={CABINET_LINKS.corporate} variant="secondary" fullWidth iconRight="arrow-right">
+          {t('cabinet.tariffs.offer')}
+        </ButtonLink>
+      ) : (
+        <ButtonLink to={campaignIntentHref({ tariff: code })} variant={recommended ? 'primary' : 'secondary'} fullWidth aria-label={`${t('cabinet.tariffs.choose')}: ${name}`}>
+          {t('cabinet.tariffs.choose')}
+        </ButtonLink>
+      )}
     </li>
   );
 }
 
 /** `terms` is null while the plans' terms load; plans off sale are not shown. */
 export function GuideTariffs({ terms }: { terms: TariffTerms[] | null }) {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   return (
     <section className="cab-section" aria-labelledby="tariffs-title" id="tariffs">
       <div className="cab-head">
@@ -81,17 +55,10 @@ export function GuideTariffs({ terms }: { terms: TariffTerms[] | null }) {
           const plan = terms ? termsOf(terms, tariff.code) : null;
           if (terms && !plan) return null;
           return (
-            <TariffCard
-              key={tariff.code}
-              code={tariff.code}
-              level={tariff.level}
-              price={plan ? formatPrice(plan.pricePerPlay, lang) : '—'}
-              minLabel={t('cabinet.tariffs.minimum')}
-              min={plan ? t('cabinet.tariffs.from', { amount: formatMoney(plan.minimum, lang) }) : '—'}
-            />
+            <TariffCard key={tariff.code} code={tariff.code} look={tariff} minimum={plan?.minimum ?? null} />
           );
         })}
-        <TariffCard code="corporate" level={CORPORATE_LEVEL} price={null} minLabel={t('cabinet.tariffs.budget')} min={t('cabinet.tariffs.byAgreement')} />
+        <TariffCard code="corporate" look={CORPORATE_TARIFF} minimum={null} />
       </ul>
       <p className="cab-note">
         <Icon name="info" size={18} />

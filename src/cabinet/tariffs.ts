@@ -1,22 +1,33 @@
-// Plans as drawn in the design: how they look (level bars, feature list). What a plan sells — the price of a play, the
-// minimum, shelf zones and the terms version — comes from the backend `tariffs` table (useTariffTerms), because the business
-// changes it without a release. Texts: `cabinet.tariffs.<code>`.
+import type { IconName } from '../design-system';
+
+// Plans as drawn on their cards: the icon and the advantages listed with check marks. What a plan sells — the price of a
+// play, the minimum, shelf zones and the terms version — comes from the backend `tariffs` table (useTariffTerms), because
+// the business changes it without a release. Texts: `cabinet.tariffs.<code>` («zones» is «Бизнес», «corporate» — «Эксклюзив»).
 
 export type TariffCode = 'standard' | 'zones' | 'premium';
-export type TariffFeature = 'allCarts' | 'zonePriority' | 'sound' | 'brandOnly';
 
-export interface Tariff {
+export interface TariffLook {
+  icon: IconName;
+  /** Keys of `cabinet.tariffs.<code>.points`, in card order. */
+  points: string[];
+}
+
+export interface Tariff extends TariffLook {
   code: TariffCode;
-  /** Bars lit on the 4-bar level meter; the plan includes the first `level` features. */
-  level: number;
 }
 
 /** Plans an advertiser picks in the wizard. */
 export const TARIFFS: Tariff[] = [
-  { code: 'standard', level: 1 },
-  { code: 'zones', level: 2 },
-  { code: 'premium', level: 3 },
+  { code: 'standard', icon: 'megaphone', points: ['carts', 'plays', 'rotation', 'stats'] },
+  { code: 'zones', icon: 'chart', points: ['carts', 'plays', 'checkout', 'entrance', 'stats'] },
+  { code: 'premium', icon: 'crown', points: ['carts', 'plays', 'topZones', 'zoneChoice', 'zoneStats', 'support'] },
 ];
+
+/** «Эксклюзив»: not bought on the site, its terms are agreed with a manager. */
+export const CORPORATE_TARIFF: TariffLook = { icon: 'gem', points: ['term', 'mediaplan', 'keyZones', 'category', 'reports', 'brands'] };
+
+/** Marked with a star as the plan to start from. */
+export const RECOMMENDED_TARIFF: TariffCode = 'premium';
 
 /** A plan's current terms in `tariffs`: only plans that are on sale. */
 export interface TariffTerms {
@@ -46,8 +57,3 @@ export function tariffOf(code: string | null | undefined): TariffCode | 'corpora
 export function termsOf(terms: TariffTerms[], code: TariffCode | null): TariffTerms | null {
   return terms.find((plan) => plan.code === code) ?? null;
 }
-
-export const TARIFF_FEATURES: TariffFeature[] = ['allCarts', 'zonePriority', 'sound', 'brandOnly'];
-export const TARIFF_LEVELS = [1, 2, 3, 4];
-/** The corporate plan has every feature; its terms are agreed with a manager. */
-export const CORPORATE_LEVEL = 4;

@@ -1,7 +1,7 @@
 {
   "titles": {
     "new": "New campaign",
-    "corporate": "Corporate plan",
+    "corporate": "Exclusive plan",
     "edit": "Edit the campaign",
     "sent": "My campaigns",
     "topUp": "Top up the campaign"
@@ -164,7 +164,7 @@
   },
   "banner": {
     "title": "Need special terms?",
-    "text": "Corporate plan: an exclusive contract for your brand — reach, formats and budget are agreed individually.",
+    "text": "Exclusive plan: tailored terms for large campaigns — the term, media plan and zones are agreed with a manager.",
     "more": "Learn more"
   },
   "error": {
@@ -244,7 +244,7 @@
       },
       "tariff": {
         "title": "How to choose",
-        "text": "First campaign — “Standard”. Need specific shelves — “Standard + Zones”. Need sound — “Premium”. Special terms — “Corporate”."
+        "text": "Whole-floor reach — Standard. More impressions and priority zones — Business. The most impressions, top zones and zone analytics — Premium. Individual terms — Exclusive."
       },
       "stores": {
         "title": "Where the video is seen more often",
@@ -323,17 +323,6 @@
       "legend": "Choose a plan",
       "note": "You can change the plan until you send the campaign for review.",
       "error": "Choose a plan",
-      "corporate": {
-        "badge": "B2B",
-        "features": {
-          "reach": "Stores, chains and cities — negotiable",
-          "zonePriority": "Priority in shelf zones",
-          "moreShows": "More impressions in rotation",
-          "brandOnly": "Only your brand in the zone",
-          "manager": "B2B contract and a personal manager"
-        },
-        "discuss": "Discuss terms"
-      },
       "errorUnavailable": "This plan is no longer sold. Pick another one."
     },
     "stores": {

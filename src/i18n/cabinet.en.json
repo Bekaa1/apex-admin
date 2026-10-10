@@ -31,37 +31,61 @@
     "awaiting_payment": "Awaiting payment"
   },
   "tariffs": {
-    "buy": "Buy",
     "standard": {
       "name": "Standard",
-      "text": "The video plays in the general rotation on all Smart carts of the selected stores."
+      "text": "For brand awareness",
+      "points": {
+        "carts": "On all Smart carts of the selected supermarket",
+        "plays": "From 30,000 impressions a month",
+        "rotation": "Rotation across the whole sales floor",
+        "stats": "Basic statistics in your account"
+      }
     },
     "zones": {
-      "name": "Standard + Zones",
-      "text": "Plus priority at the selected shelves: only zone-plan videos play in the zone."
+      "name": "Business",
+      "text": "For stronger reach",
+      "points": {
+        "carts": "On all Smart carts of the selected supermarket",
+        "plays": "From 45,000 impressions a month",
+        "checkout": "Priority zone at the checkout",
+        "entrance": "Priority zone at the entrance",
+        "stats": "Extended statistics in your account"
+      }
     },
     "premium": {
       "name": "Premium",
-      "text": "Zones and sound: the video plays with sound both in rotation and at the shelves."
+      "text": "For maximum influence on the choice",
+      "points": {
+        "carts": "On all Smart carts of the selected supermarket",
+        "plays": "From 60,000 impressions a month",
+        "topZones": "The supermarket's top zones",
+        "zoneChoice": "Choice of ad zones",
+        "zoneStats": "Analytics for the chosen zones",
+        "support": "Personal campaign support"
+      }
     },
     "corporate": {
-      "name": "Corporate",
-      "text": "An exclusive contract for your brand: reach, formats and budget are agreed individually."
+      "name": "Exclusive",
+      "text": "A tailored solution for large campaigns",
+      "points": {
+        "term": "Placement for 3, 6 or 12 months",
+        "mediaplan": "Tailored media plan",
+        "keyZones": "Priority in key zones",
+        "category": "Exclusive placement in the chosen product category",
+        "reports": "Extended analytics and reporting",
+        "brands": "Special terms for large brands"
+      }
     },
-    "feature": {
-      "allCarts": "All Smart carts of the selected stores",
-      "zonePriority": "Priority in shelf zones",
-      "sound": "Video with sound",
-      "brandOnly": "Only your brand in the zone"
-    },
-    "has": "Included:",
-    "hasNot": "Not included:",
     "minimum": "Minimum budget",
     "from": "from {amount}",
     "budget": "Budget",
     "byAgreement": "By agreement",
     "pricePerPlay": "Price per impression",
-    "perPlay": "{amount} per impression"
+    "perPlay": "{amount} per impression",
+    "choose": "Choose plan",
+    "offer": "Get an offer",
+    "recommended": "Recommended",
+    "perMonth": "/ mo"
   },
   "video": {
     "title": "Campaign video",

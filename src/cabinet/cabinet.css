@@ -120,20 +120,9 @@
 .cab-receipt dt { color: var(--text-muted); }
 .cab-receipt dd { margin: 0; font-weight: 600; text-align: right; }
 .cab-tariff { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
-.cab-tariff__level { display: flex; gap: 4px; }
-.cab-tariff__level span { width: 20px; height: 6px; border-radius: 3px; background: var(--primary-soft); }
-.cab-tariff__level span.is-on { background: var(--primary); }
-.cab-tariff__text { margin: 0; min-height: 4.5em; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
-.cab-tariff__features { list-style: none; margin: 0; padding: var(--space-3) 0 0; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: var(--space-2);
-  font-size: 14px; line-height: 1.4; }
-.cab-tariff__features li { display: flex; align-items: flex-start; gap: var(--space-2); }
-.cab-tariff__features li.is-on .ax-icon { color: var(--success); }
-.cab-tariff__features li.is-off { color: var(--text-subtle); }
-.cab-tariff__min { margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
-.cab-tariff__min span { font-size: 13px; color: var(--text-muted); }
-.cab-tariff__min strong { font-family: var(--font-display); font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
-.cab-tariff__price { margin: 0 0 var(--space-2); display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
-.cab-tariff__price strong { font-family: var(--font-sans); font-size: 16px; letter-spacing: 0; }
+.cab-tariff.is-recommended { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+/* The advantages fill the card, so the buttons line up. */
+.cab-tariff__points { flex: 1; align-content: start; }
 .cab-chain { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .cab-chain li { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 4px 14px 4px 6px; box-sizing: border-box; border-radius: var(--radius-full);
   background: var(--bg); border: 1px solid var(--border); font-size: 14px; font-weight: 600; }

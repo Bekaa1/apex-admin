@@ -1,0 +1,12 @@
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); width: 100%; }
+.icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-lg); background: var(--primary-soft); color: var(--link); }
+.recommended { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; }
+.recommended :global(.ax-icon) { fill: currentColor; }
+.price { display: grid; gap: var(--space-1); padding-bottom: var(--space-4); border-bottom: 1px solid var(--border); }
+.amount { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); }
+.amount strong { font-family: var(--font-display); font-size: clamp(22px, 2.3vw, 28px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.amount span { font-size: 15px; color: var(--text-muted); }
+.purpose { margin: 0; font-size: 14px; line-height: 1.45; color: var(--text-muted); }
+.points { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.points li { display: flex; align-items: flex-start; gap: var(--space-2); font-size: 14px; line-height: 1.45; }
+.points :global(.ax-icon) { flex-shrink: 0; margin-top: 1px; color: var(--link); }

@@ -1,5 +1,5 @@
 type PricingConfig = { url: string; key: string };
-const labels: Record<string, string> = { standard: 'Стандарт', zones: 'Стандарт + Зоны', premium: 'Премиум' };
+const labels: Record<string, string> = { standard: 'Стандарт', zones: 'Бизнес', premium: 'Премиум' };
 const unavailable = 'ТЕКУЩИЕ ТАРИФЫ: сейчас не получены. Не называй числовые цены и минимумы по памяти. Объясни форматы и дай https://apexmedia.kz/pricing.';
 
 export function readPricingConfig(env: NodeJS.ProcessEnv): PricingConfig | null {
@@ -55,7 +55,7 @@ export class PublicPricing {
           canSelectZones: row.can_select_zone, version: row.version };
       });
       if (new Set(tariffs.map(row => row.name)).size !== tariffs.length) throw new Error();
-      const text = 'ТЕКУЩИЕ ТАРИФЫ. Публичные условия сайта; кэш не более 5 минут. Минимум не является месячной ценой. '
+      const text = 'ТЕКУЩИЕ ТАРИФЫ. Публичные условия сайта; кэш не более 5 минут. Минимум — бюджет на месяц размещения; оплата идёт за фактические показы по цене показа. '
         + 'Индивидуальные договоры имеют приоритет. Отсутствующие в этом ответе тарифы не объявляй доступными к покупке.\n'
         + JSON.stringify({ source: 'https://apexmedia.kz/pricing', checkedAt: new Date().toISOString(), currency: 'KZT', tariffs });
       this.cached = { text, until: Date.now() + 300_000 }; return text;

@@ -17,14 +17,12 @@
   "pricing": {
     "eyebrow": "Apexmedia plans",
     "title": "Choose how your brand meets the shopper",
-    "text": "General rotation, shelf priority or video with sound. Find the format for your campaign.",
-    "tag": { "standard": "Reach", "zones": "At the right shelf", "premium": "Zones + sound" },
-    "discuss": "Discuss your campaign",
+    "text": "Whole-floor reach, priority zones at the checkout and entrance, or top zones with analytics. Find the format for your campaign.",
     "contractTitle": "Your price is fixed in the contract",
-    "contractText": "Prices shown are minimum campaign budgets. The agreed price applies throughout the contract term. Terms for the next period are agreed using current rates, subject to your contract.",
+    "contractText": "The cards show the minimum budget for a month of placement. Money is charged for actual impressions at the plan's price per impression: on Business and Premium an impression costs less and you get more impressions a month. The agreed price per impression and budget stay for the whole contract term, even if the plans on the site change. You can top up the budget in your account. For Exclusive, the placement term (3, 6 or 12 months), media plan and special terms are set in an individual contract. Terms for the next period are agreed at current rates, subject to your contract.",
     "faq": {
-      "budget": { "q": "Is this a monthly price?", "a": "No. The cards show the minimum campaign budget. Your contract sets the placement period and final price." },
-      "zones": { "q": "How do zones differ from general rotation?", "a": "General rotation covers Smart carts in your selected stores. A plan with zones adds priority at selected shelves when a shopper approaches them." },
+      "budget": { "q": "Is this a monthly price?", "a": "Yes, the card shows the minimum budget for a month of placement. You pay for actual impressions at the plan's price, so a month is a guide: with fewer impressions the budget lasts longer. Your contract sets the exact term and amount." },
+      "zones": { "q": "How do zones differ from general rotation?", "a": "Standard is rotation on Smart carts across the whole sales floor. On Business and Premium the video also gets priority in shelf zones: when a shopper approaches them, zone-plan videos play there. Premium adds the supermarket's top zones and analytics for the chosen zones." },
       "renewal": { "q": "What happens if prices change?", "a": "The price agreed for your current contract term remains fixed. After that term, new placements or renewals are agreed at current rates, unless your contract states otherwise." }
     }
   },
@@ -74,7 +72,7 @@
     "example": "Example setup",
     "exampleStore": "Store {n}",
     "browseStores": "Browse stores",
-    "zonesNote": "Zone selection is available with Standard + Zones and Premium.",
+    "zonesNote": "Zone selection is available with Business and Premium.",
     "budgetLabel": "Campaign budget",
     "budgetHint": "Minimum budget met",
     "reviewAction": "Submission for review",

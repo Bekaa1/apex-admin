@@ -116,8 +116,6 @@
 .cmp-fields { display: flex; flex-direction: column; gap: var(--space-6); }
 .cmp-fields--loose { gap: var(--space-8); }
 .cmp-fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
-.cmp-level--accent span.is-on { background: var(--accent); }
-.cmp-level--accent span { background: var(--accent-soft); }
 /* The only raw colour: a dark scrim under the timecode, over a video frame or the logo gradient (media layer, like .cab-thumb). */
 .cmp-cover__time { position: absolute; right: 6px; bottom: 6px; padding: 2px 6px; border-radius: var(--radius-xs); background: rgba(5, 6, 12, 0.6); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
@@ -176,12 +174,9 @@
 
 /* Step 2 — tariffs */
 .cmp-tariff-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
-.cmp-tariff-choice .cab-tariff__text { min-height: 0; }
 .cmp-corp-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); background: var(--surface); }
-.cmp-corp-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 24px; }
-.cmp-corp-card .cab-tariff__text { min-height: 0; }
-.cmp-corp-card .cab-tariff__min .cmp-corp-card__price { font-size: 20px; }
-.cmp-corp-card .cab-tariff__features li.is-on .ax-icon { color: var(--accent); }
+/* The advantages fill the card, so «Получить предложение» sits at the bottom like the plans' end. */
+.cmp-tariff-points { flex: 1; align-content: start; }
 .cmp-corp-card > .ax-btn { margin-top: var(--space-1); }
 
 /* Step 3 — stores */
